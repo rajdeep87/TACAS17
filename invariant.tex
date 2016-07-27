@@ -1,0 +1,315 @@
+\documentclass[a4paper,conference]{llncs}
+
+\usepackage{colortbl}
+
+\newcommand{\dkcmt}[1]{{\color{red} [{#1}]}}
+\newcommand{\rmcmt}[1]{{\color{magenta} [{#1}]}}
+\newcommand{\sjcmt}[1]{{\color{blue} [{#1}]}}
+\newcommand{\tmcmt}[1]{{\color{orange} [{#1}]}}
+\usepackage{xspace}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,decorations.markings,chains,fit,shapes.multipart}
+\usepackage{import}
+\usepackage{times}
+\usepackage{graphicx}
+\usepackage{cite}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathptm}
+\usepackage{rotating}
+\usepackage{color}
+\usepackage{listings}
+\usepackage{verbatim}
+\usepackage{comment}
+\usepackage{alltt}
+\usepackage{mdwlist}
+\usepackage{booktabs}
+\usepackage[algo2e,linesnumbered,ruled,lined]{algorithm2e}
+\usepackage{hyperref}
+\makeatother
+
+\newcommand{\tool}[1]{\textsc{#1}\xspace}
+\newcommand{\hector}{\tool{hector}}
+\newcommand{\slec}{\tool{slec}}
+\newcommand{\hwcbmcv}{\tool{hw-cbmc}}
+\newcommand{\hwcbmcver}{\tool{hw-cbmc 5.4}}
+\newcommand{\verifoxver}{\tool{VerifOx 0.1}}
+\newcommand{\verifox}{\tool{VerifOx}}
+\newcommand{\klee}{\tool{klee}}
+\newcommand{\kleever}{\tool{klee 1.0.0}}
+\newcommand{\symbiotic}{\tool{symbiotic}}
+
+\newcommand{\Omit}[1]{}
+\newcommand{\scs}[1]{\scriptsize{#1}}
+
+\input{symbols}
+\input{refs}
+
+\begin{document}
+
+\title{Invariant Generation using ACDL}
+\author{}
+\institute{}
+
+\maketitle 
+
+\section{Algorithm for Invariant Generation}
+\Omit{
+We propose a two-solver approach for proving programs with loops using ACDL. 
+Let us call these solvers: \em{proof solver} (PS) and \em{invariant solver} (IS).
+The purpose of proof solver is to determine the safety of the program in the
+presence of the negation of assertion. Whereas, the purpose of invariant solver is 
+to determine the inductivenss of the candidate invariant produced by the proof 
+solver in the presence of the actual assertion.
+}
+We present a program verification algorithm, ACDCL-P, inspired 
+from the propositional-level CDCL algorithm. ACDCL-P generates a candidate 
+invariant following decisions and deductions. The inductiveness of the 
+candidate invariants are then checked using an Abstract CDCL solver, ACDCL. ACDCL 
+solver returns SAT if the input formula is satisfiable and UNSAT otherwise. 
+
+\section{Communication between ACDCL and ACDCL-P}
+The deduction information in the trail corresponding to 
+decisions that participate in the invariant can be 
+communicated from ACDCL-P to ACDCL.  
+
+
+\subsection{Highlights of ACDCL-P}
+\begin{enumerate}
+\item decision heuristics on cond variables enable us to prove many 
+programs without actually deciding on the actual program variables. This 
+leads to significantly less number of decisions and less number of conflicts 
+compared to the SAT solver. Further, decisions on conditional program 
+variables can be seen as simulating path-based symbolic execution. But when 
+a decision on conditional varaible leads to BOTTOM, ACDCL-P tried to learn 
+the reason for failure, and hence can also be seen similar to IMPACT like
+algorithm. 
+\item Last UIP allows us to learn clauses that has more information in it. 
+\item Compared to pure AI based tools, ACDCL-P performs program and property 
+driven partitioning with simpler domains to prove programs with relational 
+properties (branch7). AI based tool would require richer domains like 
+relational (equality) domain to prove such programs. 
+\item Compared to cdfpl, our tool proves more programs correctly and works on 
+non-numeric programs as well.
+\item Chaotic propagations help ACDCL-P to generate stronger deductions and reach 
+fixpoint early in propagation stage.
+\item Compared to cdfpl, acdl solver is agnostic to abstract domain. cdfpl
+stores the value of variables (from interval domain) in every decision 
+and deduction stage in a container "value". So, cdfpl keeps track of literals 
+and their intervals at every stage which makes it difficult to extend it to other 
+richer domains. However, ACDCL-P treat literals as meet irreducibles. Hence, 
+ACDCL-P can be easily extended to other richer domains.    
+\item ACDCL-P handles loops by automatic invariant generation.
+\end{enumerate}
+
+\subsection{Difference between cdfpl and ACDCL-P}
+\begin{enumerate}
+\item cdfpl stores deductions from conflict clause into the trail. It does not 
+store the deductions from the AI phase into the propagation trail. Hence, each 
+entry in the trail has a corresponding reason (conflict clause responsible for 
+deducing the literal in the entry). Thus, it is easier to compute the UIP in
+cdfpl since it retains only the clause based deduction information in the trail. 
+Thus, it can perform resolution proof easily to compute the UIP. The resolution 
+proof in cdfpl is implemented in a way that it iterates through the marked
+portion of the trail (contradicted portion in the current decision segment of
+the trail with respect to the conflict clause) to find the corresponding clause 
+(predecessor clause) for each marked entry in the DL segment of the trail 
+(Note that the predecessor clause is the one which inferred this literal in the 
+trail). The predecessor clause is then iterated to find if a literal in the 
+clause is contradicted in the current decision level or previous decision level 
+and accordingly the learnt clause and the backtrack level is updated. 
+  
+\item Whereas, ACDCL-P stores the deduction information from the AI phase into the 
+trail. In such case, the entries in the trail does not have a corresponding
+reason clause. Thus, it is not possible to perform resolution proof to find the 
+UIP since the propagation trail does not store such information.   
+\end{enumerate}
+
+\textbf{Lemma 1:}Normalization is an equivalent transformation. \\ 
+\textbf{Lemma 2:}Normalizing a learnt clause is UNIT preserving. \\
+Proof: Prove that the above lemma holds both for monotonic ($x \leq 2 \land x \leq 1 
+\land x \leq 0)$ and non-monotonic decisions $(x \leq 20 \land x \geq 10 \land
+x \leq 15 \land x \leq 13)$. \\
+\textbf{Lemma 3:}Normalizing a learnt clause does not affect the backtrack
+level. \\
+\begin{enumerate}
+\item Step 1: Construct the learnt clause, L=${\neg{d1} \lor \neg{d2} \lor \neg{UIP}}$
+\item Step 2: Normalize the learnt clause without UIP, normalize L'=${\neg{d1} \lor \neg{d2}}$
+\item Step 3: Add the UIP to the normalized learnt clause, L\_final=L' $\lor \neg{UIP}$
+\item Step 4: Backtrack to blevel=$max\{d1, d2\}$
+\item Step 5: Let $val$ be the current partial assignment after backtracking
+\item Step 6: Normalize the current partial assignment, $val$
+\item Step 7: Check unit rule for (L\_final, val) -- The learnt clause should now be UNIT !
+\end{enumerate}
+
+\subsection{Some ideas}
+\begin{enumerate}
+\item Can we infer the smallest UNSAT core when we reach BOTTOM 
+as the potential candidate for Invariant. If the UNSAT core for 
+a proof is indeed an invariant, then it will be UNSAT core for other proofs 
+as well. 
+\end{enumerate}
+
+\begin{algorithm2e}[t]
+\DontPrintSemicolon
+\SetKwFunction{decide}{Decide}
+\SetKwFunction{deduce}{deduce}
+\SetKwFunction{backtrack}{backtrack}
+\SetKwFunction{print}{print}
+\SetKwFunction{return}{return}
+\SetKwFunction{nondet}{nondet}
+\SetKwFunction{run}{run}
+\SetKwFunction{learn}{learn}
+\SetKwFunction{continue}{continue}
+\SetKwFunction{assign}{assign}
+\SetKwRepeat{Do}{do}{while}
+%\SetKwFunction{assume}{assume}
+%\SetKwFunction{isf}{isFeasible}
+\SetKwData{safe}{safe}
+\SetKwData{unsafe}{unsafe}
+\SetKwData{sat}{sat}
+\SetKwData{unsat}{unsat}
+\SetKwData{unknown}{unknown}
+\SetKwData{true}{true}
+\SetKwInOut{Input}{input}
+\SetKwInOut{Output}{output}
+\SetKw{KwNot}{not}
+\begin{small}
+\Input{Formula $\mathcal{F}$}
+\Output{The status (\sat or \unsat or \unknown)}
+%\tcc{The initial state}
+%$ACDL \leftarrow \tuple{\neg(assert(c)),loopselect=nondet}$ \nllabel{algline:initPS}\;
+\assign result=\deduce(F)\;
+\uIf{$result == \perp$} {
+  \return \unsat \;
+}
+\uElse
+{
+  \uIf{is\_complete()} {
+    \return \sat \;
+  }
+}
+\While{$true$} 
+{
+  \assign decision\_variable = decision\_heuristics($F$)\;
+  \assign decision\_container = decision\_container $\cup$ decision\_variable\; 
+  \uIf{decision\_variable == NULL}
+  {
+    return \unknown\; 
+  }
+  \uElse
+  {
+    \assign result=\deduce(F)\;
+    \uIf{result == UNKNOWN}
+    {
+      \uIf{is\_complete()} {
+        \return \sat \;
+      }
+      \uElse 
+      {
+        \continue\;
+      }
+    }
+    \uElse
+    {
+      \Do{result == PASS} {
+        \uIf{$\neg$ conflict\_analysis()} {
+          return \unsat \;  
+        }
+        \assign result=\deduce(F)\;
+      }
+    }
+  }
+}
+\end{small}
+\caption{ACDCL Solver \label{Alg:acdl}}
+\end{algorithm2e}
+
+
+\begin{algorithm2e}[t]
+\DontPrintSemicolon
+\SetKwFunction{decide}{Decide}
+\SetKwFunction{deduce}{deduce}
+\SetKwFunction{backtrack}{backtrack}
+\SetKwFunction{print}{print}
+\SetKwFunction{return}{return}
+\SetKwFunction{nondet}{nondet}
+\SetKwFunction{run}{run}
+\SetKwFunction{learn}{learn}
+\SetKwFunction{continue}{continue}
+\SetKwFunction{assign}{assign}
+\SetKwRepeat{Do}{do}{while}
+%\SetKwFunction{assume}{assume}
+%\SetKwFunction{isf}{isFeasible}
+\SetKwData{safe}{safe}
+\SetKwData{unsafe}{unsafe}
+\SetKwData{unknown}{unknown}
+\SetKwData{true}{true}
+\SetKwInOut{Input}{input}
+\SetKwInOut{Output}{output}
+\SetKw{KwNot}{not}
+\begin{small}
+\Input{Program $\mathcal{P}$ with properties specified with $assert(c)$}
+\Output{The status (\safe or \unsafe) and a counterexample if \unsafe}
+%\tcc{The initial state}
+$ACDCL-P \leftarrow \tuple{\neg(assert(c)),loopselect=nondet}$ \nllabel{algline:initPS}\;
+\assign result=\deduce(P)\;
+\uIf{$result == \perp$} {
+  \return \safe \;
+}
+\uElse
+{
+  \uIf{is\_complete()} {
+    \return \unsafe \;
+  }
+}
+\While{$true$} 
+{
+  \assign decision\_variable = decision\_heuristics($P$)\;
+  \assign decision\_container = decision\_container $\cup$ decision\_variable\; 
+  \uIf{decision\_variable == NULL}
+  {
+    return \unknown\; 
+  }
+  \uElse
+  {
+    \assign result=\deduce(P)\;
+    \uIf{result == UNKNOWN}
+    {
+      \uIf{is\_complete()} {
+        \return \unsafe \;
+      }
+      \uElse 
+      {
+        \continue\;
+      }
+    }
+    \uElse
+    {
+      \Do{result == PASS} {
+        \uIf {loop\_variable $\in$ decision\_container} {
+          \assign $Inv=(\bigcap_{i=1}^{n} d_{i} \rightarrow
+              \bigcap_{j=1}^{m} l_{j})$ where $d_i$ $\in$ \{non\_loop\_variable 
+            $\cup$ loop\_variable\}, $l_j$ $\in$ \{loop\_variable\} \nllabel{algline:inv}\;
+            \assign Inv\_formula = $Inv$ $\wedge$ $P$ $\wedge$ $Inv'$, where $Inv'$
+            is the invariant after the application of transition system\;
+        $inv\_result \leftarrow$ run($ACDCL$, $Inv\_formula$) \; 
+        \uIf{inv\_result == UNSAT \nllabel{algline:statusIS}} {
+          \learn $Inv$ \;
+        }
+        }
+        \uIf{$\neg$ conflict\_analysis()} {
+          return \safe \;  
+        }
+        \assign result=\deduce(P)\;
+      }
+    }
+  }
+}
+\end{small}
+\caption{ACDCL-P Verifier with Invariant Checking\label{Alg:verifox}}
+\end{algorithm2e}
+
+
+\end{document}
