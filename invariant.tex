@@ -311,5 +311,81 @@ $ACDCL-P \leftarrow \tuple{\neg(assert(c)),loopselect=nondet}$ \nllabel{algline:
 \caption{ACDCL-P Verifier with Invariant Checking\label{Alg:verifox}}
 \end{algorithm2e}
 
+\begin{algorithm2e}[t]
+\DontPrintSemicolon
+\SetKwFunction{decide}{Decide}
+\SetKwFunction{deduce}{deduce}
+\SetKwFunction{backtrack}{backtrack}
+\SetKwFunction{print}{print}
+\SetKwFunction{return}{return}
+\SetKwFunction{nondet}{nondet}
+\SetKwFunction{run}{run}
+\SetKwFunction{learn}{learn}
+\SetKwFunction{continue}{continue}
+\SetKwFunction{assign}{assign}
+\SetKwRepeat{Do}{do}{while}
+%\SetKwFunction{assume}{assume}
+%\SetKwFunction{isf}{isFeasible}
+\SetKwData{safe}{safe}
+\SetKwData{unsafe}{unsafe}
+\SetKwData{true}{true}
+\SetKwData{false}{false}
+\SetKwInOut{Input}{input}
+\SetKwInOut{Output}{output}
+\SetKw{KwNot}{not}
+\begin{small}
+\Input{A counterexample trace $t$ of Program $P$}
+\Output{The status (\true) if $t$ is not spurious and $t$ is complete 
+or (\false) if $t$ is spurious or not complete}
+\uIf{loopselect $\in$ t} {
+   \uIf{loopselect==false} {
+      \uIf{gamma\_complete(t)} {
+        return \true \;
+      }
+      \uElse 
+      {
+        return \false \;
+      }
+   }
+   \uElse {
+     return \false \;
+   }
+}
+\end{small}
+\caption{Spurious Counterexample Checking \label{Alg:spurious-check}}
+\end{algorithm2e}
+
+\begin{algorithm2e}[t]
+\DontPrintSemicolon
+\SetKwFunction{decide}{Decide}
+\SetKwFunction{deduce}{deduce}
+\SetKwFunction{backtrack}{backtrack}
+\SetKwFunction{print}{print}
+\SetKwFunction{return}{return}
+\SetKwFunction{nondet}{nondet}
+\SetKwFunction{run}{run}
+\SetKwFunction{learn}{learn}
+\SetKwFunction{continue}{continue}
+\SetKwFunction{assign}{assign}
+\SetKwRepeat{Do}{do}{while}
+\SetKwData{safe}{safe}
+\SetKwData{unsafe}{unsafe}
+\SetKwData{true}{true}
+\SetKwData{false}{false}
+\SetKwInOut{Input}{input}
+\SetKwInOut{Output}{output}
+\SetKw{KwNot}{not}
+\begin{small}
+\Input{A counterexample trace $t$ of Program $P$}
+\Output{The status (\true) if $t$ is complete, else \false if $t$ is not complete} 
+\For{elements $e \in t$} {
+  \uIf{$e$ is non-singleton} {
+    return \false \;  
+  }
+}
+return \true \;  
+\end{small}
+\caption{Gamma Completeness Check \label{Alg:gamma-complete}}
+\end{algorithm2e}
 
 \end{document}
