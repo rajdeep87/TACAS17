@@ -44,7 +44,6 @@
 \newcommand{\scs}[1]{\scriptsize{#1}}
 
 \input{symbols}
-\input{refs}
 
 \begin{document}
 
@@ -180,21 +179,23 @@ as well.
 \Output{The status (\sat or \unsat or \unknown)}
 %\tcc{The initial state}
 %$ACDL \leftarrow \tuple{\neg(assert(c)),loopselect=nondet}$ \nllabel{algline:initPS}\;
-\assign result=\deduce(F)\;
+result=\deduce(F)\;
 \uIf{$result == \perp$} {
   \return \unsat \;
 }
 \uElse
 {
-  \uIf{is\_complete()} {
+  $t$ = get\_counterexample\_trace\_from\_P \;
+  \uIf{spurious\_check(t)}
+  {
     \return \sat \;
   }
 }
 \While{$true$} 
 {
-  \assign decision\_variable = decision\_heuristics($F$)\;
-  \assign decision\_container = decision\_container $\cup$ decision\_variable\; 
-  \uIf{decision\_variable == NULL}
+  meet\_irreducible = decision\_heuristics($F$)\;
+  decision\_container = decision\_container $\cup$ meet\_irreducible\; 
+  \uIf{meet\_irreducible == NULL}
   {
     return \unknown\; 
   }
@@ -203,7 +204,9 @@ as well.
     \assign result=\deduce(F)\;
     \uIf{result == UNKNOWN}
     {
-      \uIf{is\_complete()} {
+      $t$ = get\_counterexample\_trace\_from\_P \;
+      \uIf{spurious\_check(t)}
+      {
         \return \sat \;
       }
       \uElse 
@@ -254,30 +257,32 @@ as well.
 \Output{The status (\safe or \unsafe) and a counterexample if \unsafe}
 %\tcc{The initial state}
 $ACDCL-P \leftarrow \tuple{\neg(assert(c)),loopselect=nondet}$ \nllabel{algline:initPS}\;
-\assign result=\deduce(P)\;
+result=\deduce(P)\;
 \uIf{$result == \perp$} {
   \return \safe \;
 }
 \uElse
 {
-  \uIf{is\_complete()} {
+  $t$ = get\_counterexample\_trace\_from\_P \;
+  \uIf{spurious\_check(t)} {
     \return \unsafe \;
   }
 }
 \While{$true$} 
 {
-  \assign decision\_variable = decision\_heuristics($P$)\;
-  \assign decision\_container = decision\_container $\cup$ decision\_variable\; 
-  \uIf{decision\_variable == NULL}
+   meet\_irreducible = decision\_heuristics($P$)\;
+   decision\_container = decision\_container $\cup$ meet\_irreducible \; 
+  \uIf{meet\_irreducible == NULL}
   {
     return \unknown\; 
   }
   \uElse
   {
-    \assign result=\deduce(P)\;
+    result=\deduce(P)\;
     \uIf{result == UNKNOWN}
     {
-      \uIf{is\_complete()} {
+      $t$ = get\_counterexample\_trace\_from\_P \;
+      \uIf{spurious\_check(t)} {
         \return \unsafe \;
       }
       \uElse 
@@ -289,10 +294,10 @@ $ACDCL-P \leftarrow \tuple{\neg(assert(c)),loopselect=nondet}$ \nllabel{algline:
     {
       \Do{result == PASS} {
         \uIf {loop\_variable $\in$ decision\_container} {
-          \assign $Inv=(\bigcap_{i=1}^{n} d_{i} \rightarrow
+              $Inv=(\bigcap_{i=1}^{n} d_{i} \rightarrow
               \bigcap_{j=1}^{m} l_{j})$ where $d_i$ $\in$ \{non\_loop\_variable 
             $\cup$ loop\_variable\}, $l_j$ $\in$ \{loop\_variable\} \nllabel{algline:inv}\;
-            \assign Inv\_formula = $Inv$ $\wedge$ $P$ $\wedge$ $Inv'$, where $Inv'$
+             Inv\_formula = $Inv$ $\wedge$ $P$ $\wedge$ $\neg{Inv'}$, where $Inv'$
             is the invariant after the application of transition system\;
         $inv\_result \leftarrow$ run($ACDCL$, $Inv\_formula$) \; 
         \uIf{inv\_result == UNSAT \nllabel{algline:statusIS}} {
@@ -302,7 +307,7 @@ $ACDCL-P \leftarrow \tuple{\neg(assert(c)),loopselect=nondet}$ \nllabel{algline:
         \uIf{$\neg$ conflict\_analysis()} {
           return \safe \;  
         }
-        \assign result=\deduce(P)\;
+        result=\deduce(P)\;
       }
     }
   }
@@ -352,7 +357,7 @@ or (\false) if $t$ is spurious or not complete}
    }
 }
 \end{small}
-\caption{Spurious Counterexample Checking \label{Alg:spurious-check}}
+\caption{Spurious Counterexample Check \label{Alg:spurious-check}}
 \end{algorithm2e}
 
 \begin{algorithm2e}[t]
