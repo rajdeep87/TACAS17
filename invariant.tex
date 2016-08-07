@@ -99,6 +99,8 @@ and deduction stage in a container "value". So, cdfpl keeps track of literals
 and their intervals at every stage which makes it difficult to extend it to other 
 richer domains. However, ACDCL-P treat literals as meet irreducibles. Hence, 
 ACDCL-P can be easily extended to other richer domains.    
+\item  ACDL computes learnt clause with UIP for octagon domains -- first time 
+extension of learning in ACDL to richer relational domains.   
 \item ACDCL-P handles loops by automatic invariant generation.
 \end{enumerate}
 
@@ -123,6 +125,12 @@ and accordingly the learnt clause and the backtrack level is updated.
 trail. In such case, the entries in the trail does not have a corresponding
 reason clause. Thus, it is not possible to perform resolution proof to find the 
 UIP since the propagation trail does not store such information.   
+
+\item unitness is guaranteed in propagation in CDCL — that is all deduction are 
+made through unit clause. Whereas, unitness is not guaranteed in propagation in 
+ACDCL — that is deduction in AI phase are not made through unit clause, but deductions
+made through conflict clause are only unit. Thus, resolution proof is not possible.  
+
 \end{enumerate}
 
 \textbf{Lemma 1:}Normalization is an equivalent transformation. \\ 
@@ -177,15 +185,13 @@ as well.
 \begin{small}
 \Input{Formula $\mathcal{F}$}
 \Output{The status (\sat or \unsat or \unknown)}
-%\tcc{The initial state}
-%$ACDL \leftarrow \tuple{\neg(assert(c)),loopselect=nondet}$ \nllabel{algline:initPS}\;
 result=\deduce(F)\;
 \uIf{$result == \perp$} {
   \return \unsat \;
 }
 \uElse
 {
-  $t$ = get\_counterexample\_trace\_from\_P \;
+  $t$ = get\_satisfying\_assignment($F$) \;
   \uIf{spurious\_check(t)}
   {
     \return \sat \;
@@ -204,7 +210,7 @@ result=\deduce(F)\;
     \assign result=\deduce(F)\;
     \uIf{result == UNKNOWN}
     {
-      $t$ = get\_counterexample\_trace\_from\_P \;
+      $t$ = get\_satisfying\_assignment($F$) \;
       \uIf{spurious\_check(t)}
       {
         \return \sat \;
