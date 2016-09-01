@@ -1,4 +1,4 @@
-TARGET=invariant
+TARGET=paper
 
 all: clean ${TARGET}.pdf
 
