@@ -298,7 +298,7 @@ result=\deduce(P)\;
     }
     \uElse
     {
-      \Do{result == PASS} {
+      \Do{$result == \perp$} {
         \uIf {loop\_variable $\in$ decision\_container} {
               $Inv=(\bigcap_{i=1}^{n} d_{i} \rightarrow
               \bigcap_{j=1}^{m} l_{j})$ where $d_i$ $\in$ \{non\_loop\_variable 
