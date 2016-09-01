@@ -8,7 +8,7 @@
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{mathptm}
-\usepackage{rotating}
+%\usepackage{rotating}
 \usepackage{color}
 \usepackage{listings}
 \usepackage{verbatim}
@@ -20,15 +20,15 @@
 \usepackage{wasysym} 
 \usepackage{subfigure}
 \usepackage{paralist}
-\usepackage{mdwlist}
-\usepackage{multirow}
+%\usepackage{mdwlist}
+%\usepackage{multirow}
 \usepackage{dingbat}
 % \usepackage{hyperref}
-\usepackage{colortbl}
-\usepackage{booktabs}
+%\usepackage{colortbl}
+%\usepackage{booktabs}
 \usepackage[algo2e,linesnumbered,ruled,lined]{algorithm2e}
 \usepackage{hyperref}
-\usepackage{dcolumn}
+%\usepackage{dcolumn}
 %\newcolumntype{"}{@{\hskip\tabcolsep\vrule width 1pt\hskip\tabcolsep}}
 \makeatother
 
@@ -41,7 +41,9 @@
 
 \begin{document}
 
-\title{Equipping Abstact Conflict Driven Clause Learning \\ Solver with Relational Domains}
+%\title{Equipping Abstact Conflict Driven Clause Learning \\ Solver with Relational Domains}
+\title{Automated Reasoning of Relational properties using \\
+Abstact Conflict Driven Clause Learning}
 \maketitle
 \begin{abstract}
 %
@@ -51,10 +53,10 @@ perspective, ACDCL is a SAT solver for program analysis constraints and is a str
 propositional CDCL solvers. From Abstract Interpretation point of view, ACDCL can be viewed as an 
 abstract interpreter that uses decision and learning to increase the precision of abstract transformers. 
 In this paper, we present a technique to generalize ACDCL solvers to reason about relational properties 
-of a program using richer abstract domains.  Experimental evidence shows significantly less number of 
-decisions and learning iterations compared to propositional SAT solvers -- thereby emphasizing the need
-for abstract reasoning using ACDCL. 
-
+of a program by embedding relational domains like octagon domain inside the ACDCL solver.  Experimental 
+evidence shows significantly less number of decisions and learning iterations required by ACDCL solver to 
+prove programs with relational properties compared to bit-blasting and applying propositional SAT solvers -- 
+thereby emphasizing the need for abstract reasoning using ACDCL. 
 %
 \end{abstract}
 
@@ -289,9 +291,12 @@ Constraint propagation in ACDCL uses fixed point iteration, decisions restrict t
 range of intervals and learning generates program analysis constraints (not assumptions) 
 that preserve the error reachability.  Moreover, ACDCL implicitly 
 perform program and property driven trace partitioning to increase the precision
-of the analysis.  We observe that the abstract domains necessary for 
+of the analysis.  
+\Omit{
+We observe that the abstract domains necessary for 
 hardware property checking are -- booleans, constants, interval, equality 
 and octagons domains.
+}
 
 Algorithm~\ref{Alg:acdcl} presents an overview of the ACDCL algorithm.
 Given a program $\mathcal{P}$ with properties specified as $assert(c)$,
@@ -374,6 +379,20 @@ to the propositional solver. Compared to classical abstract interpretation
 based tools, ACDCL automatically performs program and property driven trace partitioning 
 using decision and clause learning to generate proofs using simpler domain -- thus, it is more 
 precise than classical abstract interpretation.   
+
+\section{Deduction Phase}
+Overapproximating.
+\subsection{Forward analysis with strongest post-condition}
+\subsection{Chaotic iteration strategy} 
+\section{Decision Heuristics}
+Berkmin, longest-range, random, ordered, octagons 
+\section{Abstract Domains}
+Support for Interval, Octagons
+\section{Clause Learning}
+1.DPLL style -- chronological backtracking \\
+2. CDCL style -- non-chronological backtracking \\
+  a. first-uip \\
+  b. last-uip \\
 
 \bibliographystyle{splncs03}
 \bibliography{biblio.bib}
