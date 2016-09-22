@@ -12,3 +12,24 @@ Overapproximating.
 
 \subsection{Chaotic Iteration Strategy}  
 
+Let us consider an example. 
+int id(int a)
+{
+  return a;
+}
+
+void main() {
+ int x,y,z;
+ _Bool c;
+ if (c)
+   x = -1;
+ else
+   x = 2;
+ int k = id(x);
+ z = x * k;
+ assert((z!=-2));
+}
+
+With forward iteration strategy using octagon domian, the program 
+is proved without any decision. However, with the forward strategy
+using interval domain, we just required one decision to prove the program. 
