@@ -1,0 +1,28 @@
+\section{Clause Learning with ACDL}\label{learning}
+1.DPLL style -- chronological backtracking \\
+2. CDCL style -- non-chronological backtracking \\
+  a. first-uip \\
+  b. last-uip \\
+
+\Omit{
+**********************************************
+\subsection{Lifting First UIP to Octagon domain}
+**********************************************
+unit-ness guarantee in octagon domain:
+  Popped stmt: y23=1+y21
+   Abstract value:
+   D1: y23-y21 < 2 &&
+   D2: y23+y21 > 0 &&
+   D3: y21 < 1
+   After backtracking, apply unit rule 
+   y23 > 1 -- deduction from unit rule
+   Value inconsistent !!
+ 
+ Note: 
+ 1> cannot make reasoning at literal level for relational domain because literals are dependant on each other. As soon as literals denote relation between first-order variables, the pure reasoning on boolean skeleton is not sufficient. 
+ 
+2> Intervals are orthogonal half spaces similar to booleans. 
+
+3> After backtracking, the application of unit rule is done as follows for relational domains:
+  Pass the learnt clause (as statement) and the abstrat value to the domain to make deductions.
+}

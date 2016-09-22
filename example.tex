@@ -1,0 +1,50 @@
+\section{Working Example}\label{example}
+%
+\subsection{Example Demonstrating Working of ACDCL}
+\begin{figure}[htp]
+\centering
+\vspace*{0.3cm}
+\scalebox{.45}{\import{figures/}{cfg-conflict.pspdftex}}
+\caption{A control flow graph for P, P' and abstract conflict graph (ACFG) \label{fig:filter}}
+\end{figure}
+
+\lstdefinestyle{mystyle}{
+    numbers=left,                    
+    numbersep=5pt,                  
+    tabsize=2,
+    mathescape=true,
+    language=C
+}
+\lstset{style=mystyle}
+Let us consider a simple safe program $P$ as shown in Figure~\ref{fig:filter}A.
+Astr{\'e}e fails to verify the safety using interval and trace-partition domain
+due to control-flow join at location $n5$.  Astr{\'e}e requires external hints, provided by 
+manually annotating the code with partition directives at $n1$, to prove safety.  
+In general, the imprecision is either intended by the tool because such high precision analysis is 
+normally not required for runtime error analysis or the imprecision is unavoidable 
+due to the complexity of the application under analysis.
+
+On the other hand, ACDCL uses decision and learning to generate the proof 
+using simple interval domain. The analysis associates an interval with each location and variable.  
+Assuming $bool: c = [0,1]$, ACDCL performs backward propagation 
+starting from $n6$ by computing the weakest precondition for every statement 
+in $P$ and immediately infers that (\(n4: x = \bot)\), thus proving safety as shown in 
+red color in figure~\ref{fig:filter}A.  Now, let us consider program $P'$ in
+Figure~\ref{fig:filter}B. Assuming $char: c$, ACDCL performs both forward and
+backward propagations (shown in red color in Figure~\ref{fig:filter}B).  
+The analysis then perform sequence of decisions starting with $c = [0,255]$ and reaches a 
+conflict when the decision is (\(n1:c == [0,0]\)) which is connected to $(n6: \bot)$ 
+and suffices to prove safety.  The deductions made during fixed point
+iteration are represented by abstract conflict graph shown in Figure~\ref{fig:filter}C. 
+Similar to conflict analysis phase in SAT solvers, ACDCL learns (\(n1: c = [1,255]\)), 
+that is all error traces must satisfy (\(c \neq 0\)) at n1.  The analysis backtracks 
+discarding all assumptions. Interval analysis is run with the learnt constraint and 
+can prove safety.  Thus, decisions and clause learning are used to avoid case based reasoning. 
+The advantage of ACDCL over propositional SAT solver is that the decision heuristics in 
+ACDCL can exploit the program structure by making decisions on interesting program 
+variables (for example variables in conditional branches or loop variables). Experimental 
+evidence shows that this leads to significantly less number of decisions compared 
+to the propositional solver. Compared to classical abstract interpretation 
+based tools, ACDCL automatically performs program and property driven trace partitioning 
+using decision and clause learning to generate proofs using simpler domain -- thus, it is more 
+precise than classical abstract interpretation.   
