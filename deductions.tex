@@ -6,11 +6,68 @@ $2*(N^2)$ for $D$ = {\em Octagons}. Note that the conjunction of all
 constraints in the set $L$ forms an octagon.
 
 Overapproximating.
+
+
+begin{figure}[t]
+\tiny
+\begin{tabular}{l|l}
+\hline
+Main Module & Interface Functions \\
+\hline
+\begin{lstlisting}
+int main() {
+ unsigned x, y;
+ __CPROVER_assume(x==y);
+ x++;
+ assert(x==y+1);
+}
+\end{lstlisting}
+&
+\begin{lstlisting}[mathescape=true,language=C]
+$cond#19 == (x#16 == y#18)
+$guard#20 == ($cond#19 && $guard#0)
+x#20 == 1u + x#16
+x#20 == 1u + y#18 || !$guard#20
+$guard#0 == TRUE
+\end{lstlisting}
+\\
+\hline
+\end{tabular}
+\caption{C Program ad its corresponding SSA}
+\label{sw-ssa}
+\end{figure}
+
 \subsection{Forward Iteration Strategy}
+For forward iteration on Figure~\ref{sw-ssa}, we need atleast 
+one decision to deduce BOTTOM and prove safety. The deduction 
+happens from right to left in forward iteration strategy.
+
+The initialization of live variable and subsequent update depends on the iteration strategy.
 
 \subsection{Backward Iteration Strategy}
 
 \subsection{Chaotic Iteration Strategy}  
+The set of octagonal equilities corresponding to Figurei~\ref{sw-ssa}
+is shown below. For chaotic, no decision is required to deduce BOTTOM.
+x#20 > 1                                                                      
+-x20 - y18 < -2                                                               
+-x16 - x20 < -2                                                               
+y18 - x20 < 0                                                                 
+x16 - x20 < 0                                                                 
+y18 > 0                                                                       
+x16 > 0                                                                       
+-x20 - y18 < 0                                                                
+x16 + y18 > 1                                                                 
+y18 - x16 < 1                                                                 
+x20 - y18 < 2                                                                 
+x16 - y18 < 1                                                                 
+cond19                                                                        
+x16 + y18 > 0                                                                 
+guard20                                                                       
+guard0                                                                        
+x16 + x20 > 0                                                                 
+x20 - x16 < 2  
+
 
 Let us consider an example. 
 int id(int a)
