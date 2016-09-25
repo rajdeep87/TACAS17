@@ -1,2 +1,42 @@
-\section{Abstract Domains}\label{domain}
-Support for Interval, Octagons
+\section{Abstract Domains}
+The commonly used library for numerical abstract domains  
+is the APRON C library~\cite{apron}.  This library is 
+used for the static analysis of the numerical variables 
+of a program by abstract interpretation. APRON provides a 
+C API interface to various abstract domains and libraries 
+such as {\em BOX}, {\em OCTAGON}, {\em Convex Polyhedra} and
+{\em Linear Equalities} library.  The aim of such analysis is 
+to compute invariants over numerical variables in the 
+program~\cite{se2011}. 
+
+\subsection{Interval Abstract Domain}
+Domain:
+Operators:
+Semantics of elements:
+
+\subsection{Octagon Abstract Domain}
+Domain:
+Operators:
+Semantics of elements:
+
+\subsection{Conditions for Absract Domains}
+An important criterion to support clause learning in 
+partial assignments domain is that elements in the 
+domain must have complementation property.  Most 
+numerical abstract domain does not support 
+complementation operator.  Similar to the interval 
+domain, octagons does not have complementation 
+property, but the decomposition of octagons into 
+half spaces are complementable. 
+
+APRON library is specialized for the abstract interpretation 
+framework which does not require complementation 
+operator.  So, we implement our own template-based 
+octagon domain which supports complementation operator.  
+
+The octagon in example can be written as a conjunction of:
+\[(x>=-2) \land (x<=1) \land (y>=-1) \land (y<=2) \land (x+y<=2) \land (x-y<=1) \land (y-x<=3) \land (-x-y<=2)\] 
+
+The complementation of the above octagon can be written as disjunction of:
+\[(x<-2) \lor (x>1) \lor (y<-1) \lor (y>2) \lor (x+y>2) \lor (x-y>1) \lor (y-x>3) \lor (-x-y>2)\]
+

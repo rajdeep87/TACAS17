@@ -31,41 +31,48 @@
 
 \begin{document}
 
-\title{Automated Reasoning of Relational properties using \\
-Abstact Conflict Driven Clause Learning}
+\title{Lifting CDCL to Numerical Domains}
 
-\Omit{
+\author{Rajdeep Mukherjee Peter Schrammel   Daniel Kroening}
+
+\institute{University of Oxford, UK \and University of Sussex, UK \\
+\email{\{rajdeep.mukherjee,kroening\}@cs.ox.ac.uk},
+\email{p.schrammel@sussex.ac.uk}}
+\Omit {
 \author{Rajdeep Mukherjee\inst{1} \and
 Peter Schrammel\inst{2} \and
 Daniel Kroening\inst{1}}
 
 \institute{University of Oxford, UK \and University of Sussex, UK \\
 \email{\{rajdeep.mukherjee,kroening\}@cs.ox.ac.uk},
-\email{P.Schrammel@sussex.ac.uk}}
+\email{p.schrammel@sussex.ac.uk}}
 }
+
 \maketitle
 
 %===============================================================================
 \begin{abstract}
 %===============================================================================
 %
-{\em Abstract Conflict Driven Clause Learning} (ACDCL) is a novel program 
-analysis that embeds an abstract domain inside the Conflict Driven Clause 
-Learning (CDCL) algorithm. From decision procedure perspective, ACDCL is a 
-SAT solver for program analysis constraints and is a strict generalisation 
-of propositional CDCL solvers. From Abstract Interpretation point of view, 
-ACDCL can be viewed as an abstract interpreter that uses decision and 
-learning to increase the precision of abstract transformers. In this paper, 
-we present a technique to generalize ACDCL solvers to reason about relational 
-properties of a program by embedding relational domains like octagon domain 
-inside the ACDCL solver.  Experimental evidence shows significantly less 
-number of decisions and learning iterations required by ACDCL solver to 
-prove programs with relational properties compared to bit-blasting and 
-applying propositional SAT solvers -- thereby emphasizing the need for 
-abstract reasoning using ACDCL. 
+The conflict driven clause learning algorithm can be seen as an 
+alternation between over-approximate deduction with boolean 
+constraint propagation, and under-approximate abduction, with 
+conflict analysis.  {\em Abstract Conflict Driven Clause Learning} 
+(ACDCL) is a novel program analysis that embeds an abstract domain 
+inside the Conflict Driven Clause Learning (CDCL) algorithm. From 
+decision procedure perspective, ACDCL is a SAT solver for program 
+analysis constraints and is a strict generalisation of propositional CDCL 
+solvers. From Abstract Interpretation point of view, ACDCL can be 
+viewed as an abstract interpreter that uses decision and learning to 
+increase the precision of abstract transformers.  In this paper, we 
+instantiate ACDCL with different relational and non-relational numerical 
+abstract domains and evaluate the performance of our program analyzer
+with program verifiers that uses propositional-level solvers.  Experimental 
+evidence on a set of \rmcmt{N} benchmarks shows significant drop in number 
+of decisions and backjumping iterations in addition to stronger 
+deductions and learned clause aided by the richer abstract domains.
 %
 \end{abstract}
-
 %===============================================================================
 \input{introduction}
 %===============================================================================
@@ -91,6 +98,10 @@ abstract reasoning using ACDCL.
 %===============================================================================
 
 %===============================================================================
+\input{domains}
+%===============================================================================
+
+%===============================================================================
 \input{deductions}
 %===============================================================================
 
@@ -109,7 +120,7 @@ abstract reasoning using ACDCL.
 %===============================================================================
 \input{conclusion}
 %===============================================================================
- 
+
 \bibliographystyle{splncs03}
 \bibliography{biblio.bib}
 
