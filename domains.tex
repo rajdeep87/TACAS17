@@ -20,21 +20,22 @@ Operators:
 Semantics of elements:
 
 \subsection{Conditions for Absract Domains}
-An important criterion to support clause learning in 
-partial assignments domain is that elements in the 
-domain must have complementation property.  Most 
-numerical abstract domain does not support 
-complementation operator.  Similar to the interval 
-domain, octagons does not have complementation 
-property, but the decomposition of octagons into 
-half spaces are complementable. 
+One of the requirements for a clause learning SAT solver 
+is that each element of the partial assignments domain 
+needs to have a decomposition into precisely complementable 
+elements.  This property of the underlying domain helps 
+guiding the search away from the conflicting region of the search 
+space.
 
+Thus, clause learning SAT solvers requires a weak complementation property
+of the abstraction.  However, numerical abstract domain,  such as 
+intervals and octagons are intersections of complementable half-spaces. 
 APRON library is specialized for the abstract interpretation 
 framework which does not require complementation 
-operator.  So, we implement our own template-based 
+operator.  To this end, we implement our own template-based 
 octagon domain which supports complementation operator.  
 
-The octagon in example can be written as a conjunction of:
+For example, the octagon in example can be written as a conjunction of:
 \[(x>=-2) \land (x<=1) \land (y>=-1) \land (y<=2) \land (x+y<=2) \land (x-y<=1) \land (y-x<=3) \land (-x-y<=2)\] 
 
 The complementation of the above octagon can be written as disjunction of:

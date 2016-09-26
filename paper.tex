@@ -33,7 +33,7 @@
 
 \title{Lifting CDCL to Numerical Domains}
 
-\author{Rajdeep Mukherjee Peter Schrammel   Daniel Kroening}
+\author{Rajdeep Mukherjee\inst{1} Peter Schrammel   Daniel Kroening}
 
 \institute{University of Oxford, UK \and University of Sussex, UK \\
 \email{\{rajdeep.mukherjee,kroening\}@cs.ox.ac.uk},
@@ -54,22 +54,22 @@ Daniel Kroening\inst{1}}
 \begin{abstract}
 %===============================================================================
 %
-The conflict driven clause learning algorithm can be seen as an 
+The Conflict Driven Clause Learning (CDCL) algorithm can be seen as an 
 alternation between over-approximate deduction with boolean 
 constraint propagation, and under-approximate abduction, with 
 conflict analysis.  {\em Abstract Conflict Driven Clause Learning} 
 (ACDCL) is a novel program analysis that embeds an abstract domain 
-inside the Conflict Driven Clause Learning (CDCL) algorithm. From 
-decision procedure perspective, ACDCL is a SAT solver for program 
-analysis constraints and is a strict generalisation of propositional CDCL 
-solvers. From Abstract Interpretation point of view, ACDCL can be 
-viewed as an abstract interpreter that uses decision and learning to 
-increase the precision of abstract transformers.  In this paper, we 
-instantiate ACDCL with different relational and non-relational numerical 
-abstract domains and evaluate the performance of our program analyzer
-with program verifiers that uses propositional-level solvers.  Experimental 
-evidence on a set of \rmcmt{N} benchmarks shows significant drop in number 
-of decisions and backjumping iterations in addition to stronger 
+inside the CDCL algorithm. From decision procedure perspective, 
+ACDCL is a SAT solver for program analysis constraints and is a 
+strict generalisation of propositional CDCL solvers. From Abstract 
+Interpretation point of view, ACDCL can be viewed as an abstract 
+interpreter that uses decision and learning to increase the precision 
+of abstract transformers.  In this paper, we instantiate ACDCL with 
+a relational and a non-relational numerical abstract domain and 
+evaluate the performance of our analyzer with program verifiers that 
+uses propositional-level solvers.  Experimental evidence on a set of 
+\rmcmt{N} benchmarks \rmcmt{drawn from X} shows significant reduction 
+in the number of decisions and backjumping iterations along with stronger 
 deductions and learned clause aided by the richer abstract domains.
 %
 \end{abstract}
