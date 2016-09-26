@@ -1,4 +1,6 @@
 \section{Abstract Domains}
+\subsection{Program Models}
+
 The commonly used library for numerical abstract domains  
 is the APRON C library~\cite{apron}.  This library is 
 used for the static analysis of the numerical variables 
@@ -10,11 +12,59 @@ to compute invariants over numerical variables in the
 program~\cite{se2011}. 
 
 \subsection{Interval Abstract Domain}
-Domain:
-Operators:
-Semantics of elements:
+The {\em Interval} abstract domain is a lattice 
+$ItvDom = (ItvElm, \sle_{I}, \join_{I}, \meet_{I})$, where
+$ItvElm: (Var \rightarrow Itv) \cup \{\bot\}$, and $Itv$ is 
+the set of intervals of type $[l,u]$ over numeric data 
+type with $l \leq u$. The least element is $\bot$ and the 
+greatest element is $\top$ which maps all variables to their
+minimum ($min$) and maximum ($max$) values.  An interval 
+$\langle x, [min, v] \rangle$ is written as $x \leq v$.  The 
+partial order $\sle_{I}$ over elements in the set $Itv$ is 
+given by $I_1 \sle_{I} I_2$ if $I_2$ contains $I_1$.
+A join $(\join_{I})$ of two intervals $\langle x_1 \rightarrow [l_1, u_1], 
+x_1 \rightarrow [l_2, u_2] \rangle$ is an interval 
+$\langle x_1 \rightarrow [min(l_1, l_2), max(u_1, u_2)]$.
+A meet $(\meet_{I})$ of two intervals $\langle x_1 \rightarrow [l_1, u_1], 
+x_1 \rightarrow [l_2, u_2] \rangle$ is an interval 
+$\langle x_1 \rightarrow [max(l_1, l_2), min(u_1, u_2)] \rangle$.
+The galois connection between the concrete environment and intervals is 
+given as follows.
+\[\alpha(x) = \{[inf(x), sup(x)] | x \in Var\} \qquad   \alpha(\emptyset) = \bot \]
+\[\gamma[p,q] = \{c \in \mathbb{Z} | p \leq c \leq q\} \qquad \gamma(\bot) = \emptyset \]
+For a program with $N$ variables, there are a total of 
+$2*N$ intervals. The intervals restrict the set of values 
+taken by program variables at each program point, starting 
+from $[-\infty, \infty]$.   
 
 \subsection{Octagon Abstract Domain}
+The {\em Octagon} abstract domain is a lattice 
+$OctDom = (OctElm, \sle_{O}, \join_{O}, \meet_{O})$, where
+$OctElm: (Var \times Var \rightarrow (\mathbb{R} \cup \{\infty\})) \cup \bot$. 
+The least element is $\bot$ that contains all unsatisfiable 
+set of inequalities and the greatest element is $\top$ which 
+maps the bounds of all octagonal inequalities to $\infty$. 
+The partial order $\sle_{O}$ over elements in the set $OctElm$ is 
+given by $O_1 \sle_{O} O_2$ iff the bounds of each inequalities in $0_1$ 
+is included (by $\leq$ order) in the bounds of corresponding inequalities 
+in $O_2$, that is, the octagons are ordered by the inclusion relations.
+
+The join $(\join_{O})$ of two octagons, $\langle (v_i \times v_j \rightarrow N_1),
+(v_i \times v_j \rightarrow N_2) \rangle$, is not necessarily an octagon 
+and is computed by taking piece-wise maximum of bounds of corresponding 
+octagonal inequalities, $\langle (v_i \times v_j \rightarrow max(N_1, N_2) \rangle$.
+However, the meet $(\meet_{O})$ of two octagons, $\langle (v_i \times v_j \rightarrow N_1),
+(v_i \times v_j \rightarrow N_2) \rangle$, is always an octagon and is 
+computed by taking piece-wise minimum of bounds of corresponding 
+octagonal inequalities, $\langle (v_i \times v_j \rightarrow min(N_1, N_2)$.
+
+For building program analyzers using octagon domains, the domain also 
+supports few operators like {\em widening ($\nabla$)} and {\em closure ($*$)}.
+The closure operator is often used to reduce the degree of over-approximation 
+resulting from the join operation. Closure always produces unique octagonal 
+inequalities, but it is very expensive to compute because of cubic complexity 
+in the number of program variables.   
+The octagon domain is a relational numberic abstract domain that  
 Domain:
 Operators:
 Semantics of elements:
@@ -23,9 +73,9 @@ Semantics of elements:
 One of the requirements for a clause learning SAT solver 
 is that each element of the partial assignments domain 
 needs to have a decomposition into precisely complementable 
-elements.  This property of the underlying domain helps 
-guiding the search away from the conflicting region of the search 
-space.
+elements.  This property of the underlying domain helps to 
+guide the search away from the conflicting region of the 
+search space.
 
 Thus, clause learning SAT solvers requires a weak complementation property
 of the abstraction.  However, numerical abstract domain,  such as 
