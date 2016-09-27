@@ -1,6 +1,21 @@
 \section{Abstract Domains}
-\subsection{Program Models}
-
+\textbf{Programs:}
+%
+A {\em program} $\mathcal{P}$ is formally defined as follows.
+\[
+\begin{array}[t]{@{}lll}
+\mathcal{P} & {:}{:}{=} & \mathit{Procedure} \\
+\mathit{Procedure} & {:}{:}{=} & \mathit{Statement} \mid \mathit{Procedure} \\
+\mathit{Statement} & {:}{:}{=} & CStatement \mid \mathit{function(Var_1,\dots,Var_n)} \\
+\mathit{CStatement} & {:}{:}{=} & x {:}{=} exp \mid \mathit{ITE}(b, s_1,s_2) \mid \mathit{s_1;s_2} \mid loop\{s\} \\
+\end{array}
+\]
+Consider sets of expressions $Exp$ and Boolean expressions $BExp$
+over variables $Var$ of $\mathcal{P}$.  The variables in $Var$ 
+can take numeric values in $Val$.  A procedure is denoted as 
+$\mathit{function(Var_1,\dots,Var_n)}$.  A $\mathit{CStatement}$ 
+is an assignment, conditional, sequential concatenation or a loop.
+\rmcmt{post}
 \subsection{Interval Abstract Domain}
 The {\em Interval} abstract domain is a lattice 
 $ItvDom = (ItvElm, \sle_{I}, \join_{I}, \meet_{I})$, where
