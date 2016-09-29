@@ -8,6 +8,7 @@
 \caption{A control flow graph for P, P' and abstract conflict graph (ACFG) \label{fig:filter}}
 \end{figure}
 
+\Omit {
 \lstdefinestyle{mystyle}{
     numbers=left,                    
     numbersep=5pt,                  
@@ -16,6 +17,7 @@
     language=C
 }
 \lstset{style=mystyle}
+}
 Let us consider a simple safe program $P$ as shown in Figure~\ref{fig:filter}A.
 Astr{\'e}e fails to verify the safety using interval and trace-partition domain
 due to control-flow join at location $n5$.  Astr{\'e}e requires external hints, provided by 

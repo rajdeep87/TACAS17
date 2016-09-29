@@ -2,6 +2,7 @@
 
 \usepackage{import}
 \usepackage{times}
+\usepackage{array}
 \usepackage{graphicx,wrapfig,lipsum}
 \usepackage{cite}
 \usepackage{amsfonts}
@@ -26,6 +27,7 @@
 \newcommand{\tool}[1]{\textsc{#1}\xspace}
 \newcommand{\cbmcv}{\tool{cbmc 5.0}}
 \newcommand{\Omit}[1]{}
+\newcommand{\mydef}[1]{\begin{definition}#1\end{definition}}
 \newcommand{\rmcmt}[1]{{\color{magenta} {}}}
 
 \input{symbols}
@@ -85,6 +87,11 @@ deductions and learned clause aided by the richer abstract domains.
 %===============================================================================
 \input{contributions}
 %===============================================================================
+
+%===============================================================================
+\input{cdcl}
+%===============================================================================
+
 
 %===============================================================================
 \input{domains}
