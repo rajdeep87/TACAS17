@@ -1,6 +1,5 @@
 \section{Program and Abstract Domains}
-\subsection{Concrete Semantics}
-\textbf{Programs:}
+\section{Programs:}
 %
 A {\em program} $\mathcal{P}$ is formally defined as follows.
 \[
@@ -24,7 +23,8 @@ of control-flow edges that are labelled with the set
 $lbl \in Statement$.  For the purpose of illustration, we 
 assume that all the procedures are inlined.  
 
-\textbf{Concrete Domain:} The {\em concrete} domain is a lattice 
+\subsection{Concrete Semantics}
+The {\em concrete} domain is a lattice 
 of concrete environments, $Env = Var \rightarrow Val$, and is 
 defined by $CDom = (Env, \sle_{C}, \join_{C}, \meet_{C})$.
 A transformer, $post_{stmt}$, of concrete domain defines 
@@ -35,7 +35,7 @@ A state in concrete domain is a tuple $\langle l, \sigma \rangle$,
 where $l$ is a location and $\sigma \in Env$.  A trace is a sequence 
 of states $(l_0, \sigma_0), \ldots (l_n, \sigma_n)$ such that for all 
 $0 \leq i \leq n$, there exists a cfg egde $(l_{i}, l_{i+1})$ 
-if $\sigma_{i+1} \in post_{i}(\sigma_{i})$. \\
+if $\sigma_{i+1} \in post_{i}(\sigma_{i})$. 
  
 \subsection{Interval Abstract Domain}
 The {\em Interval} abstract domain is a lattice 
@@ -93,7 +93,12 @@ inequalities are of two types: binary or unary inequalities as shown below.
 An element in octagon domain, $OctElm$, is a conjunction of such 
 inequalities and is called an octagon.  Figure~\ref{octagon} shows an 
 example octagon and its associated inequalities.   
-
+%
+\begin{wrapfigure}{r}{5.5cm}
+\caption{Am example of Octagon}\label{octagon}
+\scalebox{.55}{\import{figures/}{octagons.pspdftex}}
+\end{wrapfigure} 
+%
 For building program analyzers using octagon domains, the domain also 
 provides few operators like {\em widening ($\nabla$)} and {\em closure ($*$)}.  
 The widening operator is used to accelerate convergence for loops in the program
@@ -108,8 +113,7 @@ The abstract transformer, $apost_{stmt}$, captures the effect of different progr
 statements in the abstract domain. The transformer is precise for octagonal 
 assignments $(x:=y+1)$ but imprecise for non-octagonal assignments $(x:=y+z)$, 
 as shown below.
-\[apost_{x:=y+1}(a) = b = \langle x-y \leq 1, y-x \leq 1 \rangle \]  
-\[apost_{x:=y+z}(b) = \langle \top \rangle \]  
+\[apost_{x:=y+1}(a) = b = \langle x-y \leq 1, y-x \leq 1 \rangle \qquad apost_{x:=y+z}(b) = \langle \top \rangle \]  
 
 \subsection{Properties of Domain Elements for Decision and Learning}
 One of the requirements for a clause learning SAT solver 
@@ -136,16 +140,8 @@ APRON library is specialized for the abstract interpretation
 framework which does not require complementation 
 operator.  To this end, we implement our own template-based 
 octagon domain which supports complementation operator.  
-
-\begin{figure}[tb]
-\scalebox{.55}{\import{figures/}{octagons.pspdftex}}
-\caption{Electronic Design Automation Flow 
-\label{fig:eda-flow}}
-\end{figure}
-
-For example, the octagon in example can be written as a conjunction of:
+For example, the octagon in Figure~\ref{octagon} can be written as a conjunction of:
 \[(x>=-2) \land (x<=1) \land (y>=-1) \land (y<=2) \land (x+y<=2) \land (x-y<=1) \land (y-x<=3) \land (-x-y<=2)\] 
-
 The complementation of the above octagon can be written as disjunction of:
 \[(x<-2) \lor (x>1) \lor (y<-1) \lor (y>2) \lor (x+y>2) \lor (x-y>1) \lor (y-x>3) \lor (-x-y>2)\]
 
