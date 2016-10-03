@@ -1,4 +1,12 @@
-\section{Propagation Strategy}
+\section{Deduction}
+\begin{definition}{(Abstract Deduction Transformer)} An abstract deduction
+transformer, $\widehat{ded_{\varphi}}$ for a formula $\varphi$ over an abstract 
+domain $A$ is a sound approximation of a concrete model transformer
+$ded_{\varphi}$ given by $\widehat{ded_{\varphi}} : A \rightarrow A$, such that 
+$\forall a \in A: \widehat{ded_{\varphi}}(a) \in \{\top, \bot, m\}$, where 
+$m \in A$ is a meet irreducible.   
+\end{definition}
+
 For a program with $N$ variables, let $L$ be the total number of 
 meet irreducibles returned by a domain $D$.  For $D$ = {\em Interval}, the 
 maximum value of $L$ is $2*N$, whereas the maximum value of $L$ is 
@@ -52,6 +60,8 @@ C &\iff& ((x' > 1) \land (-x'-y < -2) \land \\
 \label{swssa}
 \end{figure}
 %
+\subsection{Algorithm for Deduction}
+
 \subsection{Forward Iteration Strategy}
 For forward iteration on Figure~\ref{swssa}, we need atleast 
 one decision to deduce BOTTOM and prove safety. The deduction 
