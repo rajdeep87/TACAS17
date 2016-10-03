@@ -76,7 +76,51 @@ C &\iff& ((x' > 1) \land (-x'-y < -2) \land \\
 \label{swssa}
 \end{figure}
 %
-\subsection{Algorithm for Deduction}
+\subsection{Iteration Strategy For Abstract Deduction Transformer}
+\begin{algorithm2e}[t]
+\DontPrintSemicolon
+\SetKwFunction{deduce}{deduce}
+\SetKwFunction{print}{print}
+\SetKwFunction{return}{return}
+\SetKwFunction{continue}{continue}
+\SetKwFunction{assign}{assign}
+\SetKwData{safe}{safe}
+\SetKwData{unsafe}{unsafe}
+\SetKwData{unknown}{unknown}
+\SetKwData{true}{true}
+\SetKwInOut{Input}{input}
+\SetKwInOut{Output}{output}
+\SetKw{KwNot}{not}
+\begin{small}
+\Input{Program $\mathcal{P}$, trail $\mathcal{T}$ and assertion $A$}
+\Output{The status (\safe or \unknown)}
+\assign worklist = initialize\_worklist() \;
+\While{$!worklist.empty()$} 
+{
+  \assign $\langle live\_vars, statement \rangle$ = worklist.pop() \;
+  \assign $p_{asgn}$ = $\bigwedge\{\mathcal{T}\}$ \; 
+  \assign $\mathit{meet\_irrd}$ = domain(statement, live\_vars, $p_{asgn}$)\;
+  // add deduction to trail \;
+  $\mathcal{T} = \mathcal{T} \join \mathit{meet\_irrd}$ \; 
+  \assign $\widetilde{p_{asgn}}$ = $\bigwedge\{\mathcal{T}\}$ \; 
+
+  // check if the domain deduce BOTTOM \;
+  \uIf{$\widetilde{p_{asgn}} == \bot$} {
+    // empty the worklist \;
+    worklist.delete() \;
+    \return \safe \;
+  }
+  \uElse
+  {
+    \assign new\_vars = $\widetilde{p_{asgn}}.get\_variables()$ \;
+    worklist.update(new\_vars, statement, A) \; 
+  }
+}
+\return \unknown \;
+\end{small}
+\caption{Worklist-based Iteration Strategy\label{Alg:iteration}}
+\end{algorithm2e}
+
 
 \subsection{Forward Iteration Strategy}
 For forward iteration on Figure~\ref{swssa}, we need atleast 
