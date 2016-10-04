@@ -82,11 +82,37 @@ C &\iff& ((x' > 1) \land (-x'-y < -2) \land \\
 \label{swssa}
 \end{figure}
 %
-\subsection{Iteration Strategy For Abstract Deduction Transformer}
-Algorithm~\label{Alg:iteration} presents the modelSearch procedure. 
-our deduction high-level sketch for the abstract deduction transformer.
-%The inputs are Input{Set of $\widehat{ded_{\varphi}}$ for $\varphi$ from Program $\mathcal{P}$, trail $\mathcal{T}$ and assertion $A$}
-$statement \in S$, $statement$ is a meet irreducible deduction transformer.
+\subsection{Abstract Model Search}
+Algorithm~\ref{Alg:ms} presents the abstract model search procedure. 
+In propositional case, a model search involves two steps -- 
+{\em deductions} using unit rule refines current partial assignments 
+and {\em decisions} to heuristically guess a value for an unassigned 
+literal.  A unit rule overapproximates a model transformer and deduction 
+computes a greatest fixed point over the partial assignments
+domain~\cite{dhk2013-popl}.  Similarly, an abstract model search computes
+a greatest fixed point over meet irreducible deduction transformer in $S$.  
+
+
+A {\em worklist} is initialized following a heuristics choice for iteration 
+strategies. A {\em forward} iteration strategy initializes the worklist with 
+transformers that has constants in the right-hand side. Whereas, a {\em backward} 
+iteration strategy starts with a set of assertions. On the other hand, a 
+{\em chaotic} iteration strategy initializes the worklist with set of all 
+transformers.  For every meet irreducible deduction transformer $s \in S$ 
+passed to the abstract domain, if the domain infers a new meet irreducible 
+$\mathit{meet\_irrd}$, it is added to $\mathcal{T}$.  Additionally, the reason 
+trail $\mathcal{R}$ is updated with the transformer $s$ as the reason for inferring
+$\mathit{meet\_irrd}$. If a conflict is deduced, that is, $\mathit{meet\_irrd} = \bot$ 
+is inferred by the domain, the algorithm terminates with UNSAT.  However,
+when a fixed-point is reached, the abstract value $v$ is checked for set of
+models.  This is done by checking whether the set of assignments in $v$ is 
+$\gamma$-complete~\cite{gamma}.  If $v$ is $\gamma$-complete, the abstract model 
+search terminates with SAT.  Otherwise, a decision is made by calling a 
+procedure $decide(v)$ which returns a meet irreducible $d$.  If $d$ refines the 
+current abstract value $v$, then the corresponding propagation and reason trail,
+$\mathcal{T}$ and $\mathcal{R}$, are updated. Else, the algorithm terminates
+with UNKNOWN.      
+%    
 \begin{algorithm2e}[t]
 \DontPrintSemicolon
 \SetKwFunction{deduce}{deduce}
@@ -94,9 +120,9 @@ $statement \in S$, $statement$ is a meet irreducible deduction transformer.
 \SetKwFunction{return}{return}
 \SetKwFunction{continue}{continue}
 \SetKwFunction{assign}{assign}
-\SetKwData{safe}{safe}
-\SetKwData{unsafe}{unsafe}
-\SetKwData{unknown}{unknown}
+\SetKwData{sat}{SAT}
+\SetKwData{unsat}{UNSAT}
+\SetKwData{unknown}{UNKNOWN}
 \SetKwData{true}{true}
 \SetKwInOut{Input}{input}
 \SetKwInOut{Output}{output}
@@ -105,7 +131,7 @@ $statement \in S$, $statement$ is a meet irreducible deduction transformer.
 \begin{small}
 \Input{Set $S$ of $\widehat{ded_{\varphi}}$ for $\varphi$ over Abstract domain $A$,
 abstract value $v$, propagation trail $\mathcal{T}$, reason trail $\mathcal{R}$}
-\Output{The status (\safe or \unsafe or \unknown)}
+\Output{The status (\sat or \unsat or \unknown)}
 worklist $\leftarrow$ initialize\_worklist($S$) \;
 \Loop{}
 {
@@ -119,7 +145,7 @@ worklist $\leftarrow$ initialize\_worklist($S$) \;
     $\mathcal{R}[\bot] \leftarrow s$ \;
     // empty the worklist \;
     worklist.delete() \;
-    \return \safe \;
+    \return \sat \;
   }
   \uElse
   {
@@ -132,8 +158,8 @@ worklist $\leftarrow$ initialize\_worklist($S$) \;
   }
 }
 // check for counterexample\;
-\uIf{$v$ is gamma\_complete} {
-  \return \unsafe;
+\uIf{$v$ is $\gamma$-complete} {
+  \return \unsat;
 }
 $d \leftarrow decide(v)$ \;
 \uIf{$v \sqsubseteq d$} {
@@ -145,10 +171,9 @@ $v \leftarrow v \meet d$ \;
 $\mathcal{R}[|\mathcal{T}|] \leftarrow nil$ \;
 }
 \end{small}
-\caption{Abstract Model Search Procedure\label{Alg:model_search}}
+\caption{Abstract Model Search Procedure\label{Alg:ms}}
 \end{algorithm2e}
-
-
+%
 \subsection{Forward Iteration Strategy}
 For forward iteration on Figure~\ref{swssa}, we need atleast 
 one decision to deduce BOTTOM and prove safety. The deduction 
