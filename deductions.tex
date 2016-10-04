@@ -1,4 +1,10 @@
 \section{Deduction}
+In a typical abstract interpretation based galois-connection settings over 
+an over-approximate domain, every concrete elements have a unique over-approximate 
+representation in the abstract.  Likewise, every concrete transformer is
+over-approximated by a unique abstract transformer.  We now define a abstract 
+deduction transformer.  
+
 \begin{definition}{(Abstract Deduction Transformer)} An abstract deduction
 transformer, $\widehat{ded_{\varphi}}$ for a formula $\varphi$ over an abstract 
 domain $A$ is a sound approximation of a concrete model transformer
@@ -12,7 +18,7 @@ an interval abstract domain, $A = ItvDom$, and let $a = \langle y:[3, 5]
 \rangle \in ItvDom$, then $\widehat{ded_{\varphi}}(a) = a \meet \langle x:[2, 4]
 \rangle$.  An abstract deduction transformer is typically computed in the form 
 of strongest post-condition or a weakest pre-condition of a formula in the 
-abstract domain.    
+abstract domain.  
 
 A meet decomposition of the outcome of abstract deduction transformer 
 is obtained by taking a meet of the element $\langle y:[3, 5] \rangle, 
@@ -77,6 +83,10 @@ C &\iff& ((x' > 1) \land (-x'-y < -2) \land \\
 \end{figure}
 %
 \subsection{Iteration Strategy For Abstract Deduction Transformer}
+Algorithm~\label{Alg:iteration} presents the modelSearch procedure. 
+our deduction high-level sketch for the abstract deduction transformer.
+%The inputs are Input{Set of $\widehat{ded_{\varphi}}$ for $\varphi$ from Program $\mathcal{P}$, trail $\mathcal{T}$ and assertion $A$}
+$statement \in S$, $statement$ is a meet irreducible deduction transformer.
 \begin{algorithm2e}[t]
 \DontPrintSemicolon
 \SetKwFunction{deduce}{deduce}
@@ -90,35 +100,52 @@ C &\iff& ((x' > 1) \land (-x'-y < -2) \land \\
 \SetKwData{true}{true}
 \SetKwInOut{Input}{input}
 \SetKwInOut{Output}{output}
+\SetKwFor{Loop}{Loop}{}{}
 \SetKw{KwNot}{not}
 \begin{small}
-\Input{Program $\mathcal{P}$, trail $\mathcal{T}$ and assertion $A$}
-\Output{The status (\safe or \unknown)}
-\assign worklist = initialize\_worklist() \;
+\Input{Set $S$ of $\widehat{ded_{\varphi}}$ for $\varphi$ over Abstract domain $A$,
+abstract value $v$, propagation trail $\mathcal{T}$, reason trail $\mathcal{R}$}
+\Output{The status (\safe or \unsafe or \unknown)}
+worklist $\leftarrow$ initialize\_worklist($S$) \;
+\Loop{}
+{
+// Greatest fixed point \;
 \While{$!worklist.empty()$} 
 {
-  \assign $\langle live\_vars, statement \rangle$ = worklist.pop() \;
-  \assign $p_{asgn}$ = $\bigwedge\{\mathcal{T}\}$ \; 
-  \assign $\mathit{meet\_irrd}$ = domain(statement, live\_vars, $p_{asgn}$)\;
-  // add deduction to trail \;
-  $\mathcal{T} = \mathcal{T} \join \mathit{meet\_irrd}$ \; 
-  \assign $\widetilde{p_{asgn}}$ = $\bigwedge\{\mathcal{T}\}$ \; 
-
+  $\langle live\_vars, s \rangle \leftarrow$ worklist.pop() \;
+  $\mathit{meet\_irrd} \leftarrow$ domain(s, live\_vars, $v$)\;
   // check if the domain deduce BOTTOM \;
-  \uIf{$\widetilde{p_{asgn}} == \bot$} {
+  \uIf{$meet\_irrd == \bot$} {
+    $\mathcal{R}[\bot] \leftarrow s$ \;
     // empty the worklist \;
     worklist.delete() \;
     \return \safe \;
   }
   \uElse
   {
-    \assign new\_vars = $\widetilde{p_{asgn}}.get\_variables()$ \;
-    worklist.update(new\_vars, statement, A) \; 
+    // add deduction to trail \;
+    $\mathcal{T} \leftarrow \mathcal{T} . \mathit{meet\_irrd}$ \; 
+    $v \leftarrow v \meet \mathit{meet\_irrd}$ \; 
+    $\mathcal{R}[|\mathcal{T}|] \leftarrow s$ \;
+    // update the worklist \;
+    worklist.update(v, s) \; 
   }
 }
+// check for counterexample\;
+\uIf{$v$ is gamma\_complete} {
+  \return \unsafe;
+}
+$d \leftarrow decide(v)$ \;
+\uIf{$v \sqsubseteq d$} {
 \return \unknown \;
+}
+// add decision to trail\;
+$\mathcal{T} \leftarrow \mathcal{T} . d$ \; 
+$v \leftarrow v \meet d$ \; 
+$\mathcal{R}[|\mathcal{T}|] \leftarrow nil$ \;
+}
 \end{small}
-\caption{Worklist-based Iteration Strategy\label{Alg:iteration}}
+\caption{Abstract Model Search Procedure\label{Alg:model_search}}
 \end{algorithm2e}
 
 
