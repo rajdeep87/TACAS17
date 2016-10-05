@@ -110,8 +110,7 @@ $\gamma$-complete~\cite{gamma}.  If $v$ is $\gamma$-complete, the abstract model
 search terminates with SAT.  Otherwise, a decision is made by calling a 
 procedure $decide(v)$ which returns a meet irreducible $d$.  If $d$ refines the 
 current abstract value $v$, then the corresponding propagation and reason trail,
-$\mathcal{T}$ and $\mathcal{R}$, are updated. Else, the algorithm terminates
-with UNKNOWN.      
+$\mathcal{T}$ and $\mathcal{R}$, are updated. Else, the model search procedure terminates with UNKNOWN.      
 %    
 \begin{algorithm2e}[t]
 \DontPrintSemicolon
@@ -174,63 +173,5 @@ $\mathcal{R}[|\mathcal{T}|] \leftarrow nil$ \;
 \caption{Abstract Model Search Procedure\label{Alg:ms}}
 \end{algorithm2e}
 %
-\subsection{Forward Iteration Strategy}
-For forward iteration on Figure~\ref{swssa}, we need atleast 
-one decision to deduce BOTTOM and prove safety. The deduction 
-happens from right to left in forward iteration strategy.
 
-The initialization of live variable and subsequent update depends on the iteration strategy.
 
-\subsection{Backward Iteration Strategy}
-
-\subsection{Chaotic Iteration Strategy}  
-The set of octagonal equilities corresponding to Figurei~\ref{sw-ssa}
-is shown below. For chaotic, no decision is required to deduce BOTTOM.
-
-\Omit {
-Let us consider an example. 
-\begin{figure}[t]
-\scriptsize
-\begin{tabular}{l|l|l}
-\hline
-C program & SSA & Octagons \\
-\hline
-\begin{lstlisting}[mathescape=true,language=C]
-int id(int a) {
-  return a;
-}
-int main() {
- int x,y,z;
- _Bool c;
- if (c)
-   x = -1;
- else
-   x = 2;
- int k = id(x);
- z = x * k;
- assert((z!=-2));
-}
-\end{lstlisting}
-&
-\begin{lstlisting}[mathescape=true,language=C]
-cond == (x == y)
-guard1 == (cond19 && guard0)
-x' == 1u + x
-x' == 1u + y || !guard1
-guard0 == TRUE
-\end{lstlisting}
-&
-\begin{lstlisting}[mathescape=true,language=C]
-
-\end{lstlisting}
-\\
-\hline
-\end{tabular}
-\caption{C Program, corresponding SSA and Octagonal inequalities}
-\label{swssa}
-\end{figure}
-}
-
-With forward iteration strategy using octagon domian, the program 
-is proved without any decision. However, with the forward strategy
-using interval domain, we just required one decision to prove the program. 
