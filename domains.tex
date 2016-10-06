@@ -42,7 +42,7 @@ if $\sigma_{i+1} \in post_{i}(\sigma_{i})$.
 \begin{definition}{(Meet Irreducibles)} A meet irreducible is a minimum complementable 
 element that cannot be expressed in terms of the meet over a set of other 
 elements. Formally, a {\em meet irreducible} $M$ in a complete lattice 
-structure $A$ is an element $M \in L$ that has the following property.
+structure $A$ is an element $M \in A$ that has the following property.
 \[\forall M_1, M_2 \in A, M_1 \meet M2 = M \implies (M = M_1 \lor M = M_2), M \neq \top \]  
 \end{definition}
 
@@ -130,13 +130,19 @@ octagonal inequality increases every iteration, then $\nabla$ sets the bounds
 to $\infty$.  However, the closure operator is often used to reduce the degree 
 of over-approximation resulting from the join operation. Closure always produces 
 unique octagonal inequalities, but it is very expensive to compute because of 
-cubic complexity in the number of program variables.  
+cubic complexity in the number of program variables. An example of closure
+operation is shown below.
+\[((x-y \leq 4) \wedge (y-z \leq 5))^* \implies ((x-y \leq 4) \wedge (y-z \leq 5) \wedge (x-z \leq 9)) \]  
  
 The abstract transformer, $apost_{stmt}$, captures the effect of different program 
 statements in the abstract domain. The transformer is precise for octagonal 
 assignments $(x:=y+1)$ but imprecise for non-octagonal assignments $(x:=y+z)$, 
 as shown below.
 \[apost_{x:=y+1}(a) = b = \langle x-y \leq 1, y-x \leq 1 \rangle \qquad apost_{x:=y+z}(b) = \langle \top \rangle \]  
+
+%========================
+\input{literals-clauses}
+%========================
 
 \subsection{Properties of Domain Elements for Decision and Learning}
 One of the requirements for a clause learning SAT solver 
