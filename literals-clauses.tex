@@ -1,0 +1,84 @@
+\subsection{Literals and Clauses for Abstract CDCL}
+%
+\textit{Literal:} A Literal is a meet irreducible which specify that 
+for certain program variable, there is a certain bound. An example of 
+literal in interval domain is $x \in [0,5]$. An example of octagonal 
+literal is given by $((x-y \leq 0) \wedge (y-x \leq 0))$.
+
+Let I and J be two interval literals of the form $x \in [l, u]$ with $l$ 
+as lower bound and $u$ as upper bound. We say $I \leq J$ or {\em (I leq J)} 
+iff $(I.u \leq J.u \wedge I.l \geq J.l)$.  Whereas, {\em I disjoint J} iff 
+$(I.u < J.l \vee  I.l > J.u)$. 
+
+Similarly, let $O_1$ and $O_2$ be two octagonal literals of the form 
+$x-y \leq c$.  Then, $O_1 \leq O_2$ {\em ($O_1$ leq $O_2$)} iff 
+$O_1.c \leq O_2.c$.  Two octagons are disjoint ({\em $O_1$ disjoint $O_2$}) 
+iff $O_1:= (x-y < c)$ and $O_2:= (x-y > c)$.  
+
+\textit{Clause:} A clause is a disjunction of one or more meet irreducibles. 
+An example clause is given by $(x \geq 0 \vee y \geq 5 \vee y+z \leq 10)$.
+
+Let $x$, $x'$ be the literals in clause $C$ and current partial assignment 
+$A$ respectively.  We call a literal $x \in C$ to be {\em satisfiable} with 
+respect to the literal $x' \in A$ iff $(x \leq x')$.  We call $x$ to be  
+{\em unsatisfiable} with respect to $x'$ iff $!(x \leq x') \wedge$ $!$(x disjoint $x'$).
+A literal is said to be {\em contradicting} iff $!(x \leq x') \wedge$ (x disjoint $x'$).
+
+Similarly, a clause may be catagorized into four classes -- satisfiable,
+unsatisfiable, conflicting, unit. \\ 
+\textit{Satisfiable clause:}
+A clause $C$ is said to be {\em satisfiable} with respect to a current partial 
+assignment $A$ if at least one literal in $C$ is satisfiable. For example, 
+consider a clause $C=(x<4 \vee y>10)$ and let the current partial assignment 
+be $A: x \in [0,3]$. Then $C$ is a satisfiable clause, where $x<4$ is a
+satisfiable literal. 
+
+\textit{Conflicting clause:}
+If all literals in a clause are contradicting, then the clause is said to
+be {\em conflicting}. For example, consider a clause $C=(x<4 \vee y>10 \vee z<15)$. 
+Let the current partial assignment be $A: x \in [5,13]$ and $y \in [-2,9]$ and $z \in
+[17,32]$, then $C$ is a conflicting clause where all literals in $C$ are
+contradicting with respect to $A$. 
+
+\textit{Unsatisfiable clause:}
+A clause $C$ is said to be {\em unsatisfiable} with respect to a current partial 
+assignment $A$ if there exists no satisfiable literal in $C$ or some literals in 
+$C$ are unsatisfiable and the rest are contradicting. For example, consider a 
+clause $C=(x<4 \vee y>10 \vee z<15)$.  Let the current partial assignment be 
+$A: x \in [3,10]$, $y \in [8,10]$ and $z \in [12,20]$, then $C$ is a unsatisfiable 
+clause, where $x<4$ and $z<15$ are unsatisfiable literal and $y>10$ is
+contradicting literal. 
+
+\textit{Unit clause:}
+Clause $C$ is unit if all literals but one is contradicting in $C$. 
+For example, consider a clause $C=(x<4 \vee y>10 \vee z<15)$. Let the 
+current partial assignment be $A: x \in [5,13]$ and $y \in [-2,9]$ and $z \in
+[10,12]$, then $C$ is a unit clause where the unit literal is $z$. 
+
+\Omit {
+\textit{Boolean constraint propagation (BCP):} BCP is the repeated 
+application of unit rule. This corresponds to computing the greatest fixed point.
+
+\textit{Characteristics of Conflict clause}
+\begin{enumerate}
+\item A conflict clause must include asserting cuts. An asserting cut is a cut
+that contain exactly one node at the current decision level. Assertion cuts yields 
+clauses that can be used to derive new information after backtracking.
+
+\item A conflict clause must be UNIT after backtracking. 
+
+%\item There can be multiple cuts and hence multiple UIPs. In other words, there
+%can be multiple incomparable reasons for a conflict. But conflict analysis
+%procedure choses one that is asserting. 
+
+%\item The conflict clause should be made false by the current partial assignment
+%and thus exclude an assignment leading to conflict. 
+\end{enumerate}
+
+\textit{Backjumping:}
+The backjumping level is defined by the literal of the conflict clause assigned
+at the level that is the closest to the conflict one. In other words, the
+backjumping level is the level closest to the root (decision level 0)  where the
+conflict clause is still unit. If a conflict clause is "globally"  unit, then
+the backjumping level is the root of the search tree.
+}
