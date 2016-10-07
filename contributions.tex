@@ -1,13 +1,27 @@
 \section{Contributions}
-The goal of this paper is to instantiate ACDCL with 
-different relational and non-relational numerical abstract 
-domains and evaluate the performance of our program analyzer 
-with program verifiers that uses propositional-level solvers. 
-
-Experimental evaluation on different benchmarks shows that 
-ACDCL is able to suitably exploit the expressivity of richer 
-abstract domains as well as precision of CDCL architecture. 
-This is attributed to the intelligent decision heuristics 
-which exploits the high-level structure of the problem 
-combined with stronger deductions and clause learning 
-mechanism aided by the richer abstract domains.
+In this paper, we have the following contributions.
+\begin{enumerate}
+\item We present a procedure for lifting CDCL algorithm to 
+relational and non-relational numerical abstract domain.  
+To this end, we instatiate model search and conflict analysis 
+phases of CDCL algorithm over intervals and octagon abstract 
+domains.  We implement our own template-based numerical 
+domains that supports complementation property, essential for 
+such lifting.  To the best of our knowledge, this is the first 
+instantiation of CDCL algorithm with relational abstract domains. 
+ 
+\item We present a new program analysis tool, {\em Titlis}, that 
+is a strict generalisation of propositional CDCL algorithm.  From 
+abstract interpretation perspective, {\em Titlis} uses decision 
+and learning to improve the precision of abstract transformers.  
+Thus, {\em Titlis} combines the efficiency of abstract domains 
+while being path-sensitive and bit-precise at the same time.   
+   
+\item  Experiments on several numerical and control-intensive benchmarks 
+shows that the proposed generalization of CDCL algorithm is able to 
+suitably exploit the expressivity of richer abstract domains as well 
+as precision of CDCL architecture.  This is attributed to the 
+intelligent decision heuristics which exploits the high-level 
+structure of the problem combined with stronger deductions and 
+clause learning mechanism aided by the richer abstract domains.
+\end{enumerate}

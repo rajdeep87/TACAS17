@@ -1,5 +1,28 @@
 \section{Decision}
-A decision $dec$ is a meet irreducible that is added to the trail $\mathcal{T}$ 
-in order to refine the current partial assignment.    
+A decision $\mathcal{D}$ is a meet irreducible that refines the 
+current partial assignment.  A decision can be of the form 
+$\langle x \preceq c \rangle$ or $\langle x \succeq c \rangle$, 
+where $c$ is the bound and $x$ is a program variable.  A 
+decision $\mathcal{D}$ must always be consistent with respect 
+to the trail $\mathcal{T}$, that is, it must not contradict with 
+the elements in the trail.  Each variable in propositional CDCL 
+is assigned at most once at a particular decision level.  However, 
+a variable can be assigned several times in our lifting of CDCL to 
+numerical domains, each time with increasingly precise bounds.  
 
-Berkmin, longest-range, random, ordered, octagons 
+Let $\mathcal{V}$ be a set of all singletons and non-singletons 
+variables.  A singleton variable is one that has been assigned a 
+singleton value, for example, $\langle x:[1,1] \rangle$.  Otherwise, 
+the variable is non-singleton.  Given a set of variables $\mathcal{V}$, 
+a decision phase heuristically chooses a non-singleton branching 
+variable $v \in \mathcal{V}$, a bound $c$, and the polarity ($\succeq$ or 
+$\preceq$).  
+
+We implemented several decision heuristics namely, {\em Berkmin}~\cite{}, 
+{\em longest-range}, {\em ordered}, {\em random}.  The {\em ordered} 
+decision heuristics creates an ordering among non-singleton variables, 
+making decision on conditional variables (variables that appear in 
+conditional branches) first before choosing numerical variables.  Thus, 
+this heuristics is path-sensitive which gives significant speed-up for 
+control-intensive benchmarks. 
+     
