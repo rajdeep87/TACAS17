@@ -1,27 +1,26 @@
 \section{Contributions}
-In this paper, we have the following contributions.
+In this paper, we make the following contributions.
 \begin{enumerate}
-\item We present a procedure for lifting CDCL algorithm to 
-relational and non-relational numerical abstract domain.  
-To this end, we instatiate model search and conflict analysis 
-phases of CDCL algorithm over intervals and octagon abstract 
-domains.  We implement our own template-based numerical 
-domains that supports complementation property, essential for 
-such lifting.  To the best of our knowledge, this is the first 
-instantiation of CDCL algorithm with relational abstract domains. 
+\item We present a novel program analysis technique based on 
+abstract conflict driven clause learning algorithm~\cite{dhk2013-popl}.
+To this end, we present a procedure for lifting CDCL algorithm to 
+richer lattice structure such as {\em interval} and {\em octagon} 
+abstract domains.  
+
+\item To enable lifting of CDCL algorithm, we implement 
+our own template-based numerical abstract domains that 
+supports complementation property.  Our proposed technique 
+is embodied in our tool called, {\em Titlis}.  To the best 
+of our knowledge, this is the first instantiation of CDCL 
+algorithm with relational abstract domains. 
  
-\item We present a new program analysis tool, {\em Titlis}, that 
-is a strict generalisation of propositional CDCL algorithm.  From 
-abstract interpretation perspective, {\em Titlis} uses decision 
-and learning to improve the precision of abstract transformers.  
-Thus, {\em Titlis} combines the efficiency of abstract domains 
-while being path-sensitive and bit-precise at the same time.   
-   
-\item  Experiments on several numerical and control-intensive benchmarks 
-shows that the proposed generalization of CDCL algorithm is able to 
-suitably exploit the expressivity of richer abstract domains as well 
-as precision of CDCL architecture.  This is attributed to the 
-intelligent decision heuristics which exploits the high-level 
-structure of the problem combined with stronger deductions and 
-clause learning mechanism aided by the richer abstract domains.
+\item  Experiments on a set of benchmarks drawn from bit-vector 
+regression suite in sv-comp, numerical programs and few 
+control-intensive benchmarks from hardware domain shows that 
+the strict generalization of CDCL algorithm effectively combines 
+the efficiency of abstract domains while being path-sensitive and 
+bit-precise at the same time.  This is attributed to the intelligent 
+decision heuristics which exploits the high-level structure of the 
+problem combined with stronger deductions and clause learning 
+mechanism aided by the richer abstract domains.
 \end{enumerate}
