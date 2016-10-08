@@ -166,9 +166,12 @@ $\mathit{meet\_irrd}$, it is added to $\mathcal{T}$.  Additionally, the reason
 trail $\mathcal{R}$ is updated with the transformer $s$ as the reason for inferring
 $\mathit{meet\_irrd}$. If a conflict is deduced, that is, $\mathit{meet\_irrd} = \bot$ 
 is inferred by the domain, the algorithm terminates with UNSAT.  However,
-when a fixed-point is reached, the abstract value $v$ is checked for set of
-models.  This is done by checking whether the set of assignments in $v$ is 
-$\gamma$-complete~\cite{gamma}.  If $v$ is $\gamma$-complete, the abstract model 
+when a fixed-point is reached, the abstract valuation $v$ is checked for set of
+models.  This is determined by checking whether the set of assignments in $v$ is 
+$\gamma$-complete~\cite{gamma}.  This can be achieved by checking if there is a 
+concrete solution $c$ such that the inequality $c(x) \subseteq \gamma \circ
+v(x)$ holds for every meet irreducible $x$.  If $v$ is $\gamma$-complete, that is, the 
+abstract valuation $v$ is abstractly satisfying, the abstract model 
 search terminates with SAT.  Otherwise, a decision is made by calling a 
 procedure $decide(v)$ which returns a meet irreducible $d$.  If $d$ refines the 
 current abstract value $v$, then the corresponding propagation and reason trail,

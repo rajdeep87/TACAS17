@@ -55,30 +55,9 @@ For example, consider a clause $C=(x<4 \vee y>10 \vee z<15)$. Let the
 current partial assignment be $A: x \in [5,13]$ and $y \in [-2,9]$ and $z \in
 [10,12]$, then $C$ is a unit clause where the unit literal is $z$. 
 
+
 \Omit {
 \textit{Boolean constraint propagation (BCP):} BCP is the repeated 
 application of unit rule. This corresponds to computing the greatest fixed point.
 
-\textit{Characteristics of Conflict clause}
-\begin{enumerate}
-\item A conflict clause must include asserting cuts. An asserting cut is a cut
-that contain exactly one node at the current decision level. Assertion cuts yields 
-clauses that can be used to derive new information after backtracking.
-
-\item A conflict clause must be UNIT after backtracking. 
-
-%\item There can be multiple cuts and hence multiple UIPs. In other words, there
-%can be multiple incomparable reasons for a conflict. But conflict analysis
-%procedure choses one that is asserting. 
-
-%\item The conflict clause should be made false by the current partial assignment
-%and thus exclude an assignment leading to conflict. 
-\end{enumerate}
-
-\textit{Backjumping:}
-The backjumping level is defined by the literal of the conflict clause assigned
-at the level that is the closest to the conflict one. In other words, the
-backjumping level is the level closest to the root (decision level 0)  where the
-conflict clause is still unit. If a conflict clause is "globally"  unit, then
-the backjumping level is the root of the search tree.
 }

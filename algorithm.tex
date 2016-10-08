@@ -1,4 +1,5 @@
-\section{Lifting CDCL to Programs}
+\section{Abstract Conflict Driven Clause Learning}
+\rmcmt{safety as satisfiability}
 %
 \begin{algorithm2e}[t]
 \DontPrintSemicolon
@@ -71,6 +72,7 @@
 \caption{Abstract Conflict Driven Clause Learning\label{Alg:acdcl}}
 \end{algorithm2e}
 %
+\Omit {
 Static program analysis based on abstract
 interpretation~\cite{DBLP:conf/emsoft/Cousot07} has been widely used to
 verify certain classes of properties for safety-critical systems.  In
@@ -86,18 +88,14 @@ range of intervals and learning generates program analysis constraints (not assu
 that preserve the error reachability.  Moreover, ACDCL implicitly 
 perform program and property driven trace partitioning to increase the precision
 of the analysis.  
-\Omit{
-We observe that the abstract domains necessary for 
-hardware property checking are -- booleans, constants, interval, equality 
-and octagons domains.
 }
-
 Algorithm~\ref{Alg:acdcl} presents an overview of the ACDCL algorithm.
-Given a program $\mathcal{P}$ with properties specified as $assert(c)$,
-ACDCL terminate with {\em safe} if there exist no counterexample trace violating the 
-assertion or {\em unsafe} otherwise. The procedure $deduce(P)$ is similar 
-to BCP step in SAT solvers where it computes least fix-point with 
-strongest post-condition using forward analysis. If the result of $deduce(P)$ 
+Given a \rmcmt{formula (F)} and an abstract valuation $v = \top$,  
+ACDCL returns {\em safe} if $F$ is unsatisfiable and P is safe. Else, 
+ACDCL returns a model that satisfies $F$ and P is {\em unsafe}.  The 
+procedure $deduce(P)$ is similar to BCP step in SAT solvers where 
+it computes least fix-point with strongest post-condition using 
+forward analysis. If the result of $deduce(P)$ 
 is BOTTOM ($\perp$), the algorithm terminates with {\em safe}. Else, the 
 {\em gamma completeness} check~\cite{sas01} is performed to determine if it is a 
 real counterexample. If the {\em gamma completeness} check is successful, then the 

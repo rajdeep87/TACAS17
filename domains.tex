@@ -140,6 +140,15 @@ assignments $(x:=y+1)$ but imprecise for non-octagonal assignments $(x:=y+z)$,
 as shown below.
 \[apost_{x:=y+1}(a) = b = \langle x-y \leq 1, y-x \leq 1 \rangle \qquad apost_{x:=y+z}(b) = \langle \top \rangle \]  
 
+\begin{definition}{(Abstract Valuation)} An {\em abstract valuation} is a
+mapping of variables to an element of abstract domain, for example 
+a mapping of variable $x$ to an interval environment is given by 
+$\langle x \mapsto [2,5] \rangle$ or a mapping of $\{x,y\}$ to octagon 
+environment is given by $\langle x-y \mapsto 0, y-x \mapsto 0 \rangle$.  
+An abstract valuation is {\em atomic} if each variable is mapped to a singleton 
+value or to $\bot$.  
+\end{definition}
+
 %========================
 \input{literals-clauses}
 %========================

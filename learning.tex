@@ -2,6 +2,28 @@
 Conflict graph for Intervals
 Conflict graph for Octagons
 
+\textit{Characteristics of Conflict clause}
+\begin{enumerate}
+\item A conflict clause must include asserting cuts. An asserting cut is a cut
+that contain exactly one node at the current decision level. Assertion cuts yields 
+clauses that can be used to derive new information after backtracking.
+
+\item A conflict clause must be UNIT after backtracking. 
+
+\item There can be multiple cuts and hence multiple UIPs. In other words, there
+can be multiple incomparable reasons for a conflict. But conflict analysis
+procedure choses one that is asserting. 
+
+\item The conflict clause should be made false by the current partial assignment
+and thus exclude an assignment leading to conflict. 
+\end{enumerate}
+
+\textit{Backjumping:}
+The backjumping level is defined by the literal of the conflict clause assigned
+at the level that is the closest to the conflict one. In other words, the
+backjumping level is the level closest to the root (decision level 0)  where the
+conflict clause is still unit. If a conflict clause is "globally"  unit, then
+the backjumping level is the root of the search tree.
 1.DPLL style -- chronological backtracking \\
 2. CDCL style -- non-chronological backtracking \\
   a. first-uip \\
