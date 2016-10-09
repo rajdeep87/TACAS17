@@ -189,9 +189,9 @@ APRON library is specialized for the abstract interpretation
 framework which does not require complementation property.  
 To this end, we implement our own template-based 
 interval, octagon and equality domains which supports 
-complementation operator.  For example, the octagon in 
-Figure~\ref{octagon} can be written as a conjunction of:
-\[(x>=-2) \land (x<=1) \land (y>=-1) \land (y<=2) \land (x+y<=2) \land (x-y<=1) \land (y-x<=3) \land (-x-y<=2)\] 
-The complementation of the above octagon can be written as disjunction of:
+complementation operator.  
+%For example, the octagon in Figure~\ref{octagon} can be written as a conjunction of:
+%\[(x>=-2) \land (x<=1) \land (y>=-1) \land (y<=2) \land (x+y<=2) \land (x-y<=1) \land (y-x<=3) \land (-x-y<=2)\] 
+For example, the complementation of the octagon in Figure~\ref{octagon} can be written as disjunction of:
 \[(x<-2) \lor (x>1) \lor (y<-1) \lor (y>2) \lor (x+y>2) \lor (x-y>1) \lor (y-x>3) \lor (-x-y>2)\]
 

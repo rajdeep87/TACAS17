@@ -47,8 +47,8 @@ program up to a finite bound.
 Similar to BMC, ACDCL searches for a counterexample by solving the formula shown below.
 For a set $N$ of program analysis constraints defined over a set 
 of constraint variables $Var = \{X_i| i \in N\}$, representing a program
-$\mathcal{P}$ and a concrete domain $\powerset{Env}$, the safety equation 
-is given as follows.  Here, $X_{init}, X_{Err}$ denote the initial valuation 
+$\mathcal{P}$ and a concrete domain $\powerset(Env)$, the static analysis equation 
+for safety of $\mathcal{P}$ is given as follows.  Here, $X_{init}, X_{Err}$ denote the initial valuation 
 and the \rmcmt{final valuation} of constraint variables.
 \[\varphi = X_{init} \subseteq Env \wedge \underset{p,q \in |\mathcal{P}|}
 {\bigwedge} \{ X_p \subseteq post_{(p,q)}(X_q) \} \wedge X_{err} \supset \emptyset \] 
