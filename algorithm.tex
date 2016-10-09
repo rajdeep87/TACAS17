@@ -1,5 +1,43 @@
 \section{Abstract Conflict Driven Clause Learning}
-\rmcmt{safety as satisfiability}
+In a typical abstract interpretation based galois-connection settings over 
+an over-approximate domain, every concrete elements have a unique over-approximate 
+representation in the abstract.  Likewise, every concrete transformer is
+over-approximated by a unique abstract transformer.  We now define a abstract 
+deduction transformer.  
+
+\begin{definition}{(Abstract Deduction Transformer)} An abstract deduction
+transformer, $\widehat{ded_{\varphi}}$ for a formula $\varphi$ over an abstract 
+domain $A$ is a sound approximation of a concrete model transformer
+$ded_{\varphi}$, given by $\widehat{ded_{\varphi}} : A \rightarrow A$, such that 
+$\forall a \in A: \widehat{ded_{\varphi}}(a) \in \{\top, \bot, m\}$, where 
+$m \in A$ is a meet irreducible.   
+\end{definition}
+
+Let us consider a formula $\varphi = (x:=y-1)$ to be analyzed over 
+an interval abstract domain, $A = ItvDom$, and let $a = \langle y:[3, 5]
+\rangle \in ItvDom$, then $\widehat{ded_{\varphi}}(a) = a \meet \langle x:[2, 4]
+\rangle$.  An abstract deduction transformer is typically computed in the form 
+of strongest post-condition or a weakest pre-condition of a formula in the 
+abstract domain.  
+
+A meet decomposition of the outcome of abstract deduction transformer 
+is obtained by taking a meet of the element $\langle y:[3, 5] \rangle, 
+\langle x:[2, 4] \rangle \in ItvDom$ which gives set of meet irreducibles, 
+$\{ \langle y \succeq 3 \rangle, \langle y \preceq 5 \rangle, 
+\langle x \succeq 2 \rangle, \langle x \preceq 4 \rangle \}$, that are 
+precisely complementable.
+
+\begin{definition}{(Meet Decomposition)} A meet decomposition of an abstract
+element $a \in A$ is a set of meet irreducibles $M \subseteq A$ such that 
+$\forall m_i \in M, \meet(m_i) = a$, where $max(i) = |M|$.
+\end{definition}
+ 
+For a program with $N$ variables, let $L$ be the total number of 
+meet irreducibles returned by a domain $D$.  For $D$ = {\em ItvDom}, the 
+maximum value of $L$ is $2*N$, whereas the maximum value of $L$ is 
+$2*(N^2)$ for $D$ = {\em OctDom}. Note that an octagon is the conjunction 
+of all octagonal inequalities in the set $L$.
+%\rmcmt{safety as satisfiability}
 %
 \begin{algorithm2e}[t]
 \DontPrintSemicolon
@@ -16,60 +54,46 @@
 \SetKwRepeat{Do}{do}{while}
 %\SetKwFunction{assume}{assume}
 %\SetKwFunction{isf}{isFeasible}
+\SetKwData{conflict}{CONFLICT}
 \SetKwData{safe}{safe}
 \SetKwData{unsafe}{unsafe}
 \SetKwData{unknown}{unknown}
 \SetKwData{true}{true}
 \SetKwInOut{Input}{input}
 \SetKwInOut{Output}{output}
+\SetKwFor{Loop}{Loop}{}{}
 \SetKw{KwNot}{not}
 \begin{small}
-\Input{Program $\mathcal{P}$ with properties specified with $assert(c)$}
+\Input{Set $S$ of abstract deduction transformer, 
+$\widehat{ded_{\varphi}}$ for a formula $\varphi$ over an abstract domain $A$}
 \Output{The status (\safe or \unsafe) and a counterexample if \unsafe}
-\assign result=\deduce(P)\;
-\uIf{$result == \perp$} {
+$v \leftarrow \top$ \;
+$\mathcal{T} \leftarrow \epsilon$ \;
+$\mathcal{R} \leftarrow \emptyset$ \;
+$result \leftarrow \deduce(S,v,\mathcal{T},\mathcal{R})$ \;
+\uIf{$result$ == \conflict} {
   \return \safe \;
-}
-\uElse
-{
-  \uIf{is\_gamma\_complete()} {
-    \return \unsafe \;
-  }
 }
 \While{$true$} 
 {
-  \assign decision\_variable = decision\_heuristics($P$)\;
-  %\assign decision\_container = decision\_container $\cup$ decision\_variable\; 
-  \uIf{decision\_variable == NULL}
-  {
-    return \unknown\; 
+  \uIf{$v$ is $\gamma$-complete} {
+    \return \unsafe;
   }
-  \uElse
-  {
-    \assign result=\deduce(P)\;
-    \uIf{result == UNKNOWN}
-    {
-      \uIf{is\_gamma\_complete()} {
-        \return \unsafe \;
-      }
-      \uElse 
-      {
-        \continue\;
-      }
+  $d \leftarrow decide(v)$ \;
+  $v \leftarrow v \meet d$ \; 
+  $\mathcal{T} \leftarrow \mathcal{T} . d$ \; 
+  $\mathcal{R}[|\mathcal{T}|] \leftarrow nil$ \;
+  $result \leftarrow \deduce(S,v,\mathcal{T},\mathcal{R})$\;
+  \Do{$result == \conflict$} {
+    learn() \;
+    \uIf{$\neg$ conflict\_analysis()} {
+      return \safe \;  
     }
-    \uElse
-    {
-      \Do{$result == \perp$} {
-        \uIf{$\neg$ conflict\_analysis()} {
-          return \safe \;  
-        }
-        \assign result=\deduce(P)\;
-      }
-    }
+    result $\leftarrow \deduce(S,v,\mathcal{T},\mathcal{R})$ \;
   }
 }
 \end{small}
-\caption{Abstract Conflict Driven Clause Learning\label{Alg:acdcl}}
+\caption{Abstract Conflict Driven Clause Learning $\{ACDCL(S)\}$ \label{Alg:acdcl}}
 \end{algorithm2e}
 %
 \Omit {
@@ -119,3 +143,11 @@ backtracks to decision level 0 after a conflict in which case it returns {\em sa
 Currently, ACDCL handles loops in the program by unrolling the bounded loops. 
 However, we are developing a new technique for automatic invariant generation using 
 ACDCL for unbounded proofs. 
+
+
+A decision is made by calling a procedure $decide(v)$ which 
+returns a meet irreducible $d$.  If $d$ refines the 
+current abstract value $v$, then the worklist is updated with 
+all transformers that are dependant on the current decision 
+$d$ along with the update of the corresponding propagation 
+and reason trail, $\mathcal{T}$ and $\mathcal{R}$. 

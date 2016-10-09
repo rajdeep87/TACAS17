@@ -1,6 +1,9 @@
 \section{Introduction}
 %
-A standard static analyses~\cite{se2011} for program safety aims to compute 
+Static program analysis based on abstract 
+interpretation~\cite{DBLP:conf/emsoft/Cousot07} has been widely used to
+verify certain classes of properties for safety-critical systems.  A 
+standard static analyses~\cite{se2011} for program safety aims to compute 
 invariants by applying transformers that refines an abstract 
 value.  Most lattice structure used in static analysis have 
 meet and join operations but lack negations.  The meet operation 
@@ -11,12 +14,11 @@ by using richer abstract domains or equipping the analysis with disjunction --
 which is often very expensive since the analysis exhibit case enumeration 
 behavior. 
 
-
 On the other hand, the combination of precise conjunction in partial assignments 
 domain with learning allow Conflict Driven Clause Learning (CDCL)~\cite{cdcl} 
 solvers to reason about disjunction without enumerating cases.  
 Silva et. al.~\cite{tacas12, sas12, dhk2013-popl} presented 
-a formal mechanism for applying abstract interpretation~\cite{se2011} to solve the 
+a formal recipe for applying abstract interpretation~\cite{se2011} to solve the 
 satisfiability problem.  ~\cite{sas12} provide a mathematical generalization 
 of CDCL algorithm called, {\em Abstract Conflict Driven Clause Learning} (ACDCL), 
 in terms of deduction and abduction transformers, fixed-point, interpolation 
@@ -29,12 +31,13 @@ lifts learning techniques in SAT solver to operate on non-distributive
 lattice -- thus equipping the analysis with negation. This enables the 
 analyzer to refine the analysis and prevent enumeration behavior.
 
-The instantiation of ACDCL has so far been limited to interval domain only.  In this paper, 
-we identify specific properties of the CDCL algorithm that are necessary to 
-lift the propositional skeleton of CDCL to other richer lattice structures 
-and relational abstract domains such as octagons, polyhedra, zones and equalities.  
-To this end, we present a characterization of abstract model search procedure and 
-conflict analysis procedure that lift the abstract deduction transformer and the 
+The instantiation of ACDCL has so far been limited to interval domains only.  
+In this paper, we identify specific properties of the CDCL algorithm that 
+are necessary to lift the propositional skeleton of CDCL to other richer 
+lattice structures and relational abstract domains such as octagons, 
+polyhedra, zones and equalities.  To this end, we present a 
+characterization of abstract model search procedure and conflict 
+analysis procedure that lift the abstract deduction transformer and the 
 first-UIP algorithm to relational lattice structures. 
 
 Clause learning SAT solvers requires a weak complementation property 
