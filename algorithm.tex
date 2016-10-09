@@ -38,8 +38,20 @@ maximum value of $L$ is $2*N$, whereas the maximum value of $L$ is
 $2*(N^2)$ for $D$ = {\em OctDom}. Note that an octagon is the conjunction 
 of all octagonal inequalities in the set $L$.
 %\rmcmt{safety as satisfiability}
-\subsection{Static Analyses Equations for Safety}
-Currently, ACDCL handles loops in the program by unrolling the bounded loops. 
+\subsection{Static Analysis Equations for Safety}
+Static program analysis based on abstract interpretation~\cite{DBLP:conf/emsoft/Cousot07} 
+perform safety analysis by computing fixed point to infer invariants 
+over program variables.  However, bounded model checking (BMC) tries to search 
+for a counterexample in a bounded execution trace, by symbolically executing a 
+program up to a finite bound.  
+Similar to BMC, ACDCL searches for a counterexample by solving the formula shown below.
+For a set $N$ of program analysis constraints defined over a set 
+of constraint variables $Var = \{X_i| i \in N\}$, representing a program
+$\mathcal{P}$ and a concrete domain $\powerset{Env}$, the safety equation 
+is given as follows.  Here, $X_{init}, X_{Err}$ denote the initial valuation 
+and the \rmcmt{final valuation} of constraint variables.
+\[\varphi = X_{init} \subseteq Env \wedge \underset{p,q \in |\mathcal{P}|}
+{\bigwedge} \{ X_p \subseteq post_{(p,q)}(X_q) \} \wedge X_{err} \supset \emptyset \] 
 %
 \begin{algorithm2e}[t]
 \DontPrintSemicolon
@@ -115,6 +127,7 @@ that preserve the error reachability.  Moreover, ACDCL implicitly
 perform program and property driven trace partitioning to increase the precision
 of the analysis.  
 }
+\subsection{Algorithm for Abstract Conflict Driven Clause Learning}
 Algorithm~\ref{Alg:acdcl} presents an overview of the ACDCL algorithm.
 The algorithm begins with a set $S$ of abstract deduction transformer 
 $\widehat{ded_{\varphi}}$ for a formula $\varphi$ over an abstract 
