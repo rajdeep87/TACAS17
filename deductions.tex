@@ -1,4 +1,4 @@
-\section{Deduction}
+\section{Abstract Model Search}
 In a typical abstract interpretation based galois-connection settings over 
 an over-approximate domain, every concrete elements have a unique over-approximate 
 representation in the abstract.  Likewise, every concrete transformer is
@@ -110,24 +110,19 @@ worklist $\leftarrow$ initialize\_worklist($S$) \;
 {
   $\langle live\_vars, s \rangle \leftarrow$ worklist.pop() \;
   $\mathit{meet\_irrd} \leftarrow$ domain(s, live\_vars, $v$)\;
-  // check if the domain deduce BOTTOM \;
   \uIf{$meet\_irrd == \bot$} {
     $\mathcal{R}[\bot] \leftarrow s$ \;
-    // empty the worklist \;
     worklist.delete() \;
     \return \sat \;
   }
   \uElse
   {
-    // add deduction to trail \;
     $\mathcal{T} \leftarrow \mathcal{T} . \mathit{meet\_irrd}$ \; 
     $v \leftarrow v \meet \mathit{meet\_irrd}$ \; 
     $\mathcal{R}[|\mathcal{T}|] \leftarrow s$ \;
-    // update the worklist \;
     worklist.update(v, s) \; 
   }
 }
-// check for counterexample\;
 \uIf{$v$ is $\gamma$-complete} {
   \return \unsat;
 }
@@ -135,16 +130,16 @@ $d \leftarrow decide(v)$ \;
 \uIf{$v \sqsubseteq d$} {
 \return \unknown \;
 }
-// add decision to trail\;
 $\mathcal{T} \leftarrow \mathcal{T} . d$ \; 
 $v \leftarrow v \meet d$ \; 
 $\mathcal{R}[|\mathcal{T}|] \leftarrow nil$ \;
+worklist.update(v, d) \; 
 }
 \end{small}
 \caption{Abstract Model Search\label{Alg:ms}}
 \end{algorithm2e}
 %
-\subsection{Abstract Model Search}
+\subsection{Algorithm for Abstract Model Search}
 Algorithm~\ref{Alg:ms} presents the abstract model search procedure. 
 In propositional case, a model search involves two steps -- 
 {\em deductions} using unit rule refines current partial assignments 
@@ -174,8 +169,8 @@ v(x)$ holds for every meet irreducible $x$.  If $v$ is $\gamma$-complete, that i
 abstract valuation $v$ is abstractly satisfying, the abstract model 
 search terminates with SAT.  Otherwise, a decision is made by calling a 
 procedure $decide(v)$ which returns a meet irreducible $d$.  If $d$ refines the 
-current abstract value $v$, then the corresponding propagation and reason trail,
-$\mathcal{T}$ and $\mathcal{R}$, are updated. Else, the model search procedure 
+current abstract value $v$, then the worklist is updated with all transformers that are dependant on the current decision $d$ along with the update of the corresponding propagation and reason trail,
+$\mathcal{T}$ and $\mathcal{R}$. Else, the model search procedure 
 terminates with UNKNOWN.      
 
 
