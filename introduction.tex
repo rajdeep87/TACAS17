@@ -1,6 +1,6 @@
 \section{Introduction}
 %
-A standard static analyses for program safety aims to compute 
+A standard static analyses~\cite{se2011} for program safety aims to compute 
 invariants by applying transformers that refines an abstract 
 value.  Most lattice structure used in static analysis have 
 meet and join operations but lack negations.  The meet operation 
@@ -16,7 +16,7 @@ On the other hand, the combination of precise conjunction in partial assignments
 domain with learning allow Conflict Driven Clause Learning (CDCL)~\cite{cdcl} 
 solvers to reason about disjunction without enumerating cases.  
 Silva et. al.~\cite{tacas12, sas12, dhk2013-popl} presented 
-a formal mechanism for applying abstract interpretation to solve the 
+a formal mechanism for applying abstract interpretation~\cite{se2011} to solve the 
 satisfiability problem.  ~\cite{sas12} provide a mathematical generalization 
 of CDCL algorithm called, {\em Abstract Conflict Driven Clause Learning} (ACDCL), 
 in terms of deduction and abduction transformers, fixed-point, interpolation 
@@ -35,4 +35,15 @@ lift the propositional skeleton of CDCL to other richer lattice structures
 and relational abstract domains such as octagons, polyhedra, zones and equalities.  
 To this end, we present a characterization of abstract model search procedure and 
 conflict analysis procedure that lift the abstract deduction transformer and the 
-first-UIP algorithm to relational lattice structures.  
+first-UIP algorithm to relational lattice structures. 
+
+Clause learning SAT solvers requires a weak complementation property 
+of the partial assignments domain.  However,  the most commonly 
+used APRON~\cite{apron} library that implements abstract domains, is specialized 
+for abstract interpretation framework which does not require complementation 
+operator.  Thus, we implement our own template-based numerical abstract 
+domains that support complementation property.  Our proposed technique 
+is embodied in our tool called, {\em Titlis}.  To the best of our 
+knowledge, this is the first instantiation of CDCL 
+algorithm with relational abstract domains. 
+ 
