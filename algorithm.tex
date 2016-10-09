@@ -38,6 +38,8 @@ maximum value of $L$ is $2*N$, whereas the maximum value of $L$ is
 $2*(N^2)$ for $D$ = {\em OctDom}. Note that an octagon is the conjunction 
 of all octagonal inequalities in the set $L$.
 %\rmcmt{safety as satisfiability}
+\subsection{Static Analyses Equations for Safety}
+Currently, ACDCL handles loops in the program by unrolling the bounded loops. 
 %
 \begin{algorithm2e}[t]
 \DontPrintSemicolon
@@ -93,7 +95,7 @@ $result \leftarrow \deduce(S,v,\mathcal{T},\mathcal{R})$ \;
   }
 }
 \end{small}
-\caption{Abstract Conflict Driven Clause Learning $\{ACDCL(S)\}$ \label{Alg:acdcl}}
+\caption{Abstract Conflict Driven Clause Learning $\langle ACDCL(S) \rangle$ \label{Alg:acdcl}}
 \end{algorithm2e}
 %
 \Omit {
@@ -114,40 +116,48 @@ perform program and property driven trace partitioning to increase the precision
 of the analysis.  
 }
 Algorithm~\ref{Alg:acdcl} presents an overview of the ACDCL algorithm.
-Given a \rmcmt{formula (F)} and an abstract valuation $v = \top$,  
-ACDCL returns {\em safe} if $F$ is unsatisfiable and P is safe. Else, 
-ACDCL returns a model that satisfies $F$ and P is {\em unsafe}.  The 
-procedure $deduce(P)$ is similar to BCP step in SAT solvers where 
-it computes least fix-point with strongest post-condition using 
-forward analysis. If the result of $deduce(P)$ 
-is BOTTOM ($\perp$), the algorithm terminates with {\em safe}. Else, the 
-{\em gamma completeness} check~\cite{sas01} is performed to determine if it is a 
-real counterexample. If the {\em gamma completeness} check is successful, then the 
-counterexample is real. Else, the algorithm enters into the while($true$)
-loop and heuristically picks a meet irreducible for decision. For example, assuming 
-interval domain, decisions restrict the range of intervals for variables, so the analysis jumps under a 
+The algorithm begins with a set $S$ of abstract deduction transformer 
+$\widehat{ded_{\varphi}}$ for a formula $\varphi$ over an abstract 
+domain $A$, an abstract valuation $\langle v \leftarrow \top \rangle$, 
+and an empty propagation trail and reason trail, $\mathcal{T}$, $\mathcal{R}$, 
+respectively.  The propagation trail stores all meet irreducibles inferred 
+by the abstact model search phase (deductions and decisions), while the 
+reason trail maps elements of propagation trail to transformers that were 
+used to drive them.  
+
+The procedure $deduce(S,v,\mathcal{T},\mathcal{R})$ computes a greatest 
+fixed point over the transformers in F that refines the abstract valuation 
+$v$, similar to BCP step in SAT solvers.  If the result of $deduce$ 
+returns {\em CONFLICT} ($\perp$), the algorithm terminates with {\em safe}. 
+Else, the analysis enters into the while($true$) loop and makes a new decision 
+by a call to $decide(v)$ which returns a new meet irreducible $d$ that is
+consistent to the state of the solver.  If $d$ refines the current abstract 
+value $v$, the corresponding propagation and reason trail, $\mathcal{T}$ 
+and $\mathcal{R}$ are updated. 
+
+For example, a decision in interval domain restrict the range of 
+intervals for variables, so the analysis jumps under a 
 greatest fixed-point. Note that the widening operation in abstract interpretation 
 jumps above a least fixed-point, so decisions can be viewed as 
-dual widening. The procedure $deduce(P)$ is called next to deduce new facts for 
-current decision. The algorithm terminates with {\em unsafe} if the result of $deduce(P)$ 
-is {\em gamma complete}. Else, the algorithm enters in to $conflict\_analysis()$ phase to learn 
-the reason for {\em conflict}. There can be multiple incomparable reasons for conflict --
-based on the choice of Unique Implication Point (UIP), ACDCL heuristically choose one. 
-A learnt clause must include asserting cuts which guarantees
-derivation of new information after backtracking. The clause learning and backtracking continues 
-as long as the result of deduction is BOTTOM ($\perp$) or the 
-analysis backtracks to decision level 0. If no further backtrack is possible, then the 
-algorithm terminates with {\em safe}. Else, the algorithm makes a new decision and 
-the above process is repeated until a real counterexample is obtained or the algorithm 
-backtracks to decision level 0 after a conflict in which case it returns {\em safe}. 
-Currently, ACDCL handles loops in the program by unrolling the bounded loops. 
-However, we are developing a new technique for automatic invariant generation using 
-ACDCL for unbounded proofs. 
+{\em dual widening}.  The procedure $deduce$ is called next to infer new 
+set of meet irreducibles for the current decision.  The model search phase 
+alternates between the decision and deduction until the result of deduction 
+is either $\gamma$-complete~\cite{gamma} or the deduction leads to a {\em CONFLICT}.  
+If $v$ is $\gamma$-complete, then it cannot be refined further.  Thus, the 
+algorithm returns the error trace $v$ and terminates with UNSAFE or the 
+current abstraction is insufficient to determine the satisfiability of $\varphi$.  
+However, in case of {\em CONFLICT}, the algorithm enters in to 
+$conflict\_analysis()$ phase to learn the reason for {\em conflict}.  
+There can be multiple incomparable reasons for conflict -- based on 
+the choice of Unique Implication Point (UIP)~\cite{cdcl}.  ACDCL heuristically 
+choose one reason.  A learnt clause must include asserting cuts which 
+guarantees derivation of new meet irreducibles after backtracking. The clause 
+learning and backtracking continues as long as the result of deduction 
+is conflicting ($\perp$), that is, the abstract valuation $v$ does not
+abstractly satisfy the formula.  If no further backtrack is possible, 
+then the algorithm terminates and $\varphi$ is {\em SAFE}. Else, the 
+algorithm makes a new decision and the above process is repeated 
+until a real counterexample is obtained or the algorithm backtracks to 
+decision level 0 after a conflict in which case it returns {\em SAFE}. 
 
 
-A decision is made by calling a procedure $decide(v)$ which 
-returns a meet irreducible $d$.  If $d$ refines the 
-current abstract value $v$, then the worklist is updated with 
-all transformers that are dependant on the current decision 
-$d$ along with the update of the corresponding propagation 
-and reason trail, $\mathcal{T}$ and $\mathcal{R}$. 
