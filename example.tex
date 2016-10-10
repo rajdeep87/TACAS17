@@ -4,7 +4,7 @@
 \scriptsize
 \begin{tabular}{l|l|l}
 \hline
-C program & CFG & Solver Statistics\\
+C program & Control-Flow Graph & Decision Procedure Statistics\\
 \hline
 \begin{lstlisting}[mathescape=true,language=C]
 void main() {
@@ -35,19 +35,59 @@ void main() {
 \end{minipage}
 &
 \begin{lstlisting}[mathescape=true,language=C]
-                 SAT solver  ACDCL  
+                 SAT solver  ACDCL 
+                 ----------- ----- 
 restarts           1          0
 conflicts  :       5          2
 decisions  :       36         2 
 propagations :     1365       240  
-conflict literals  65         2   
+conflict literals  65         4   
 \end{lstlisting}
 \\
 \hline
 \end{tabular}
-\caption{C Program, and statistics for decision procedure}
+\caption{C Program, CFG and statistics for decision procedure}
 \label{example}
 \end{figure}
+Let us consider a simple program in Figure~\ref{example} that checks 
+the equivalence of a state-machine based interger multiplication against  
+a specification that uses multiplication operator (*).  The assertion 
+simply compares the result of two multiplication for an input $x$.  To 
+avoid overflow error, we assume $x$ has an upper bound $N$.  The 
+control flow graph is shown in the middle column of Figure~\ref{example}.  
+
+We analyze the program using three different analyzers -- {\em bounded 
+model checking (BMC)}, {\em abstract interpretation} and {\em ACDCL}.    
+For $N=2$ and unwind limit of $bound=4$ for the {\em while} loop, the 
+right column shows the statistics from MiniSAT~\cite{minisat} solver 
+for analysis using BMC.  The SAT solver makes 36 decisions, 1365 boolean 
+constraint propagations and performs 5 conflict analysis with 65 conflict 
+literals.  Moreover, the solver performs a restart, presumably to recover 
+from bad decisions.  
+
+On the other hand, abstract interpretation using forward analysis 
+is too imprecise to verify the safety of the above program using 
+interval domain.  The imprecision is due to control-flow join at 
+node $n1$.  State-of-the-art abstract interpretation tool, Astr{\'e}e, 
+requires external hints, provided by manually annotating the code 
+with partition directives at $n1$, to prove safety.  The partition 
+directive helps the tool to analyze each program execution paths separately.  
+To do so, Astr{\'e}e requires a trace partitioning domain along with interval 
+to determine safety.  Consequently, the analysis becomes very expensive 
+for a large value of $N$.  In general, the imprecision is either intended 
+  by the tool because such high precision analysis is normally not required for runtime error analysis or the imprecision is unavoidable due to the complexity 
+of the application under analysis.  
+
+
+Figure~\ref{} shows an analysis using ACDCL with interval domain.  The 
+analysis associates an interval for each control location and variable, 
+as shown in the abstract conflict graph.   
+
+The result of the analysis is shown in right side of Figure~\ref{example}.  
+Compared to a SAT solver, ACDCL makes only a single decisions which lead 
+to 240 interval constraint propagations, and learns a single conflict clause 
+involving only one literal.     
+
 
 
 \begin{figure}[htp]
