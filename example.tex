@@ -1,5 +1,55 @@
 \section{Motivating Example}
 %
+\begin{figure}[t]
+\scriptsize
+\begin{tabular}{l|l|l}
+\hline
+C program & CFG & Solver Statistics\\
+\hline
+\begin{lstlisting}[mathescape=true,language=C]
+void main() {
+ int x,result1=0,result2=0;
+ assume(x>=1 && x<= N);
+ result1 = 2*x; 
+ int state = 1;
+ int y=x;
+ while(state!=0) {
+  switch(state) {
+   case 0: state = 1; break;
+   case 1: state = 2; break;
+   case 2: x--; y++;
+   if(x == 0) state = 0;
+   else state = 1; break;
+  } 
+ }
+ result2 = y;
+ assert(result1 == result2);
+}
+\end{lstlisting}
+&
+\begin{minipage}{4.40cm}
+\centering
+\vspace*{0.3cm}
+\scalebox{.45}{\import{figures/}{example.pspdftex}}
+%\caption{A control flow graph for P, P' and abstract conflict graph (ACFG) \label{fig:filter}}
+\end{minipage}
+&
+\begin{lstlisting}[mathescape=true,language=C]
+                 SAT solver  ACDCL  
+restarts           1          0
+conflicts  :       5          2
+decisions  :       36         2 
+propagations :     1365       240  
+conflict literals  65         2   
+\end{lstlisting}
+\\
+\hline
+\end{tabular}
+\caption{C Program, and statistics for decision procedure}
+\label{example}
+\end{figure}
+
+
 \begin{figure}[htp]
 \centering
 \vspace*{0.3cm}
@@ -48,4 +98,5 @@ evidence shows that this leads to significantly less number of decisions compare
 to the propositional solver. Compared to classical abstract interpretation 
 based tools, ACDCL automatically performs program and property driven trace partitioning 
 using decision and clause learning to generate proofs using simpler domain -- thus, it is more 
-precise than classical abstract interpretation.   
+precise than classical abstract interpretation.  
+ 
