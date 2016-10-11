@@ -34,15 +34,12 @@ void main() {
 %\caption{A control flow graph for P, P' and abstract conflict graph (ACFG) \label{fig:filter}}
 \end{minipage}
 &
-\begin{lstlisting}[mathescape=true,language=C]
-                 SAT solver  ACDCL 
-                 ----------- ----- 
-restarts           1          0
-conflicts  :       5          2
-decisions  :       36         2 
-propagations :     1365       240  
-conflict literals  65         4   
-\end{lstlisting}
+\begin{minipage}{4.40cm}
+\centering
+\vspace*{0.3cm}
+\scalebox{.45}{\import{figures/}{acdl_run.pspdftex}}
+%\caption{A control flow graph for P, P' and abstract conflict graph (ACFG) \label{fig:filter}}
+\end{minipage}
 \\
 \hline
 \end{tabular}
@@ -74,9 +71,32 @@ with partition directives at $n1$, to prove safety.  The partition
 directive helps the tool to analyze each program execution paths separately.  
 To do so, Astr{\'e}e requires a trace partitioning domain along with interval 
 to determine safety.  Consequently, the analysis becomes very expensive 
-for a large value of $N$.  In general, the imprecision is either intended 
-  by the tool because such high precision analysis is normally not required for runtime error analysis or the imprecision is unavoidable due to the complexity 
+for a large value of $N$.  In general, the imprecision is either intended by 
+the tool because such high precision analysis is normally not required for runtime error analysis or the imprecision is unavoidable due to the complexity 
 of the application under analysis.  
+
+\Omit{
+\begin{tabular}{l|l|l|l|l|l}
+\hline
+Solver & Decisions & propagations & conflict & conflict literals & restarts \\
+SAT & 1 & 1365 & 5 & 65 & 1 \\
+ACDCL & 1 & 23 & 1 & 1 & 0 \\
+\hline
+\end{tabular}
+%\caption{Solver-statistics}
+\label{solver}
+\end{figure}
+}
+\begin{lstlisting}[mathescape=true,language=C]
+
+                 SAT solver  ACDCL 
+                 ----------- ----- 
+restarts           1          0
+conflicts  :       5          2
+decisions  :       36         2 
+propagations :     1365       240  
+conflict literals  65         4   
+\end{lstlisting}
 
 
 Figure~\ref{} shows an analysis using ACDCL with interval domain.  The 
