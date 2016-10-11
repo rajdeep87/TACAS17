@@ -105,7 +105,7 @@ state:[1,\infty], y:[1,+\infty] \rangle$.  Clearly, ACDCL can not prove safety.
 Hence, ACDCL makes an arbitrary decision $x:[-\infty,1]$ to refine the analysis.  
 The decision constrains the interval of $x$.  The deductions made during fixed point
 iteration are represented by abstract conflict graph in right-side of 
-Figure~\ref{fig:example}.   Nodes in the graph denotes the corresponding 
+figure~\ref{example}.   Nodes in the graph denotes the corresponding 
 updates to the program variables in the cfg.  Interval analysis concludes 
 that the $(n12:\bot)$, that is the decision $x:[-\infty,1]$ leads to a 
 {\em conflict}. Intuitively, it means that the program is {\em safe} for 
@@ -123,9 +123,9 @@ it terminates proving that the program is safe.  A DPLL-style solver would
 perform proof by cases.  However, decision and clause learning are used 
 to avoid case based reasoning and prevents enumeration behavior.     
    
-The result of the analysis using ACDCL is shown in Figure~\ref{example}.  
+The result of the analysis using ACDCL is shown in table~\ref{solver}.  
 Compared to a SAT solver, ACDCL makes only a single decision which lead 
-to 240 interval constraint propagations, and learns a single conflict clause 
+to 23 interval constraint propagations, and learns a single conflict clause 
 involving only one literal.  Compared to abstract interpretation, ACDCL does 
 not require external hints to proof the program, thus automatically performing 
 program and property driven trace partitioning to generate proofs using decision 
