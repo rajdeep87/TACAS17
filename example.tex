@@ -4,26 +4,28 @@
 \scriptsize
 \begin{tabular}{l|l|l}
 \hline
-C program & Control-Flow Graph & Decision Procedure Statistics\\
+C program & Control-Flow Graph & Abstract Conflict Graph \\
 \hline
 \begin{lstlisting}[mathescape=true,language=C]
 void main() {
- int x,result1=0,result2=0;
- assume(x>=1 && x<= N);
- result1 = 2*x; 
- int state = 1;
- int y=x;
- while(state!=0) {
-  switch(state) {
-   case 0: state = 1; break;
-   case 1: state = 2; break;
-   case 2: x--; y++;
-   if(x == 0) state = 0;
-   else state = 1; break;
-  } 
- }
- result2 = y;
- assert(result1 == result2);
+int x,sepc=0,impl=0;
+assume(x>=1 && x<=N);
+spec = 2*x; 
+int state = 1;
+int y=x;
+while(state!=0) {
+ switch(state) {
+  case 0: state = 1; 
+  break;
+  case 1: state = 2; 
+  break;
+  case 2: x--; y++;
+  if(x == 0) state=0;
+  else state=1;break;
+ } 
+}
+impl = y;
+assert(spec == impl);
 }
 \end{lstlisting}
 &
@@ -43,20 +45,20 @@ void main() {
 \\
 \hline
 \end{tabular}
-\caption{C Program, CFG and statistics for decision procedure}
+\caption{C Program, CFG and Abstract Conflict Graph}
 \label{example}
 \end{figure}
 Let us consider a simple program in Figure~\ref{example} that checks 
 the equivalence of a state-machine based interger multiplication against  
 a specification that uses multiplication operator (*).  The assertion 
-simply compares the result of two multiplication for an input $x$.  To 
-avoid overflow error, we assume $x$ has an upper bound $N$.  The 
+simply compares the result of two multiplication for an integer input $x$.  
+To avoid overflow error, we assume $x$ has an upper bound $N$.  The 
 control flow graph is shown in the middle column of Figure~\ref{example}.  
 
 We analyze the program using three different analyzers -- {\em bounded 
 model checking (BMC)}, {\em abstract interpretation} and {\em ACDCL}.    
-For $N=2$ and unwind limit of $bound=4$ for the {\em while} loop, the 
-right column shows the statistics from MiniSAT~\cite{minisat} solver 
+For $N=2$ and unwind limit of $bound=4$ for the {\em while} loop,
+table~\ref{solver} shows the statistics from MiniSAT~\cite{minisat} solver 
 for analysis using BMC.  The SAT solver makes 36 decisions, 1365 boolean 
 constraint propagations and performs 5 conflict analysis with 65 conflict 
 literals.  Moreover, the solver performs a restart, presumably to recover 
@@ -68,95 +70,63 @@ interval domain.  The imprecision is due to control-flow join at
 node $n1$.  State-of-the-art abstract interpretation tool, Astr{\'e}e, 
 requires external hints, provided by manually annotating the code 
 with partition directives at $n1$, to prove safety.  The partition 
-directive helps the tool to analyze each program execution paths separately.  
-To do so, Astr{\'e}e requires a trace partitioning domain along with interval 
-to determine safety.  Consequently, the analysis becomes very expensive 
-for a large value of $N$.  In general, the imprecision is either intended by 
-the tool because such high precision analysis is normally not required for runtime error analysis or the imprecision is unavoidable due to the complexity 
-of the application under analysis.  
-
-\Omit{
+directive helps the tool to analyze each program execution paths 
+separately.  To do so, Astr{\'e}e requires a product of trace 
+partitioning domain and an interval domain to determine safety.  
+Consequently, the analysis becomes very expensive for a large value 
+of $N$.  In general, the imprecision is either intended by the tool 
+because such high precision analysis is normally not required for 
+runtime error analysis or the imprecision is unavoidable due to the 
+complexity of the application under analysis.  
+%
+\begin{table}
+\begin{center}
+{
 \begin{tabular}{l|l|l|l|l|l}
 \hline
-Solver & Decisions & propagations & conflict & conflict literals & restarts \\
-SAT & 1 & 1365 & 5 & 65 & 1 \\
+Solver & Decisions & propagations & conflict & conflict literals & restarts \\ \hline
+SAT & 36 & 1365 & 5 & 65 & 1 \\ \hline
 ACDCL & 1 & 23 & 1 & 1 & 0 \\
 \hline
 \end{tabular}
-%\caption{Solver-statistics}
+}
+\end{center}
+\caption{Solver-statistics}
 \label{solver}
-\end{figure}
-}
-\begin{lstlisting}[mathescape=true,language=C]
+\end{table}
+%
+The right-side of Figure~\ref{example} shows an analysis using ACDCL with 
+interval domain.  The analysis associates an interval for each control 
+location and variable, as shown in the abstract conflict graph.  Interval 
+constraints generated from forward analysis in the initial deduction phase 
+infers that $\langle x:[-\infty,2], spec:[2,4], impl:[-1,\infty],
+state:[1,\infty], y:[1,+\infty] \rangle$.  Clearly, ACDCL can not prove safety.  
 
-                 SAT solver  ACDCL 
-                 ----------- ----- 
-restarts           1          0
-conflicts  :       5          2
-decisions  :       36         2 
-propagations :     1365       240  
-conflict literals  65         4   
-\end{lstlisting}
+Hence, ACDCL makes an arbitrary decision $x:[-\infty,1]$ to refine the analysis.  
+The decision constrains the interval of $x$.  The deductions made during fixed point
+iteration are represented by abstract conflict graph in right-side of 
+Figure~\ref{fig:example}.   Nodes in the graph denotes the corresponding 
+updates to the program variables in the cfg.  Interval analysis concludes 
+that the $(n12:\bot)$, that is the decision $x:[-\infty,1]$ leads to a 
+{\em conflict}. Intuitively, it means that the program is {\em safe} for 
+$x:[-\infty,1]$.  
 
-
-Figure~\ref{} shows an analysis using ACDCL with interval domain.  The 
-analysis associates an interval for each control location and variable, 
-as shown in the abstract conflict graph.   
-
-The result of the analysis is shown in right side of Figure~\ref{example}.  
-Compared to a SAT solver, ACDCL makes only a single decisions which lead 
+A clause learning SAT solver would learn the reason for conflict at this 
+point and then backtrack to a level such that the learnt clause is UNIT.  
+Similar to conflict analysis phase in SAT solvers, ACDCL learns that 
+(\(I: x = [2,+\infty]\)), that is all error traces must satisfy $(x \geq 2)$ 
+at node $I$.  The analysis discards all interval constraints that
+lead to the conflict and backtrack to decision level 0.  ACDCL then 
+performs interval analysis with the learnt constraint $(x>=2)$ which again 
+leads to a conflict.  The analysis cannot backtrack further and therefore 
+it terminates proving that the program is safe.  A DPLL-style solver would 
+perform proof by cases.  However, decision and clause learning are used 
+to avoid case based reasoning and prevents enumeration behavior.     
+   
+The result of the analysis using ACDCL is shown in Figure~\ref{example}.  
+Compared to a SAT solver, ACDCL makes only a single decision which lead 
 to 240 interval constraint propagations, and learns a single conflict clause 
-involving only one literal.     
-
-
-
-\begin{figure}[htp]
-\centering
-\vspace*{0.3cm}
-\scalebox{.45}{\import{figures/}{cfg-conflict.pspdftex}}
-\caption{A control flow graph for P, P' and abstract conflict graph (ACFG) \label{fig:filter}}
-\end{figure}
-
-\Omit {
-\lstdefinestyle{mystyle}{
-    numbers=left,                    
-    numbersep=5pt,                  
-    tabsize=2,
-    mathescape=true,
-    language=C
-}
-\lstset{style=mystyle}
-}
-Let us consider a simple safe program $P$ as shown in Figure~\ref{fig:filter}A.
-Astr{\'e}e fails to verify the safety using interval and trace-partition domain
-due to control-flow join at location $n5$.  Astr{\'e}e requires external hints, provided by 
-manually annotating the code with partition directives at $n1$, to prove safety.  
-In general, the imprecision is either intended by the tool because such high precision analysis is 
-normally not required for runtime error analysis or the imprecision is unavoidable 
-due to the complexity of the application under analysis.
-
-On the other hand, ACDCL uses decision and learning to generate the proof 
-using simple interval domain. The analysis associates an interval with each location and variable.  
-Assuming $bool: c = [0,1]$, ACDCL performs backward propagation 
-starting from $n6$ by computing the weakest precondition for every statement 
-in $P$ and immediately infers that (\(n4: x = \bot)\), thus proving safety as shown in 
-red color in figure~\ref{fig:filter}A.  Now, let us consider program $P'$ in
-Figure~\ref{fig:filter}B. Assuming $char: c$, ACDCL performs both forward and
-backward propagations (shown in red color in Figure~\ref{fig:filter}B).  
-The analysis then perform sequence of decisions starting with $c = [0,255]$ and reaches a 
-conflict when the decision is (\(n1:c == [0,0]\)) which is connected to $(n6: \bot)$ 
-and suffices to prove safety.  The deductions made during fixed point
-iteration are represented by abstract conflict graph shown in Figure~\ref{fig:filter}C. 
-Similar to conflict analysis phase in SAT solvers, ACDCL learns (\(n1: c = [1,255]\)), 
-that is all error traces must satisfy (\(c \neq 0\)) at n1.  The analysis backtracks 
-discarding all assumptions. Interval analysis is run with the learnt constraint and 
-can prove safety.  Thus, decisions and clause learning are used to avoid case based reasoning. 
-The advantage of ACDCL over propositional SAT solver is that the decision heuristics in 
-ACDCL can exploit the program structure by making decisions on interesting program 
-variables (for example variables in conditional branches or loop variables). Experimental 
-evidence shows that this leads to significantly less number of decisions compared 
-to the propositional solver. Compared to classical abstract interpretation 
-based tools, ACDCL automatically performs program and property driven trace partitioning 
-using decision and clause learning to generate proofs using simpler domain -- thus, it is more 
-precise than classical abstract interpretation.  
- 
+involving only one literal.  Compared to abstract interpretation, ACDCL does 
+not require external hints to proof the program, thus automatically performing 
+program and property driven trace partitioning to generate proofs using decision 
+and clause learning.  
