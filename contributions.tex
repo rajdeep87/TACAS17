@@ -1,19 +1,16 @@
 \section{Contributions}
 In this paper, we make the following contributions.
 \begin{enumerate}
-\item We present a novel program analysis technique based on 
-abstract conflict driven clause learning algorithm~\cite{dhk2013-popl}.
-To this end, we present a procedure for lifting CDCL algorithm to 
-richer lattice structure such as {\em interval} and {\em octagon} 
-abstract domains.  
-
+\item We present a novel program analysis technique that 
+lift CDCL algorithm to relational numerical abstract domains.   
+Our proposed technique is embodied in our tool called, {\em Titlis}.  
+To the best of our knowledge, this is the first instantiation of CDCL 
+algorithm with relational abstract domains. 
+ 
 \item  Experiments on a set of benchmarks drawn from bit-vector 
 regression suite in sv-comp, numerical programs and few 
 control-intensive benchmarks from hardware domain shows that 
 the strict generalization of CDCL algorithm effectively combines 
 the efficiency of abstract domains while being path-sensitive and 
-bit-precise at the same time.  This is attributed to the intelligent 
-decision heuristics which exploits the high-level structure of the 
-problem combined with stronger deductions and clause learning 
-mechanism aided by the richer abstract domains.
+bit-precise at the same time.  
 \end{enumerate}
