@@ -45,7 +45,7 @@ assert(spec == impl);
 \\
 \hline
 \end{tabular}
-\caption{C Program, CFG and Abstract Conflict Graph}
+\caption{C Program, Control-flow Graph (CFG) and Abstract Conflict Graph}
 \label{example}
 \end{figure}
 Let us consider a simple program in Figure~\ref{example} that checks 
@@ -102,14 +102,17 @@ constraints generated from forward analysis in the initial deduction phase
 infers that $\langle x:[-\infty,2], spec:[2,4], impl:[-1,\infty],
 state:[1,\infty], y:[1,+\infty] \rangle$.  Clearly, ACDCL can not prove safety.  
 
-Hence, ACDCL makes an arbitrary decision $x:[-\infty,1]$ to refine the analysis.  
-The decision constrains the interval of $x$.  The deductions made during fixed point
-iteration are represented by abstract conflict graph in right-side of 
-figure~\ref{example}.   Nodes in the graph denotes the corresponding 
-updates to the program variables in the cfg.  Interval analysis concludes 
-that the $(n12:\bot)$, that is the decision $x:[-\infty,1]$ leads to a 
-{\em conflict}. Intuitively, it means that the program is {\em safe} for 
-$x:[-\infty,1]$.  
+Hence, ACDCL makes a decision $x:[-\infty,1]$ to refine the analysis.  
+The branching variable $x$ is chosen by an {\em ordered} decision 
+heuristics that choose variables appearing in conditional branches 
+(assume statement here) first before choosing other program variables. 
+The decision constrains the interval of $x$.  The deductions made 
+during fixed point iteration are represented by abstract conflict 
+graph in right-side of figure~\ref{example}.  Nodes in the graph 
+denotes the corresponding updates to the program variables in 
+the CFG.  Interval analysis concludes that the $(n12:\bot)$, that 
+is the decision $x:[-\infty,1]$ leads to a {\em conflict}.  Thus, 
+the program is {\em safe} for $x:[-\infty,1]$.  
 
 A clause learning SAT solver would learn the reason for conflict at this 
 point and then backtrack to a level such that the learnt clause is UNIT.  
