@@ -110,23 +110,6 @@ $result \leftarrow \deduce(S,v,\mathcal{T},\mathcal{R})$ \;
 \caption{Abstract Conflict Driven Clause Learning $\langle ACDCL(S) \rangle$ \label{Alg:acdcl}}
 \end{algorithm2e}
 %
-\Omit {
-Static program analysis based on abstract
-interpretation~\cite{DBLP:conf/emsoft/Cousot07} has been widely used to
-verify certain classes of properties for safety-critical systems.  In
-abstract interpretation, a given program is analysed with respect to a set
-of given abstract domains.  However, ACDCL is a novel program analysis 
-technique that embeds an abstract domain inside the CDCL algorithm.
-From the abstract interpretation point of view, ACDCL is an abstract 
-interpreter that uses decision and learning to increase transformer precision. 
-From the decision procedure perspective, ACDCL is a SAT solver for program 
-analysis constraints and is thus a strict generalisation of propositional CDCL solvers.
-Constraint propagation in ACDCL uses fixed point iteration, decisions restrict the 
-range of intervals and learning generates program analysis constraints (not assumptions) 
-that preserve the error reachability.  Moreover, ACDCL implicitly 
-perform program and property driven trace partitioning to increase the precision
-of the analysis.  
-}
 \subsection{Algorithm for Abstract Conflict Driven Clause Learning}
 Algorithm~\ref{Alg:acdcl} presents an overview of the ACDCL algorithm.
 The algorithm begins with a set $S$ of abstract deduction transformer 
@@ -173,4 +156,20 @@ algorithm makes a new decision and the above process is repeated
 until a real counterexample is obtained or the algorithm backtracks to 
 decision level 0 after a conflict in which case it returns {\em SAFE}. 
 
-
+\paragraph \em{Solver State:}  The state of a ACDCL solver is a tuple 
+of the form $\langle \mathcal{E}, S \rangle$.  Here, $\mathcal{E}$ 
+is a sequence of labelled information of the form $(m,s)$ where 
+$m$ is a meet irreducible and $s = decision$ if $m$ is a decision, 
+or $s = deduction$ if $m$ is inferred by a deduction. And $S$ is 
+a set of abstract deduction transformer.  A trail in SAT solver 
+stores variable assignments of the form $(p, t)$, where $p$ is 
+a propositional variable that appears at most once in the trail 
+and $t$ is a truth assignment (true or false).  Whereas, a trail 
+$\mathcal{T}$ in ACDCL contains a sequence of meet irreducibles 
+inferred by deduction or decision phase where a variable in trail 
+can be assigned multiple times, each time with increasingly precise 
+bounds.  A current valuation $v$ is a meet of all elements of trail
+$\mathcal{T}$, such that $v = \top$ when $\mathcal{T}$ is 
+empty or $v=\underset{i \geq 0 \wedge i \leq |\mathcal{T}|}{\meet m_i}$, where 
+$m_i \in \mathcal{T}$.  A solver is in {\em conflict} if some clauses in
+$\mathcal{S}$ is not abstractly satisfied by $v$.

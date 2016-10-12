@@ -1,4 +1,63 @@
-\section{Clause Learning in Abstract Lattice}
+\section{Abstract Conflict Analysis}
+A conflict analysis in a SAT solver can be seen as abductive 
+reasoning where a singleton assignment $c$ is replaced by a partial 
+assignment that is sufficient to infer $c$.  Thus, a conflict 
+analysis is a generalization of an underapproximation of a set of 
+countermodels~\cite{sas,dhk2013-popl}, where a countermodel is a 
+set of structures that do not satisfy a formula.  Since relational 
+abstract domains have more complex structure than a partial 
+assignments domain, so the lifting of {\em first-UIP} algorithm~\cite{uip} 
+and clause learning to any arbitraty lattice structure is a non-trivial task. 
+
+The first-UIP algorithm in SAT solver works on a data structure called 
+{\em implication graph} that computes a cut that suffices to produce a 
+conflict.  The trail in ACDCL implicitly encodes a graph structure called 
+{\em abstract conflict graph}, which records the dependencies between 
+deductions made during abstract model search phase.  For example, consider a
+formula $\varphi:= (x=5 \wedge y=x \wedge y=y+x \wedge y \leq 0)$ with current 
+abstract valuation $v:= (x=[5,5])$.  
+Figure~\ref{conflict} shows a snapshot of abstract implication graph that 
+stores the deductions obtained from abstract model search using octagon domain.  
+An arrow in the graph indicate that the predecessors of each node $n$ are 
+sufficient to deduce $n$.  The last deduction conflict with the constraint 
+$(y \leq 0)$.  Every cut in the graph, marked as {\em cut0, cut1}, provides a 
+reason for conflict that can be used in learning.  An UIP is a special node such 
+that any path from the last decision node to the conflict node must pass 
+through it.  Unlike a SAT solver, a UIP in ACDCL may involve meet irreducibles 
+that involves the same variables.  The first-UIP is a node closest to the 
+conflict, and the last UIP is the decision node itself.  Computing UIPs ensures 
+asserting cuts, that is, it yields clauses that generates new deduction after 
+backtracking.  For our example, there exists multiple incomaparable reasons 
+for conflict.  Here, cut0 is the first UIP.  Choosing cut0 yields a learnt 
+clause $L_0: (x+y<15 \vee -x-y<-15 \vee -x+y<5 \vee x-y<-5 \vee y-10<0 \vee 
+-y+10<0)$.  A learnt clause $\mathcal{L}$ is obtained by negating the reason 
+for conflict.  
+%
+\begin{figure}
+%\caption{An example of Octagon}\label{octagon}
+\scalebox{.65}{\import{figures/}{conflict_graph.pspdftex}}
+\label{conflict}
+\end{figure} 
+%    
+\paragraph {\em Backjumping:}
+A backjumping procedure undo all the assignments in the trail up to 
+a decision level that restores the solver to a consistent state 
+(non-conflicting).  The backjumping level is defined by the literal 
+of the conflict clause that is closest to the root (decision level 0) 
+where the conflict clause is still unit. If a conflict clause is 
+globally unit, then the backjumping level is the root of the search tree.
+
+The abstract clause learning and backjumping procedures in the abstract 
+conflict graph is stated in terms of the state of ACDCL solver as follows. 
+\[AbsLearn: \quad  (\mathcal{E},S) \rightarrow (\mathcal{E},S \wedge
+\mathcal{L}) \quad \text{if} \; \mathcal{L} \notin S \; \textrm{and}
+\; (S \wedge \mathcal{L}) \; \text{is not UNSAT} \]
+\[AbsBackjump: \quad (\mathcal{E}_1(m,s)\mathcal{E}_2,S) \rightarrow
+(\mathcal{E}_1,S) \quad \text{if} \; (\mathcal{E}_1,S) \; \text{is
+consistent} \]   
+  
+\subsection{Clause Learning in Abstract Lattice}
+\Omit {
 Conflict graph for Intervals
 Conflict graph for Octagons
 
@@ -18,18 +77,11 @@ procedure choses one that is asserting.
 and thus exclude an assignment leading to conflict. 
 \end{enumerate}
 
-\textit{Backjumping:}
-The backjumping level is defined by the literal of the conflict clause assigned
-at the level that is the closest to the conflict one. In other words, the
-backjumping level is the level closest to the root (decision level 0)  where the
-conflict clause is still unit. If a conflict clause is "globally"  unit, then
-the backjumping level is the root of the search tree.
 1.DPLL style -- chronological backtracking \\
 2. CDCL style -- non-chronological backtracking \\
   a. first-uip \\
   b. last-uip \\
 
-\Omit{
 **********************************************
 \subsection{Lifting First UIP to Octagon domain}
 **********************************************

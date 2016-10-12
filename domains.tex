@@ -1,6 +1,6 @@
 \section{Program and Abstract Domains}
-In this section, we define a program and the notion of concrete domain 
-and abstract domain. 
+In this section, we define a notion of program analysis constraints, concrete domain and abstract domain. 
+\Omit {
 \subsection{Programs:}
 %
 A {\em program} $\mathcal{P}$ is formally defined as follows.
@@ -24,10 +24,8 @@ location $(init)$ and error location $(err)$, $E$ is the set
 of control-flow edges that are labelled with the set 
 $lbl \in Statement$.  For the purpose of illustration, we 
 assume that all the procedures are inlined.  
-
-\textbf{Program Analysis Constraints:}  A common approach to analyse 
-a program $\mathcal{P}$ is to represent $\mathcal{P}$ as set of 
-equations called, {\em program analysis constraints}.  The 
+}
+\textbf{Program Analysis Constraints:}  A program $\mathcal{P}$ is represented as set of equations called, {\em program analysis constraints}.  The 
 program analysis constraints, as shown below, is an assignment, 
 or boolean expressions $BExp$ over program variables $Var$ or
 a non-deterministic choice (ternary experssion) between statements $s_1$ and
