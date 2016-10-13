@@ -37,10 +37,11 @@
 
 \title{Lifting CDCL to Relational Domains}
 
-\author{Rajdeep Mukherjee\inst{1}\hskip 1em  Peter Schrammel\inst{2}\hskip 1em  Daniel Kroening\inst{1}}
+\author{Rajdeep Mukherjee\inst{1}\hskip 1em  Peter Schrammel\inst{2}\hskip 1em
+Daniel Kroening\inst{1}\hskip 1em Tom Melham\inst{1}}
 
 \institute{University of Oxford, UK \and University of Sussex, UK \\
-\email{\{rajdeep.mukherjee,kroening\}@cs.ox.ac.uk},
+\email{\{rajdeep.mukherjee,kroening,tom.melham\}@cs.ox.ac.uk},
 \email{p.schrammel@sussex.ac.uk}}
 
 \maketitle
@@ -61,7 +62,7 @@ such as intervals to improve the performance of a floating-point
 decision procedure.  Whereas the propositional level algorithms used 
 in SAT solvers can be rather easily lifted from the boolean lattice to 
 other non-relational domains, lifting them to relational domains is 
-challenging because of relational properties of deductions and clause learning.
+challenging because of relational properties of deductions and learnt clauses.
 %
 In this paper, we present the non-trivial adaptations of the model search and 
 conflict analysis algorithms in ACDCL in order to enable the use of relational 
@@ -75,7 +76,7 @@ Experimental evidence on a set of benchmarks drawn from bit-vector
 regression in SV-COMP'16, bit-precise software models of hardware 
 circuits auto-generated from v2c tool, and several bounds checking benchmarks 
 shows significant reduction in the number of decisions and backjumping iterations 
-along with stronger deductions and learned clauses aided by the richer abstract 
+along with stronger deductions and learnt clauses aided by the richer abstract 
 domains.
 %
 \end{abstract}
@@ -124,7 +125,7 @@ domains.
 %===============================================================================
 
 %===============================================================================
-%\input{experiments}
+\input{experiments}
 %===============================================================================
 
 %===============================================================================
