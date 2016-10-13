@@ -1,21 +1,37 @@
 \section{Experimental Results}
 We have implemented the instantiation of ACDCL on relational domains 
-inside 2LS verification tool~\cite{2ls}.  The abstract domains used for 
+in 2LS verification tool~\cite{2ls}.  The abstract domains used for 
 our experiments are intervals, template polyhedra, octagons and equalities.  
 We verified a total of 70 benchmarks in ANSI-C, which are derived from 
-(a) bit-vector regression category in SV-COMP\'16, (c) bit-precise and 
+(a) bit-vector regression category in SV-COMP'16, (c) bit-precise and 
 cycle accurate software models of hardware circuits automatically 
 generated using v2c~\cite{mtk2016}, (c) controller code generated 
 from Simulink (d) several hand-crafted benchmarks for equivalence 
-checking and bounded loop analysis.  All the benchmarks containing 
+checking and bounded loop analysis.  All benchmarks containing 
 bounded loops are completely unrolled before analysis.  We compare 
 our tool with a state-of-the-art bounded model checker CBMC and a 
 commercial static analysis tool, Astr{\'e}e.  CBMC uses MiniSAT 
 solver in the backend.  Astr{\'e}e was configured with interval 
 domain, trace-partition domain, and relational domains.  To enable precise 
 analysis using Astr{\'e}e, all our benchmarks are manually instrumented with 
-partition directive which provides external hint to guide the trace partitioning 
-heuristics inside the tool.  Usually, such high-precision makes the analysis
-very expensive, and is not needed for static analysis of the code.  Without trace 
-partitioning, the analysis using Astr{\'e}e shows high degree of imprecision. 
+partition directives which provides external hint to the tool to guide 
+the trace partitioning heuristics.  Usually, such high-precision is not 
+needed for static analysis, since it makes the analysis very expensive.  
+Without trace partitioning, the analysis using Astr{\'e}e shows high 
+degree of imprecision. 
+
+\paragraph {\em Observation of Analysis}
+
+\paragraph {\em Decision Heuristics} We compare the performance of 
+different decision heuristic on our benchmarks.  We observe that 
+the ordered heuristic outperforms other heuristics on control-intensive 
+benchmarks due to its ability to prioritize decisions on variables that 
+appears in conditional branches.  For straight-line code and most of 
+the bit-vector regression suite, random heuristics performs the best.  
+Whereas, the activity based heuristics such as Berkmin heuristic which 
+works well in propositional cases performs best for safe benchmarks 
+that encountered maximum number of conflicts to prove safety.
+
+\paragraph {\em Clause Learning}      
+
   
