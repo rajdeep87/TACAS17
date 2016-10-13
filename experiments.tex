@@ -22,16 +22,17 @@ degree of imprecision.
 
 \paragraph {\em Observation of Analysis}
 
-\paragraph {\em Decision Heuristics} We compare the performance of 
+\paragraph {\em \textbf{Decision Heuristics}} We compare the performance of 
 different decision heuristic on our benchmarks.  We observe that 
 the ordered heuristic outperforms other heuristics on control-intensive 
 benchmarks due to its ability to prioritize decisions on variables that 
 appears in conditional branches.  For straight-line code and most of 
 the bit-vector regression suite, random heuristics performs the best.  
 Whereas, the activity based heuristics such as Berkmin heuristic which 
-works well in propositional cases performs best for safe benchmarks 
-that encountered maximum number of conflicts to prove safety.
+works well in propositional cases performs best for benchmarks that 
+encountered the maximum number of conflicts to prove safety, thus allowing 
+the heuristics to choose the decison variable from the set of learnt clauses.   
 
-\paragraph {\em Clause Learning}      
+\paragraph {\em \textbf{Clause Learning}}      
 
   

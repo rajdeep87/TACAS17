@@ -15,8 +15,8 @@ conflict.  The trail in ACDCL implicitly encodes a graph structure called
 {\em abstract conflict graph}, which records the dependencies between 
 deductions made during abstract model search phase.  For example, consider a
 formula $\varphi:= (x=5 \wedge y=x \wedge y=y+x \wedge y \leq 0)$ with current 
-abstract valuation $v:= (x=[5,5])$.  
-Figure~\ref{conflict} shows a snapshot of abstract implication graph that 
+abstract valuation $v:= (x=5)$.  
+Figure~\ref{conflict} shows a snapshot of an abstract conflict graph that 
 stores the deductions obtained from abstract model search using octagon domain.  
 An arrow in the graph indicate that the predecessors of each node $n$ are 
 sufficient to deduce $n$.  The last deduction conflict with the constraint 
