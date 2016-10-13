@@ -9,13 +9,13 @@ generated using v2c~\cite{tacas16}, (c) controller code generated
 from Simulink (d) several hand-crafted benchmarks for equivalence 
 checking and bounded loop analysis.  All the benchmarks containing 
 bounded loops are completely unrolled before analysis.  We compare 
-our tool with a state-of-the-art bounded model checker CBMC~\cite{cbmc} 
-and a commercial abstract interpretation tool, Astr{\'e}e.  CBMC uses 
-MiniSAT solver in the backend.  Astr\{'e}e was configured with interval 
+our tool with a state-of-the-art bounded model checker CBMC and a 
+commercial static analysis tool, Astr{\'e}e.  CBMC uses MiniSAT 
+solver in the backend.  Astr\{'e}e was configured with interval 
 domain, trace-partition domain, and relational domains.  To enable precise 
 analysis using Astr{\'e}e, all our benchmarks are manually instrumented with 
 partition directive which provides external hint to guide the trace partitioning 
 heuristics inside the tool.  Usually, such high-precision makes the analysis
 very expensive, and is not needed for static analysis of the code.  Without trace 
 partitioning, the analysis using Astr{\'e}e shows high degree of imprecision. 
-  
+}  

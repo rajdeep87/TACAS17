@@ -183,8 +183,8 @@ search space.
 \rmcmt{define precise complement}
 Thus, clause learning SAT solvers requires a weak complementation property
 of the abstraction.  Most numerical abstract domain, such as intervals, 
-octagons, polyhedra have complementation property, that is, the domain 
-elements are intersections of complementable half-spaces. 
+octagons, polyhedra have complementation property, that is, they are
+representable as intersections of complementable half-spaces. 
 \Omit {
 The commonly used library for numerical abstract domains  
 is the APRON C library~\cite{apron}.  This library is 
@@ -204,9 +204,10 @@ domain which supports complementation operator.
 %For example, the octagon in Figure~\ref{octagon} can be written as a conjunction of:
 %\[(x>=-2) \land (x<=1) \land (y>=-1) \land (y<=2) \land (x+y<=2)
 %\land (x-y<=1) \land (y-x<=3) \land (-x-y<=2)\] 
+\Omit {
 \pscmt{That's no valid motivation. We never complement a whole octagon, but just a
   meet-irreducible. It's trivial to do that with APRON. The reason was
-a different one: APRON does not support all C operators, e.g. the bitwise operators.}
-For example, the complementation of the octagon in Figure~\ref{octagon} can be written as disjunction of:
+a different one: APRON does not support all C operators, e.g. the bitwise
+operators.} } For example, the complementation of the octagon in Figure~\ref{octagon} 
+can be written as disjunction of:
 \[(x<-2) \lor (x>1) \lor (y<-1) \lor (y>2) \lor (x+y>2) \lor (x-y>1) \lor (y-x>3) \lor (-x-y>2)\]
-

@@ -22,7 +22,6 @@
 \usepackage{dingbat}
 \usepackage[algo2e,linesnumbered,ruled,lined]{algorithm2e}
 \usepackage{hyperref}
-\usepackage{paralist}
 \makeatother
 
 \newcommand{\tool}[1]{\textsc{#1}\xspace}
@@ -50,32 +49,34 @@
 \begin{abstract}
 %===============================================================================
 %
-  \emph{Abstract Conflict-Driven Learning} (ACDL) is a combination of
-  abstract interpretation and the well-known Conflict-Driven Clause
-  Learning (CDCL) algorithm that is used in SAT solvers. ACDL has been
-  successfully used with non-relational abstract domains such as
-  intervals to improve the performance of a solver for floating point
-  arithmetic, for instance. 
+\emph{Abstract Conflict-Driven Clause Learning} (ACDCL) is a combination of
+abstract interpretation and the well-known Conflict-Driven Clause Learning 
+(CDCL) algorithm that is used in SAT solvers.  ACDCL alternates between a 
+model search that performs overapproximate deduction with constraint 
+propagation and a conflict analysis that performs under-approximate 
+abduction with heuristic choice.  
 %
-Whereas the
-algorithms typically used in SAT solvers can be rather easily
-lifted from the Boolean lattice to other non-relational domains,
-lifting them to relational domains is challenging.
-%because of inter-"literal" dependencies
-%because of the weaker properties of "literals"
+ACDCL has been successfully used with non-relational abstract domains 
+such as intervals to improve the performance of a floating-point 
+decision procedure.  Whereas the propositional level algorithms used 
+in SAT solvers can be rather easily lifted from the boolean lattice to 
+other non-relational domains, lifting them to relational domains is 
+challenging because of relational properties of deductions and clause learning.
 %
-In this paper we present the adaptations of algorithms and heuristics
-for propagation, decision making and conflict learning necessary in
-order to enable the use with relational domains.
+In this paper, we present the non-trivial adaptations of the model search and 
+conflict analysis algorithms in ACDCL in order to enable the use of relational 
+abstract domains.  We have implemented these algorithms inside the 2LS 
+verification tool and instantiated our analysis over a template polyhedra 
+domain.  We evaluate the performance of our analyzer in comparison with 
+program verifiers that uses propositional-level solvers and a static 
+analysis tool.  
 %
-We have implemented these algorithms inside the 2LS verification tool
-for the example of the template polyhedra domain.
-%
-We evaluate the performance of our analyzer in comparison with program verifiers that 
-uses propositional-level solvers.  Experimental evidence on a set of 
-\rmcmt{N} benchmarks \rmcmt{drawn from X} shows significant reduction 
-in the number of decisions and backjumping iterations along with stronger 
-deductions and learned clause aided by the richer abstract domains.
+Experimental evidence on a set of benchmarks drawn from bit-vector 
+regression in SV-COMP'16, bit-precise software models of hardware 
+circuits auto-generated from v2c tool, and several bounds checking benchmarks 
+shows significant reduction in the number of decisions and backjumping iterations 
+along with stronger deductions and learned clauses aided by the richer abstract 
+domains.
 %
 \end{abstract}
 %===============================================================================
@@ -123,7 +124,7 @@ deductions and learned clause aided by the richer abstract domains.
 %===============================================================================
 
 %===============================================================================
-\input{experiments}
+%\input{experiments}
 %===============================================================================
 
 %===============================================================================
