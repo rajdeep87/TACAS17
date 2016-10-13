@@ -22,13 +22,15 @@
 \usepackage{dingbat}
 \usepackage[algo2e,linesnumbered,ruled,lined]{algorithm2e}
 \usepackage{hyperref}
+\usepackage{paralist}
 \makeatother
 
 \newcommand{\tool}[1]{\textsc{#1}\xspace}
 \newcommand{\cbmcv}{\tool{cbmc 5.0}}
 \newcommand{\Omit}[1]{}
 \newcommand{\mydef}[1]{\begin{definition}#1\end{definition}}
-\newcommand{\rmcmt}[1]{{\color{magenta} {}}}
+\newcommand{\rmcmt}[1]{{\color{magenta}{#1}}}
+\newcommand{\pscmt}[1]{{\color{blue}{#1}}}
 
 \input{symbols}
 
@@ -48,19 +50,28 @@
 \begin{abstract}
 %===============================================================================
 %
-The Conflict Driven Clause Learning (CDCL) algorithm can be seen as an 
-alternation between over-approximate deduction with boolean 
-constraint propagation, and under-approximate abduction, with 
-conflict analysis.  {\em Abstract Conflict Driven Clause Learning} 
-(ACDCL) is a novel program analysis that embeds an abstract domain 
-inside the CDCL algorithm. From decision procedure perspective, 
-ACDCL is a SAT solver for program analysis constraints and is a 
-strict generalisation of propositional CDCL solvers. From Abstract 
-Interpretation point of view, ACDCL can be viewed as an abstract 
-interpreter that uses decision and learning to increase the precision 
-of abstract transformers.  In this paper, we instantiate ACDCL with 
-a relational and a non-relational numerical abstract domain and 
-evaluate the performance of our analyzer with program verifiers that 
+  \emph{Abstract Conflict-Driven Learning} (ACDL) is a combination of
+  abstract interpretation and the well-known Conflict-Driven Clause
+  Learning (CDCL) algorithm that is used in SAT solvers. ACDL has been
+  successfully used with non-relational abstract domains such as
+  intervals to improve the performance of a solver for floating point
+  arithmetic, for instance. 
+%
+Whereas the
+algorithms typically used in SAT solvers can be rather easily
+lifted from the Boolean lattice to other non-relational domains,
+lifting them to relational domains is challenging.
+%because of inter-"literal" dependencies
+%because of the weaker properties of "literals"
+%
+In this paper we present the adaptations of algorithms and heuristics
+for propagation, decision making and conflict learning necessary in
+order to enable the use with relational domains.
+%
+We have implemented these algorithms inside the 2LS verification tool
+for the example of the template polyhedra domain.
+%
+We evaluate the performance of our analyzer in comparison with program verifiers that 
 uses propositional-level solvers.  Experimental evidence on a set of 
 \rmcmt{N} benchmarks \rmcmt{drawn from X} shows significant reduction 
 in the number of decisions and backjumping iterations along with stronger 
