@@ -1,6 +1,21 @@
 \section{Experimental Results}
-We classify our benchmarks into two groups: {\em bounds checking}, 
-{\em equivalence checking}.  We use interval, octagon, and equality 
-domain for our verification task.  We analyze programs with bounded 
-loops.  All loops in the program are completely unrolled before analysis.
+We have implemented the instantiation of ACDCL on relational domains 
+inside 2LS verification tool~\cite{}.  The abstract domains used for 
+our experiments are intervals, template polyhedra, octagons and equalities.  
+We verified a total of 70 benchmarks in ANSI-C, which are derived from 
+(a) bit-vector regression category in SV-COMP'16, (c) bit-precise and 
+cycle accurate software models of hardware circuits automatically 
+generated using v2c~\cite{tacas16}, (c) controller code generated 
+from Simulink (d) several hand-crafted benchmarks for equivalence 
+checking and bounded loop analysis.  All the benchmarks containing 
+bounded loops are completely unrolled before analysis.  We compare 
+our tool with a state-of-the-art bounded model checker CBMC~\cite{cbmc} 
+and a commercial abstract interpretation tool, Astr{\'e}e.  CBMC uses 
+MiniSAT solver in the backend.  Astr\{'e}e was configured with interval 
+domain, trace-partition domain, and relational domains.  To enable precise 
+analysis using Astr{\'e}e, all our benchmarks are manually instrumented with 
+partition directive which provides external hint to guide the trace partitioning 
+heuristics inside the tool.  Usually, such high-precision makes the analysis
+very expensive, and is not needed for static analysis of the code.  Without trace 
+partitioning, the analysis using Astr{\'e}e shows high degree of imprecision. 
   
