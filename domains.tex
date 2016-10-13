@@ -36,7 +36,10 @@ following constraints. Similarly, an assertion is of type $BExp$.
 For example, figure~\ref{swssa} presents the program analysis constraints for 
 a C program in Static Single Assignment (SSA) form.  
 
+\pscmt{we should give the (simplified) SSA for an example here}
+
 \subsection{Concrete Semantics}
+\pscmt{not sure that adds anything for TACAS}
 The {\em concrete} domain is a lattice 
 of concrete environments, $Env = Var \rightarrow Val$, and is 
 defined by $CDom = (Env, \sle_{C}, \join_{C}, \meet_{C})$.
@@ -49,28 +52,12 @@ where $l$ is a location and $\sigma \in Env$.  A trace is a sequence
 of states $(l_0, \sigma_0), \ldots (l_n, \sigma_n)$ such that for all 
 $0 \leq i \leq n$, there exists a cfg egde $(l_{i}, l_{i+1})$ 
 if $\sigma_{i+1} \in post_{i}(\sigma_{i})$. 
- 
-\begin{definition}{(Meet Irreducibles)} A {\em meet irreducible} $(M)$ 
-in a complete lattice structure $A$ is a minimum complementable element 
-$M \in A$ that has the following property.
-\[\forall M_1, M_2 \in A, M_1 \meet M2 = M \implies (M = M_1 \lor M = M_2), M \neq \top \]  
-\end{definition}
 
-In case of partial assignments, meet irreducibles are the singleton
-assignments, for example $\{x \mapsto true \}$, which represents the set 
-of all propositional assignments where the literal $x$ is mapped to true.  
-An important property of meet irreducibles in case of partial assignment is that 
-they have precise complements.  For example, the complement of $\{x \mapsto true \}$
-is a singleton element,$\{x \mapsto false \}$, in the partial assignment domain. 
+\subsection{Template Polyhedra Abstract Domain}
 
-\begin{definition}{(Complementable Meet Irreducibles)} A complementable meet
-irreducible $\bar{M}$ of an abstract lattice $A$ is the complement of a meet 
-irreducible $M \in A$ such that $\bar{M} \in A$ and the concretisation of $M$ 
-is the set complement of $\bar{M}$.  If every meet irreducible in $A$ is
-complementable, then $A$ is said to be have complementable meet irreducibles.  
-\end{definition}
+\pscmt{TODO} 
 
-\subsection{Interval Abstract Domain}
+\paragraph{Interval Abstract Domain} \pscmt{TODO: simplify}
 The {\em Interval} abstract domain is a lattice 
 $ItvDom = (ItvElm, \sle_{I}, \join_{I}, \meet_{I})$, where
 $ItvElm: (Var \rightarrow Itv) \cup \{\bot\}$, and $Itv$ is 
@@ -96,7 +83,7 @@ $2*N$ intervals. The intervals restrict the set of values
 taken by program variables at each program point, starting 
 from $[-\infty, \infty]$.   
 
-\subsection{Octagon Abstract Domain}
+\paragraph{Octagon Abstract Domain} \pscmt{TODO: simplify}
 The {\em Octagon} abstract domain is a lattice 
 $OctDom = (OctElm, \sle_{O}, \join_{O}, \meet_{O})$, where
 $OctElm: (Var \times Var \rightarrow (\mathbb{R} \cup \{\infty\})) \cup \bot$. 
@@ -159,11 +146,32 @@ An abstract valuation is {\em atomic} if each variable is mapped to a singleton
 value or to $\bot$.  
 \end{definition}
 
+\subsection{Properties of Domain Elements for Decision and Learning}
+
+\begin{definition}{(Meet Irreducibles)} A {\em meet irreducible} $(M)$ 
+in a complete lattice structure $A$ is a minimum complementable element 
+$M \in A$ that has the following property.
+\[\forall M_1, M_2 \in A, M_1 \meet M2 = M \implies (M = M_1 \lor M = M_2), M \neq \top \]  
+\end{definition}
+
+In case of partial assignments, meet irreducibles are the singleton
+assignments, for example $\{x \mapsto true \}$, which represents the set 
+of all propositional assignments where the literal $x$ is mapped to true.  
+An important property of meet irreducibles in case of partial assignment is that 
+they have precise complements.  For example, the complement of $\{x \mapsto true \}$
+is a singleton element,$\{x \mapsto false \}$, in the partial assignment domain. 
+
+\begin{definition}{(Complementable Meet Irreducibles)} A complementable meet
+irreducible $\bar{M}$ of an abstract lattice $A$ is the complement of a meet 
+irreducible $M \in A$ such that $\bar{M} \in A$ and the concretisation of $M$ 
+is the set complement of $\bar{M}$.  If every meet irreducible in $A$ is
+complementable, then $A$ is said to be have complementable meet irreducibles.  
+\end{definition}
+
 %========================
 \input{literals-clauses}
 %========================
 
-\subsection{Properties of Domain Elements for Decision and Learning}
 One of the requirements for a clause learning SAT solver 
 is that each element of the partial assignments domain 
 needs to have a decomposition into precisely complementable 
@@ -190,7 +198,11 @@ To this end, we implement our own template-based
 interval, octagon and equality domains which supports 
 complementation operator.  
 %For example, the octagon in Figure~\ref{octagon} can be written as a conjunction of:
-%\[(x>=-2) \land (x<=1) \land (y>=-1) \land (y<=2) \land (x+y<=2) \land (x-y<=1) \land (y-x<=3) \land (-x-y<=2)\] 
+%\[(x>=-2) \land (x<=1) \land (y>=-1) \land (y<=2) \land (x+y<=2)
+%\land (x-y<=1) \land (y-x<=3) \land (-x-y<=2)\] 
+\pscmt{That's no valid motivation. We never complement a whole octagon, but just a
+  meet-irreducible. It's trivial to do that with APRON. The reason was
+a different one: APRON does not support all C operators, e.g. the bitwise operators.}
 For example, the complementation of the octagon in Figure~\ref{octagon} can be written as disjunction of:
 \[(x<-2) \lor (x>1) \lor (y<-1) \lor (y>2) \lor (x+y>2) \lor (x-y>1) \lor (y-x>3) \lor (-x-y>2)\]
 
