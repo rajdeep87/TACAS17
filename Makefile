@@ -1,9 +1,10 @@
+SRC=algorithm.tex deductions.tex invariant.tex background.tex definitions.tex learning.tex cdcl.tex domains.tex literals-clauses.tex conclusion.tex example.tex paper.tex contributions.tex experiments.tex related_work.tex decision.tex introduction.tex symbols.tex
 TARGET=paper
 BIB=biblio.bib
 
 all: ${TARGET}.pdf
 
-${TARGET}.dvi: ${TARGET}.tex ${BIB} 
+${TARGET}.dvi: ${TARGET}.tex ${BIB} ${SRC}
 	latex ${TARGET}.tex
 	bibtex ${TARGET}
 	latex ${TARGET}.tex
