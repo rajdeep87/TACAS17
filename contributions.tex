@@ -1,22 +1,23 @@
-\section{Contributions}
+\paragraph{Contributions}
 In this paper, we make the following contributions.
-\begin{enumerate}
+\begin{compactenum}
 \item We present a novel program analysis technique that 
-lift CDCL algorithm to relational numerical abstract domains.   
-Our proposed technique is embodied in our tool called, {\em Titlis}.  
+lifts the CDCL algorithm to relational numerical abstract domains.   
+Our proposed technique is embodied in our tool called, {\em
+  Titlis}. \pscmt{It's better not to create a zoo of tool names}  
 To the best of our knowledge, this is the first instantiation of CDCL 
 algorithm with relational abstract domains. 
 
 \item We present an abstract model search algorithm that strictly 
-generalizes BCP procedure to compute fix-point over template polyhedra 
-domain.  Our abstract conflict analysis algorithm present a non-trivial 
-lifting of the Unique Implication Point (UIP) procedure to abstract 
-lattices in order to learn a generalized reason for conflicts.  
+generalizes the Boolean Constraint Propagation (BCP) procedure to
+compute a fixed point over a relational domain.  Our abstract conflict analysis algorithm present a non-trivial 
+lifting of the Unique Implication Point (UIP) procedure to relational abstract 
+domains in order to learn a generalized reason for conflicts.  
  
-\item  Experiments on a set of benchmarks drawn from bit-vector 
-regression suite in sv-comp, numerical programs and few 
-control-intensive benchmarks from hardware domain shows that 
+\item  Experiments on a set of benchmarks drawn from the bitvector 
+category in SV-COMP as well as numerical programs and a few 
+control-intensive benchmarks from hardware domain show that 
 the strict generalization of CDCL algorithm effectively combines 
 the efficiency of abstract domains while being path-sensitive and 
 bit-precise at the same time.  
-\end{enumerate}
+\end{compactenum}
