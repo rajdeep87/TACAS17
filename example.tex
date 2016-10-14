@@ -13,9 +13,9 @@ void main() {
  assume(val>=0 && val<=N);
  _Bool c;
  if(c)
-  x = val;
+   x = val;
  else 
-  x = -val;
+   x = -val;
  z = x * x;
  assert(z>=0);
 }
@@ -37,8 +37,10 @@ void main() {
 \\
 \hline
 \end{tabular}
-\caption{C Program, Control-flow Graph (CFG) and Abstract Conflict Graph}
-\label{example}
+\caption{\label{example}
+C Program, Control-flow Graph (CFG) and Abstract Conflict Graph
+\pscmt{change \&\& in the CFG to $\wedge$; the constraint towards to error does not show up correctly; in the second oct analysis box put $\wedge$ between the constraints; add an arrow from the interval Error box with three dots to indicate that the analysis continues (even though you explain it in the text)}
+}
 \end{figure}
 Let us consider a simple program in Figure~\ref{example} that performs 
 multiplication of two machine integers and checks that the result of the 
