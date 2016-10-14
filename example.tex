@@ -37,16 +37,16 @@ void main() {
 \\
 \hline
 \end{tabular}
-\caption{\label{example}
+\caption{\label{fig:example}
 C Program, Control-flow Graph (CFG) and Abstract Conflict Graph
 \pscmt{change \&\& in the CFG to $\wedge$; the constraint towards to error does not show up correctly; in the second oct analysis box put $\wedge$ between the constraints; add an arrow from the interval Error box with three dots to indicate that the analysis continues (even though you explain it in the text); shorten ``val'' to ``v''}
 }
 \end{figure}
-Let us consider a simple program in Figure~\ref{example} that performs 
+Let us consider a simple program in Figure~\ref{fig:example} that performs 
 multiplication of two machine integers and checks that the result of the 
 multiplication is always positive for an integer input $x$.  To avoid 
 overflow error, we assume $x$ has an upper bound $N$.  The control 
-flow graph is shown in the middle column of Figure~\ref{example}.  
+flow graph is shown in the middle column of Figure~\ref{fig:example}.  
 
 We analyze the program using three different analyzers -- {\em bounded 
 model checking (BMC)}, {\em abstract interpretation} and {\em ACDCL}.    
@@ -88,10 +88,10 @@ ACDCL (Octagons) & 0 & 7 & 0 & 0 & 0 \\
 \label{solver}
 \end{table}
 %
-The right-side of Figure~\ref{example} shows an analysis using ACDCL with 
+The right-side of Figure~\ref{fig:example} shows an analysis using ACDCL with 
 octagon domain (top) and an interval domain (bottom).  The analysis 
 associates an abstract element for each control location and variable, 
-as shown in the abstract conflict graph in Firgure~\ref{example}.  
+as shown in the abstract conflict graph in Firgure~\ref{fig:example}.  
 Octagonal constraints deduced by ACDCL solver are sufficient to prove 
 safety without any decision or clause learning.  However, unlike Ast{\'e}e, 
 an automatic interval analysis is also sufficient to prove safety with 
@@ -106,7 +106,7 @@ heuristics that select variables appearing in conditional branches
 first before choosing other program variables. 
 The decision constrains the interval of $x:=[0,5]$.  The deductions made 
 during fixed point iteration are represented by abstract conflict 
-graph in right-side of figure~\ref{example}.  Nodes in the abstract 
+graph in right-side of figure~\ref{fig:example}.  Nodes in the abstract 
 conflict graph denotes the corresponding updates to the program 
 variables in the CFG.  Interval analysis concludes that the $(ERROR:\bot)$, that 
 is the decision $c:=[1,1]$ leads to a {\em conflict}.  Thus, 

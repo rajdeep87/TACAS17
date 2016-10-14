@@ -1,136 +1,239 @@
-\section{Program and Abstract Domains}
-In this section, we define a notion of program analysis constraints, concrete
-domain and abstract domain. \\
-\Omit {
-\subsection{Programs:}
-%
-A {\em program} $\mathcal{P}$ is formally defined as follows.
+\section{Preliminaries}
+This section explains the program model and the abstract domains that
+we are going to use.
+% \subsection{Programs:}
+% %
+% A {\em program} $\mathcal{P}$ is formally defined as follows.
+% \[
+% \begin{array}[t]{@{}lll}
+% \mathcal{P} & {:}{:}{=} & \mathit{Procedure} \\
+% \mathit{Procedure} & {:}{:}{=} & \mathit{Statement} \mid \mathit{Procedure} \\
+% \mathit{Statement} & {:}{:}{=} & CStatement \mid \mathit{function(Var_1,\dots,Var_n)} \\
+% \mathit{CStatement} & {:}{:}{=} & x {:}{=} exp \mid \mathit{ITE}(b, s_1,s_2) \mid \mathit{s_1;s_2} \mid loop\{s\} \\
+% \end{array}
+% \]
+% Consider sets of expressions $Exp$ and Boolean expressions $BExp$
+% over variables $Var$ of $\mathcal{P}$.  The variables in $Var$ 
+% can take numeric values in $Val$.  A procedure is denoted as 
+% $\mathit{function(Var_1,\dots,Var_n)}$.  A $\mathit{CStatement}$ 
+% is an assignment, conditional, sequential concatenation or a loop. \\
+% \textbf{Control-flow Graph:} A CFG is a triple $(Loc, E, lbl)$, 
+% where $Loc$ is the set of locations with an unique start 
+% location $(init)$ and error location $(err)$, $E$ is the set 
+% of control-flow edges that are labelled with the set 
+% $lbl \in Statement$.  For the purpose of illustration, we 
+% assume that all the procedures are inlined.  
+
+\begin{figure}
 \[
-\begin{array}[t]{@{}lll}
-\mathcal{P} & {:}{:}{=} & \mathit{Procedure} \\
-\mathit{Procedure} & {:}{:}{=} & \mathit{Statement} \mid \mathit{Procedure} \\
-\mathit{Statement} & {:}{:}{=} & CStatement \mid \mathit{function(Var_1,\dots,Var_n)} \\
-\mathit{CStatement} & {:}{:}{=} & x {:}{=} exp \mid \mathit{ITE}(b, s_1,s_2) \mid \mathit{s_1;s_2} \mid loop\{s\} \\
+\begin{array}{rcl}
+g_0 &=& \true \\
+\multicolumn{3}{l}{0 \leq v\leq N} \\
+g_1 &=& g_0\wedge c\\
+x_0 &=& v \\
+x_1 &=& -v \\
+x_2 &=& g_1?x_0:x_1 \\
+g_2 &=& g_1 \vee g_0\wedge \neg c\\
+z &=& x_2 * x_2 \\
+\multicolumn{3}{l}{z<0 \wedge g_2}
 \end{array}
 \]
-Consider sets of expressions $Exp$ and Boolean expressions $BExp$
-over variables $Var$ of $\mathcal{P}$.  The variables in $Var$ 
-can take numeric values in $Val$.  A procedure is denoted as 
-$\mathit{function(Var_1,\dots,Var_n)}$.  A $\mathit{CStatement}$ 
-is an assignment, conditional, sequential concatenation or a loop. \\
-
-\textbf{Control-flow Graph:} A CFG is a triple $(Loc, E, lbl)$, 
-where $Loc$ is the set of locations with an unique start 
-location $(init)$ and error location $(err)$, $E$ is the set 
-of control-flow edges that are labelled with the set 
-$lbl \in Statement$.  For the purpose of illustration, we 
-assume that all the procedures are inlined.  
+\caption{\label{fig:ssa}
+SSA for the example in Figure~\ref{fig:example}
 }
-\textbf{Program Analysis Constraints:}  A program $\mathcal{P}$ is represented 
-as set of equations called, {\em program analysis constraints}.  The 
-program analysis constraints, as shown below, is an assignment, 
-or boolean expressions $BExp$ over program variables $Var$ or
-a non-deterministic choice (ternary experssion) between statements $s_1$ and
-$s_2$.  All the bounded loops are completely unrolled and represented using 
-following constraints. Similarly, an assertion is of type $BExp$.  
-\[c::= x:= exp | BExp | (exp) ? s_1, s_2\]
-For example, figure~\ref{swssa} presents the program analysis constraints for 
-a C program in Static Single Assignment (SSA) form.  
+\end{figure}
 
-\pscmt{we should give the (simplified) SSA for an example here}
-
-\subsection{Concrete Semantics}
-\pscmt{not sure that adds anything for TACAS}
-The {\em concrete} domain is a lattice 
-of concrete environments, $Env = Var \rightarrow Val$, and is 
-defined by $CDom = (Env, \sle_{C}, \join_{C}, \meet_{C})$.
-A transformer, $post_{stmt}$, of concrete domain defines 
-the effect of a statement $stmt$ on the concrete domain, 
-$post_{stmt} : \powerset(Env) \rightarrow \powerset(Env)$.  
-
-A state in concrete domain is a tuple $\langle l, \sigma \rangle$, 
-where $l$ is a location and $\sigma \in Env$.  A trace is a sequence 
-of states $(l_0, \sigma_0), \ldots (l_n, \sigma_n)$ such that for all 
-$0 \leq i \leq n$, there exists a cfg egde $(l_{i}, l_{i+1})$ 
-if $\sigma_{i+1} \in post_{i}(\sigma_{i})$. 
-
-\subsection{Template Polyhedra Abstract Domain}
-
-\pscmt{TODO} 
-
-\paragraph{Interval Abstract Domain} \pscmt{TODO: simplify}
-The {\em Interval} abstract domain is a lattice 
-$ItvDom = (ItvElm, \sle_{I}, \join_{I}, \meet_{I})$, where
-$ItvElm: (Var \rightarrow Itv) \cup \{\bot\}$, and $Itv$ is 
-the set of intervals of type $[l,u]$ over numeric data 
-type with $l \leq u$. The least element is $\bot$ and the 
-greatest element is $\top$ which maps all variables to their
-minimum ($min$) and maximum ($max$) values.  An interval 
-$\langle x, [min, v] \rangle$ is written as $x \leq v$.  The 
-partial order $\sle_{I}$ over elements in the set $Itv$ is 
-given by $I_1 \sle_{I} I_2$ if $I_2$ contains $I_1$.
-A join $(\join_{I})$ of two intervals $\langle x_1 \rightarrow [l_1, u_1], 
-x_1 \rightarrow [l_2, u_2] \rangle$ is an interval 
-$\langle x_1 \rightarrow [min(l_1, l_2), max(u_1, u_2)]$.
-A meet $(\meet_{I})$ of two intervals $\langle x_1 \rightarrow [l_1, u_1], 
-x_1 \rightarrow [l_2, u_2] \rangle$ is an interval 
-$\langle x_1 \rightarrow [max(l_1, l_2), min(u_1, u_2)] \rangle$.
-The galois connection between the concrete environment and intervals is 
-given as follows.
-\[\alpha(x) = \{[inf(x), sup(x)] | x \in Var\} \qquad   \alpha(\emptyset) = \bot \]
-\[\gamma[p,q] = \{c \in \mathbb{Z} | p \leq c \leq q\} \qquad \gamma(\bot) = \emptyset \]
-For a program with $N$ variables, there are a total of 
-$2*N$ intervals. The intervals restrict the set of values 
-taken by program variables at each program point, starting 
-from $[-\infty, \infty]$.   
-
-\paragraph{Octagon Abstract Domain} \pscmt{TODO: simplify}
-The {\em Octagon} abstract domain is a lattice 
-$OctDom = (OctElm, \sle_{O}, \join_{O}, \meet_{O})$, where
-$OctElm: (Var \times Var \rightarrow (\mathbb{R} \cup \{\infty\})) \cup \bot$. 
-The least element is $\bot$ that contains all unsatisfiable 
-set of inequalities and the greatest element is $\top$ which 
-maps the bounds of all octagonal inequalities to $\infty$. 
-The partial order $\sle_{O}$ over elements in the set $OctElm$ is 
-given by $O_1 \sle_{O} O_2$ iff the bounds of each inequalities in $0_1$ 
-is included (by $\leq$ order) in the bounds of corresponding inequalities 
-in $O_2$, that is, the octagons are ordered by the inclusion relations.
-
-The join $(\join_{O})$ of two octagons, $\langle (v_i \times v_j \rightarrow N_1),
-(v_i \times v_j \rightarrow N_2) \rangle$, is not necessarily an octagon 
-and is computed by taking piece-wise maximum of bounds of corresponding 
-octagonal inequalities, $\langle (v_i \times v_j \rightarrow max(N_1, N_2) \rangle$.
-However, the meet $(\meet_{O})$ of two octagons, $\langle (v_i \times v_j \rightarrow N_1),
-(v_i \times v_j \rightarrow N_2) \rangle$, is always an octagon and is 
-computed by taking piece-wise minimum of bounds of corresponding 
-octagonal inequalities, $\langle (v_i \times v_j \rightarrow min(N_1, N_2)$.  A closed 
-octagon is the smallest octagon following the partial order $\sle_{O}$, among all 
-the octagons that abstract the same concrete values.
-
-The octagon domain is a relational abstract domain that permits $2n^2$ 
-linear inequalities between $n$ program variables.  The octagonal 
-inequalities are of two types: binary or unary inequalities as shown below.
-\[Binary: \pm v_i \pm v_j \leq a, v_i \neq v_j \qquad Unary: v_i \leq b, \{a, b\} \in \mathbb{R} \cup \infty \]  
-An element in octagon domain, $OctElm$, is a conjunction of such 
-inequalities and is called an octagon.  Figure~\ref{octagon} shows an 
-example octagon and its associated inequalities.   
+%-------------------------------------------------------------------------------
+\subsection{Program Representation}  
 %
-\begin{wrapfigure}{r}{5.5cm}
-\caption{An example of Octagon}\label{octagon}
+We consider loop-free programs (respectively bounded unwindings of
+programs with loops or recursion) with safety properties given as
+assertions in the code.
+%
+Such a program is represented as set $\mathcal{P}$ of
+\emph{statements} $s$.  These are constraints as typically obtained by
+translating the program into single static assignment (SSA) form via a
+data flow analysis.
+%
+Figure~\ref{fig:ssa} shows the constraints for the example program in
+Figure~\ref{fig:example}.
+%
+Assignments such as \texttt{x=v;} become equalities $x_1=v$ where the
+left-hand side variable gets a fresh name (subscript).
+%
+Control flow is encoded into guard variables such as $g_1=g_0\wedge c$.
+%
+Data flow joins become conditional expressions, e.g.\ $x_3=g_1?x_1:x_2$.
+%
+Assertions $\mathcal{A}$ are constraints $a$ of the form $g_3
+\Rightarrow z\geq 0$, meaning that if $g_3$ holds (i.e.\ the assertion
+is reachable) then the assertion must hold.
+
+%For example, figure~\ref{swssa} presents the program analysis constraints for 
+%a C program in Static Single Assignment (SSA) form.  
+
+% \subsection{Concrete Semantics}
+% \pscmt{not sure that adds anything for TACAS}
+% The {\em concrete} domain is a lattice 
+% of concrete environments, $Env = Var \rightarrow Val$, and is 
+% defined by $CDom = (Env, \sle_{C}, \join_{C}, \meet_{C})$.
+% A transformer, $post_{stmt}$, of concrete domain defines 
+% the effect of a statement $stmt$ on the concrete domain, 
+% $post_{stmt} : \powerset(Env) \rightarrow \powerset(Env)$.  
+% 
+% A state in concrete domain is a tuple $\langle l, \sigma \rangle$, 
+% where $l$ is a location and $\sigma \in Env$.  A trace is a sequence 
+% of states $(l_0, \sigma_0), \ldots (l_n, \sigma_n)$ such that for all 
+% $0 \leq i \leq n$, there exists a cfg egde $(l_{i}, l_{i+1})$ 
+% if $\sigma_{i+1} \in post_{i}(\sigma_{i})$. 
+
+%-------------------------------------------------------------------------------
+\paragraph{Safety problem}  
+%
+Based on above program representation, the safety problem that our
+ACDL solver will solve is the following:
+%
+\begin{equation}\label{eq:safety}
+\bigwedge_{s\in\mathcal{P}} s \wedge \neg \bigwedge_{a\in\mathcal{A}} a
+\text{ is unsatisfiable if and only if the program is safe.}
+\end{equation}
+
+%-------------------------------------------------------------------------------
+\subsection{Abstract Domain}
+%-------------------------------------------------------------------------------
+The results that we present on lifting ACDL to relational domains hold
+for any relational domain.
+% 
+In our prototype implementation and for illustrative purposes in this
+paper we use a product domain $\mathcal{B}^b\times\mathcal{R}$ where
+$\mathcal{B}$ is the Boolean domain
+$\langle\{\true,\false,\bot,\top\},\Rightarrow,\wedge,\vee\rangle$,
+$b$ the number of Boolean variables in the program, and $\mathcal{R}$
+is a \emph{relational} domain over the numerical (bitvector) variables
+in their respective data types (currently, signed and unsigned
+integers are supported).
+%
+We instantiate $\mathcal{R}$ with the template polyhedra domain.
+
+For notational convenience we will denote elements of
+$\mathcal{B}^b$ by their concretisations to propositional formulae,
+e.g.\ for the Boolean variable vector $(g_1,c)$ with abstract value
+$(\false,\top)$ we will write $\neg g_1$.
+
+%-------------------------------------------------------------------------------
+\paragraph{Template Polyhedra Abstract Domain}
+%
+The template polyhedra domain~\cite{sriram} represents sets $X$ of
+valuations of a vector of variables $\vec{x}$ such that
+$\mat{C}\vec{x}\leq\vec{d}$ for a fixed coefficient matrix $\mat{C}$
+and a constant vector $\vec{d}$. The domain of $\vec{d}$ is augmented
+by a special element to denote the minimal element $\bot$ of the lattice.
+%
+The abstraction function is defined as $\alpha(X) = \min \{\vec{d}\mid
+\mat{C}\vec{x}\leq\vec{d}, \vec{x}\in X\}$ where $\min$ is
+applied component-wise. There are several optimisation-based
+techniques for computing the domain
+operations~\cite{sriram,GS07b,BJKS15}. In our implementation we use
+the strategy iteration approach available in 2LS~\cite{BJKS15}.
+%
+For notational convenience we will use conjunctions of linear
+inequalities, e.g.\ $x_1\geq 0 \wedge x_1-z\leq 30$ to denote elements
+of the domain. $\true$ is $\top$ and $\false$ is $\bot$.
+
+% \paragraph{Interval Abstract Domain} 
+% The {\em Interval} abstract domain is a lattice 
+% $ItvDom = (ItvElm, \sle_{I}, \join_{I}, \meet_{I})$, where
+% $ItvElm: (Var \rightarrow Itv) \cup \{\bot\}$, and $Itv$ is 
+% the set of intervals of type $[l,u]$ over numeric data 
+% type with $l \leq u$. The least element is $\bot$ and the 
+% greatest element is $\top$ which maps all variables to their
+% minimum ($min$) and maximum ($max$) values.  An interval 
+% $\langle x, [min, v] \rangle$ is written as $x \leq v$.  The 
+% partial order $\sle_{I}$ over elements in the set $Itv$ is 
+% given by $I_1 \sle_{I} I_2$ if $I_2$ contains $I_1$.
+% A join $(\join_{I})$ of two intervals $\langle x_1 \rightarrow [l_1, u_1], 
+% x_1 \rightarrow [l_2, u_2] \rangle$ is an interval 
+% $\langle x_1 \rightarrow [min(l_1, l_2), max(u_1, u_2)]$.
+% A meet $(\meet_{I})$ of two intervals $\langle x_1 \rightarrow [l_1, u_1], 
+% x_1 \rightarrow [l_2, u_2] \rangle$ is an interval 
+% $\langle x_1 \rightarrow [max(l_1, l_2), min(u_1, u_2)] \rangle$.
+% The galois connection between the concrete environment and intervals is 
+% given as follows.
+% \[\alpha(x) = \{[inf(x), sup(x)] | x \in Var\} \qquad   \alpha(\emptyset) = \bot \]
+% \[\gamma[p,q] = \{c \in \mathbb{Z} | p \leq c \leq q\} \qquad \gamma(\bot) = \emptyset \]
+Template polyhedra subsume, for example, interval and octagon domains.
+
+\begin{wrapfigure}{r}{4.5cm}
+\vspace*{-3ex}
 \scalebox{.65}{\import{figures/}{octagons.pspdftex}}
+\caption{An example of Octagon}\label{octagon}
+\vspace*{-3ex}
 \end{wrapfigure} 
+
+For a program with $N$ variables, the matrix $\mat{C}$ for intervals
+generates at most $2N$ inequality constraints, one for the upper and lower
+bounds of each variable.
 %
-For building program analyzers using octagon domains, the domain also 
-provides few operators like {\em widening ($\nabla$)} and {\em closure ($*$)}.  
-The widening operator is used to accelerate convergence for loops in the program
-and has a quadratic complexity in the number of variables.  If the bound of an 
-octagonal inequality increases every iteration, then $\nabla$ sets the bounds 
-to $\infty$.  However, the closure operator is often used to reduce the degree 
-of over-approximation resulting from the join operation. Closure always produces 
-unique octagonal inequalities, but it is very expensive to compute because of 
-cubic complexity in the number of program variables. An example of closure
-operation is shown below.
-\[((x-y \leq 4) \wedge (y-z \leq 5))^* \implies ((x-y \leq 4) \wedge (y-z \leq 5) \wedge (x-z \leq 9)) \]  
+For octagons, we have at most $2N^2$ inequalities, one for the upper
+and lower bounds of each variable and sums and differences for each
+pair of variables. Figure~\ref{octagon} shows an 
+example octagon and its associated inequalities.   
+
+The interval domain is a non-relational domain because a single
+inequality only contains a single variable.
+%
+The octagon domain, however, is relational.  A fundamental difference
+between relational and non-relational domains is that relational
+domains require the computation of a \emph{closure} in order to obtain
+a normal form that is usually required for efficient domain operations.
+An example of a closure computation is shown below.
+\[\mathit{closure}((x-y \leq 4) \wedge (y-z \leq 5))=((x-y \leq 4) \wedge (y-z \leq 5) \wedge (x-z \leq 9)) \]  
+The closure computes all implied domain constraints.  For octagons,
+the closure operation is very expensive (cubic complexity in the
+number of program variables).
+%
+We will see that our algorithm performs closure computations lazily,
+postponing them to the point where they are actually necessary.
+
+% \paragraph{Octagon Abstract Domain} \pscmt{TODO: simplify}
+% The {\em Octagon} abstract domain is a lattice 
+% $OctDom = (OctElm, \sle_{O}, \join_{O}, \meet_{O})$, where
+% $OctElm: (Var \times Var \rightarrow (\mathbb{R} \cup \{\infty\})) \cup \bot$. 
+% The least element is $\bot$ that contains all unsatisfiable 
+% set of inequalities and the greatest element is $\top$ which 
+% maps the bounds of all octagonal inequalities to $\infty$. 
+% The partial order $\sle_{O}$ over elements in the set $OctElm$ is 
+% given by $O_1 \sle_{O} O_2$ iff the bounds of each inequalities in $0_1$ 
+% is included (by $\leq$ order) in the bounds of corresponding inequalities 
+% in $O_2$, that is, the octagons are ordered by the inclusion relations.
+
+% The join $(\join_{O})$ of two octagons, $\langle (v_i \times v_j \rightarrow N_1),
+% (v_i \times v_j \rightarrow N_2) \rangle$, is not necessarily an octagon 
+% and is computed by taking piece-wise maximum of bounds of corresponding 
+% octagonal inequalities, $\langle (v_i \times v_j \rightarrow max(N_1, N_2) \rangle$.
+% However, the meet $(\meet_{O})$ of two octagons, $\langle (v_i \times v_j \rightarrow N_1),
+% (v_i \times v_j \rightarrow N_2) \rangle$, is always an octagon and is 
+% computed by taking piece-wise minimum of bounds of corresponding 
+% octagonal inequalities, $\langle (v_i \times v_j \rightarrow min(N_1, N_2)$.  A closed 
+% octagon is the smallest octagon following the partial order $\sle_{O}$, among all 
+% the octagons that abstract the same concrete values.
+
+% The octagon domain is a relational abstract domain that permits $2n^2$ 
+% linear inequalities between $n$ program variables.  The octagonal 
+% inequalities are of two types: binary or unary inequalities as shown below.
+% \[Binary: \pm v_i \pm v_j \leq a, v_i \neq v_j \qquad Unary: v_i \leq b, \{a, b\} \in \mathbb{R} \cup \infty \]  
+% An element in octagon domain, $OctElm$, is a conjunction of such 
+% inequalities and is called an octagon.  
+%
+% For building program analyzers using octagon domains, the domain also 
+% provides few operators like {\em widening ($\nabla$)} and {\em closure ($*$)}.  
+% The widening operator is used to accelerate convergence for loops in the program
+% and has a quadratic complexity in the number of variables.  If the bound of an 
+% octagonal inequality increases every iteration, then $\nabla$ sets the bounds 
+% to $\infty$.  However, the closure operator is often used to reduce the degree 
+% of over-approximation resulting from the join operation. 
+
+\pscmt{TODO from here}
  
 The abstract transformer, $apost_{stmt}$, captures the effect of different program 
 statements in the abstract domain. The transformer is precise for octagonal 
