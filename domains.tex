@@ -210,3 +210,18 @@ a different one: APRON does not support all C operators, e.g. the bitwise
 operators.} } For example, the complementation of the octagon in Figure~\ref{octagon} 
 can be written as disjunction of:
 \[(x<-2) \lor (x>1) \lor (y<-1) \lor (y>2) \lor (x+y>2) \lor (x-y>1) \lor (y-x>3) \lor (-x-y>2)\]
+
+\subsection{Static Analysis Equations for Safety}
+Static program analysis based on abstract interpretation~\cite{DBLP:conf/emsoft/Cousot07} 
+perform safety analysis by computing fixed point to infer invariants 
+over program variables.  However, bounded model checking (BMC) tries to search 
+for a counterexample in a bounded execution trace, by symbolically executing a 
+program up to a finite bound.  
+Similar to BMC, ACDCL searches for a counterexample by solving the formula shown below.
+For a set $N$ of program analysis constraints defined over a set 
+of constraint variables $Var = \{X_i| i \in N\}$, representing a program
+$\mathcal{P}$ and a concrete domain $\powerset(Env)$, the static analysis equation 
+for safety of $\mathcal{P}$ is given as follows.  Here, $X_{init}, X_{Err}$ denote the initial valuation 
+and the \rmcmt{final valuation} of constraint variables.
+\[\varphi = X_{init} \subseteq Env \wedge \underset{p,q \in |\mathcal{P}|}
+{\bigwedge} \{ X_p \subseteq post_{(p,q)}(X_q) \} \wedge X_{err} \supset \emptyset \] 
