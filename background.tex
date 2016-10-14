@@ -1,1 +1,11 @@
 \section{Background}
+The natural domain SMT framework proposed in~\cite{ndsmt} operates on
+a fixed first-order partial assignment lattice structure, where first-order 
+variables are mapped to domain values, similar to constants lattice 
+in program analysis.  However, ACDCL can be instantiated on different 
+abstract lattices.  The abstract lattice in natural domain SMT does 
+not have complementable meet irreducibles, and therefore does not 
+support generalized clause learning~\cite{sas}.  On the other hand, 
+most abstract lattice have complementation property, thus enabling 
+ACDCL to perform generalized clause learning.
+
