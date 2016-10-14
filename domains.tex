@@ -153,13 +153,13 @@ $M \in A$ that has the following property.
 \[\forall M_1, M_2 \in A, M_1 \meet M2 = M \implies (M = M_1 \lor M = M_2), M \neq \top \]  
 \end{definition}
 
-In case of partial assignments, meet irreducibles are the singleton
+A meet irreducible in partial assignments domain are the singleton 
 assignments, for example $\{x \mapsto true \}$, which represents the set 
 of all propositional assignments where the literal $x$ is mapped to true.  
-An important property of meet irreducibles in case of partial assignment is that 
-they have precise complements.  For example, the complement of $\{x \mapsto true \}$
-is a singleton element,$\{x \mapsto false \}$, in the partial assignment domain. 
+A meet irreducible in interval domain is $\langle x \leq n \rangle$ or 
+$\langle x \geq n \rangle$.  
 
+%
 \begin{definition}{(Complementable Meet Irreducibles)} A complementable meet
 irreducible $\bar{M}$ of an abstract lattice $A$ is the complement of a meet 
 irreducible $M \in A$ such that $\bar{M} \in A$ and the concretisation of $M$ 
@@ -167,23 +167,45 @@ is the set complement of $\bar{M}$.  If every meet irreducible in $A$ is
 complementable, then $A$ is said to be have complementable meet irreducibles.  
 \end{definition}
 
+\Omit {
+An important property of meet irreducibles in case of partial assignments 
+domain is that they have precise complements.  
+For example, the complement of $\{x \mapsto true \}$ is a 
+singleton element,$\{x \mapsto false \}$, in the partial assignments domain. 
+}
+
+%
 %========================
 \input{literals-clauses}
 %========================
 
-\subsection{Properties of Domain Elements for Decision and Learning}
+\subsection{Properties of Domain Elements for Learning}
 %
-An important property for a clause learning SAT solver 
+\pscmt{TODO: Review by Peter}
+An important property of a clause learning SAT solver 
 is that each element of the partial assignments domain 
 are decomposable into precisely complementable 
-elements.  This property of the domain helps to 
-guide the search away from the conflicting region of the 
+elements.  This property of the domain helps to guide 
+the model search away from the conflicting region of the 
 search space.  
-\rmcmt{define precise complement}
-Thus, clause learning SAT solvers requires a weak complementation property
-of the abstraction.  Most numerical abstract domain, such as intervals, 
-octagons, polyhedra have complementation property, that is, they are
-representable as intersections of complementable half-spaces. 
+
+Most numerical abstract domains, such as intervals, octagons, 
+polyhedra lacks precise complements, but they can be 
+represented as intersections of complementable half-spaces, 
+each of which have precise complements.  For example, intervals 
+lack complements, but the decomposition of intervals into 
+meet-irreducibles have complements.  
+\[x \mapsto [2,5] \mathrel{\mathop{\longrightarrow}^{\mathrm{decompose}}} \{\langle x
+\geq 2 \rangle \meet \langle x \leq 5 \rangle \} \]
+Similarly, the complementation of the octagon in Figure~\ref{octagon} 
+can be written as disjunction of:
+\[(x<-2) \lor (x>1) \lor (y<-1) \lor (y>2) \lor (x+y>2) \lor (x-y>1) \lor (y-x>3) \lor (-x-y>2)\]
+
+Standard abstract interpretation does not require complementation property.  
+Abstract Domain library, such as APRON C library~\cite{apron} is specialized 
+for abstract interpretation.  We implement a template-based polyhedra domain 
+that returns precise complements by decomposing it into half-spaces.    
+
 \Omit {
 The commonly used library for numerical abstract domains  
 is the APRON C library~\cite{apron}.  This library is 
@@ -195,21 +217,17 @@ such as {\em BOX}, {\em OCTAGON}, {\em Convex Polyhedra} and
 to compute invariants over numerical variables in the 
 program~\cite{se2011}. 
 }
-Abstract Domain library, such as APRON C library~\cite{apron}, 
-is specialized for the abstract interpretation framework which 
-does not require complementation property.  To this end, we 
-implement our own template-based polyhedra domain and interval 
+\Omit {
+To this end, we implement our own template-based polyhedra domain and interval 
 domain which supports complementation operator.  
 %For example, the octagon in Figure~\ref{octagon} can be written as a conjunction of:
 %\[(x>=-2) \land (x<=1) \land (y>=-1) \land (y<=2) \land (x+y<=2)
 %\land (x-y<=1) \land (y-x<=3) \land (-x-y<=2)\] 
-\Omit {
 \pscmt{That's no valid motivation. We never complement a whole octagon, but just a
   meet-irreducible. It's trivial to do that with APRON. The reason was
 a different one: APRON does not support all C operators, e.g. the bitwise
-operators.} } For example, the complementation of the octagon in Figure~\ref{octagon} 
-can be written as disjunction of:
-\[(x<-2) \lor (x>1) \lor (y<-1) \lor (y>2) \lor (x+y>2) \lor (x-y>1) \lor (y-x>3) \lor (-x-y>2)\]
+operators.} 
+} 
 
 \subsection{Static Analysis Equations for Safety}
 Static program analysis based on abstract interpretation~\cite{DBLP:conf/emsoft/Cousot07} 
