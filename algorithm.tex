@@ -1,57 +1,4 @@
 \section{Abstract Conflict Driven Clause Learning}
-In a typical abstract interpretation based galois-connection settings over 
-an over-approximate domain, every concrete elements have a unique over-approximate 
-representation in the abstract.  Likewise, every concrete transformer is
-over-approximated by a unique abstract transformer.  We now define a abstract 
-deduction transformer.  
-
-\begin{definition}{(Abstract Deduction Transformer)} An abstract deduction
-transformer, $\widehat{ded_{\varphi}}$ for a formula $\varphi$ over an abstract 
-domain $A$ is a sound approximation of a concrete model transformer
-$ded_{\varphi}$, given by $\widehat{ded_{\varphi}} : A \rightarrow A$, such that 
-$\forall a \in A: \widehat{ded_{\varphi}}(a) \in \{\top, \bot, m\}$, where 
-$m \in A$ is a meet irreducible.   
-\end{definition}
-
-Let us consider a formula $\varphi = (x:=y-1)$ to be analyzed over 
-an interval abstract domain, $A = ItvDom$, and let $a = \langle y:[3, 5]
-\rangle \in ItvDom$, then $\widehat{ded_{\varphi}}(a) = a \meet \langle x:[2, 4]
-\rangle$.  An abstract deduction transformer is typically computed in the form 
-of strongest post-condition or a weakest pre-condition of a formula in the 
-abstract domain.  
-
-A meet decomposition of the outcome of abstract deduction transformer 
-is obtained by taking a meet of the element $\langle y:[3, 5] \rangle, 
-\langle x:[2, 4] \rangle \in ItvDom$ which gives set of meet irreducibles, 
-$\{ \langle y \succeq 3 \rangle, \langle y \preceq 5 \rangle, 
-\langle x \succeq 2 \rangle, \langle x \preceq 4 \rangle \}$, that are 
-precisely complementable.
-
-\begin{definition}{(Meet Decomposition)} A meet decomposition of an abstract
-element $a \in A$ is a set of meet irreducibles $M \subseteq A$ such that 
-$\forall m_i \in M, \meet(m_i) = a$, where $max(i) = |M|$.
-\end{definition}
- 
-For a program with $N$ variables, let $L$ be the total number of 
-meet irreducibles returned by a domain $D$.  For $D$ = {\em ItvDom}, the 
-maximum value of $L$ is $2*N$, whereas the maximum value of $L$ is 
-$2*(N^2)$ for $D$ = {\em OctDom}. Note that an octagon is the conjunction 
-of all octagonal inequalities in the set $L$.
-%\rmcmt{safety as satisfiability}
-\subsection{Static Analysis Equations for Safety}
-Static program analysis based on abstract interpretation~\cite{DBLP:conf/emsoft/Cousot07} 
-perform safety analysis by computing fixed point to infer invariants 
-over program variables.  However, bounded model checking (BMC) tries to search 
-for a counterexample in a bounded execution trace, by symbolically executing a 
-program up to a finite bound.  
-Similar to BMC, ACDCL searches for a counterexample by solving the formula shown below.
-For a set $N$ of program analysis constraints defined over a set 
-of constraint variables $Var = \{X_i| i \in N\}$, representing a program
-$\mathcal{P}$ and a concrete domain $\powerset(Env)$, the static analysis equation 
-for safety of $\mathcal{P}$ is given as follows.  Here, $X_{init}, X_{Err}$ denote the initial valuation 
-and the \rmcmt{final valuation} of constraint variables.
-\[\varphi = X_{init} \subseteq Env \wedge \underset{p,q \in |\mathcal{P}|}
-{\bigwedge} \{ X_p \subseteq post_{(p,q)}(X_q) \} \wedge X_{err} \supset \emptyset \] 
 %
 \begin{algorithm2e}[t]
 \DontPrintSemicolon
@@ -110,7 +57,7 @@ $result \leftarrow \deduce(S,v,\mathcal{T},\mathcal{R})$ \;
 \caption{Abstract Conflict Driven Clause Learning $\langle ACDCL(S) \rangle$ \label{Alg:acdcl}}
 \end{algorithm2e}
 %
-\subsection{Algorithm for Abstract Conflict Driven Clause Learning}
+%\subsection{Algorithm for Abstract Conflict Driven Clause Learning}
 Algorithm~\ref{Alg:acdcl} presents an overview of the ACDCL algorithm.
 The algorithm begins with a set $S$ of abstract deduction transformer 
 $\widehat{ded_{\varphi}}$ for a formula $\varphi$ over an abstract 
@@ -119,7 +66,7 @@ and an empty propagation trail and reason trail, $\mathcal{T}$, $\mathcal{R}$,
 respectively.  The propagation trail stores all meet irreducibles inferred 
 by the abstact model search phase (deductions and decisions), while the 
 reason trail maps elements of propagation trail to transformers that were 
-used to drive them.  
+used to derive them.  
 
 The procedure $deduce(S,v,\mathcal{T},\mathcal{R})$ computes a greatest 
 fixed point over the transformers in F that refines the abstract valuation 
