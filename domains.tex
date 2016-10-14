@@ -174,6 +174,46 @@ For example, the complement of $\{x \mapsto true \}$ is a
 singleton element,$\{x \mapsto false \}$, in the partial assignments domain. 
 }
 
+\subsection{Abstract Transformers}
+
+In a typical abstract interpretation based Galois-connection setting
+over an over-approximate domain, every concrete element has a unique
+over-approximate representation in the abstract.  Likewise, every
+concrete transformer is over-approximated by a unique abstract
+transformer.  We now define an abstract deduction transformer.
+
+\begin{definition}{(Abstract Deduction Transformer)} An abstract deduction
+transformer, $\widehat{ded_{\varphi}}$ for a formula $\varphi$ over an abstract 
+domain $A$ is a sound approximation of a concrete model transformer
+$ded_{\varphi}$, given by $\widehat{ded_{\varphi}} : A \rightarrow A$, such that 
+$\forall a \in A: \widehat{ded_{\varphi}}(a) \in \{\top, \bot, m\}$, where 
+$m \in A$ is a meet irreducible.   
+\end{definition}
+
+Let us consider a formula $\varphi = (x:=y-1)$ to be analyzed over 
+an interval abstract domain, $A = ItvDom$, and let $a = \langle y:[3, 5]
+\rangle \in ItvDom$, then $\widehat{ded_{\varphi}}(a) = a \meet \langle x:[2, 4]
+\rangle$.  An abstract deduction transformer is typically computed in the form 
+of strongest post-condition or a weakest pre-condition of a formula in the 
+abstract domain.  
+
+A meet decomposition of the outcome of abstract deduction transformer 
+is obtained by taking a meet of the element $\langle y:[3, 5] \rangle, 
+\langle x:[2, 4] \rangle \in ItvDom$ which gives set of meet irreducibles, 
+$\{ \langle y \succeq 3 \rangle, \langle y \preceq 5 \rangle, 
+\langle x \succeq 2 \rangle, \langle x \preceq 4 \rangle \}$, that are 
+precisely complementable.
+
+\begin{definition}{(Meet Decomposition)} A meet decomposition of an abstract
+element $a \in A$ is a set of meet irreducibles $M \subseteq A$ such that 
+$\forall m_i \in M, \meet(m_i) = a$, where $max(i) = |M|$.
+\end{definition}
+ 
+For a program with $N$ variables, let $L$ be the total number of 
+meet irreducibles returned by a domain $D$.  For $D$ = {\em ItvDom}, the 
+maximum value of $L$ is $2*N$, whereas the maximum value of $L$ is 
+$2*(N^2)$ for $D$ = {\em OctDom}. Note that an octagon is the conjunction 
+of all octagonal inequalities in the set $L$.
 %
 %========================
 \input{literals-clauses}
