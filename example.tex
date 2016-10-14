@@ -1,8 +1,5 @@
 \section{Motivating Example}
 %
-\Omit{
-\pscmt{you should give an example that requires a relational domain to
-solve...}}
 \begin{figure}[t]
 \scriptsize
 \begin{tabular}{l|l|l}
@@ -11,24 +8,16 @@ C program & Control-Flow Graph & Abstract Conflict Graph \\
 \hline
 \begin{lstlisting}[mathescape=true,language=C]
 void main() {
-int x,sepc=0,impl=0;
-assume(x>=1 && x<=N);
-spec = 2*x; 
-int state = 1;
-int y=x;
-while(state!=0) {
- switch(state) {
-  case 0: state = 1; 
-  break;
-  case 1: state = 2; 
-  break;
-  case 2: x--; y++;
-  if(x == 0) state=0;
-  else state=1;break;
- } 
-}
-impl = y;
-assert(spec == impl);
+ int x,z;
+ int val;
+ assume(val>=0 && val<=N);
+ _Bool c;
+ if(c)
+  x = val;
+ else 
+  x = -val;
+ z = x * x;
+ assert(z>=0);
 }
 \end{lstlisting}
 &
@@ -51,36 +40,34 @@ assert(spec == impl);
 \caption{C Program, Control-flow Graph (CFG) and Abstract Conflict Graph}
 \label{example}
 \end{figure}
-Let us consider a simple program in Figure~\ref{example} that checks 
-the equivalence of a state-machine based interger multiplication against  
-a specification that uses multiplication operator (*).  The assertion 
-simply compares the result of two multiplication for an integer input $x$.  
-To avoid overflow error, we assume $x$ has an upper bound $N$.  The 
-control flow graph is shown in the middle column of Figure~\ref{example}.  
+Let us consider a simple program in Figure~\ref{example} that performs 
+multiplication of two machine integers and checks that the result of the 
+multiplication is always positive for an integer input $x$.  To avoid 
+overflow error, we assume $x$ has an upper bound $N$.  The control 
+flow graph is shown in the middle column of Figure~\ref{example}.  
 
 We analyze the program using three different analyzers -- {\em bounded 
 model checking (BMC)}, {\em abstract interpretation} and {\em ACDCL}.    
-For $N=2$ and unwind limit of $bound=4$ for the {\em while} loop,
-table~\ref{solver} shows the statistics from MiniSAT~\cite{minisat} solver 
-for analysis using BMC.  The SAT solver makes 36 decisions, 1365 boolean 
-constraint propagations and performs 5 conflict analysis with 65 conflict 
-literals.  Moreover, the solver performs a restart, presumably to recover 
-from bad decisions.  
-
-On the other hand, abstract interpretation using forward analysis 
-is too imprecise to verify the safety of the above program using 
-interval domain.  The imprecision is due to control-flow join at 
-node $n1$.  State-of-the-art abstract interpretation tool, Astr{\'e}e, 
-requires external hints, provided by manually annotating the code 
-with partition directives at $n1$, to prove safety.  The partition 
-directive helps the tool to analyze each program execution paths 
-separately.  To do so, Astr{\'e}e requires a product of trace 
-partitioning domain and an interval domain to determine safety.  
-Consequently, the analysis becomes very expensive for a large value 
-of $N$.  In general, the imprecision is either intended by the tool 
-because such high precision analysis is normally not required for 
-runtime error analysis or the imprecision is unavoidable due to the 
-complexity of the application under analysis.  
+\Omit {
+The SAT solver makes 36 decisions, 1365 boolean constraint propagations 
+and performs 5 conflict analysis with 65 conflict literals.  Moreover, 
+the solver performs a restart, presumably to recover from bad decisions.  
+}
+Standard BMC tools convert the program to a bit-vector equation and pass 
+them to a SAT solver.  However, standard forward interval analysis is 
+too imprecise to verify the safety of the above program.  The 
+imprecision is due to control-flow join at node $n4$.  State-of-the-art 
+abstract interpretation tool, Astr{\'e}e, requires external hints, provided 
+by manually annotating the code with partition directives at $n1$, 
+to prove safety.  The partition directive helps the tool to analyze 
+each program execution paths separately.  To do so, Astr{\'e}e 
+requires a product of trace partitioning domain and an interval domain 
+to determine safety.  However, a relational domain such as octagons is 
+able to prove the program without any partition.  In general, the 
+imprecision is either intended by the tool because such high 
+precision analysis is normally not required for runtime error 
+analysis or the imprecision is unavoidable due to the complexity 
+of the application under analysis.  
 %
 \begin{table}
 \begin{center}
@@ -88,51 +75,59 @@ complexity of the application under analysis.
 \begin{tabular}{l|l|l|l|l|l}
 \hline
 Solver & Decisions & propagations & conflict & conflict literals & restarts \\ \hline
-SAT & 36 & 1365 & 5 & 65 & 1 \\ \hline
-ACDCL & 1 & 23 & 1 & 1 & 0 \\
+SAT & 233 & 36436 & 162 & 2604 & 2 \\ \hline
+ACDCL (Interval) & 1 & 17 & 1 & 1 & 0 \\ \hline
+ACDCL (Octagons) & 0 & 7 & 0 & 0 & 0 \\ 
 \hline
 \end{tabular}
 }
 \end{center}
-\caption{Solver-statistics}
+\caption{Solver statistics}
 \label{solver}
 \end{table}
 %
 The right-side of Figure~\ref{example} shows an analysis using ACDCL with 
-interval domain.  The analysis associates an interval for each control 
-location and variable, as shown in the abstract conflict graph.  Interval 
-constraints generated from forward analysis in the initial deduction phase 
-infers that $\langle x:[-\infty,2], spec:[2,4], impl:[-1,\infty],
-state:[1,\infty], y:[1,+\infty] \rangle$.  Clearly, ACDCL can not prove safety.  
+octagon domain (top) and an interval domain (bottom).  The analysis 
+associates an abstract element for each control location and variable, 
+as shown in the abstract conflict graph in Firgure~\ref{example}.  
+Octagonal constraints deduced by ACDCL solver are sufficient to prove 
+safety without any decision or clause learning.  However, unlike Ast{\'e}e, 
+an automatic interval analysis is also sufficient to prove safety with 
+only a single decision.  Interval constraints generated from forward 
+analysis in the initial deduction phase infers that 
+$\langle x:[-5,5], z:[-25,25] \rangle$.  Clearly, ACDCL can not prove safety.  
 
-Hence, ACDCL makes a decision $x:[-\infty,1]$ to refine the analysis.  
-The branching variable $x$ is chosen by an {\em ordered} decision 
-heuristics that choose variables appearing in conditional branches 
-(assume statement here) first before choosing other program variables. 
-The decision constrains the interval of $x$.  The deductions made 
+Hence, ACDCL makes a decision $c:=[1,1]$ to refine the analysis.  
+ACDCL implements several decision heuritics.  In this case, the 
+branching variable $c$ is chosen by an {\em ordered} decision 
+heuristics that select variables appearing in conditional branches 
+first before choosing other program variables. 
+The decision constrains the interval of $x:=[0,5]$.  The deductions made 
 during fixed point iteration are represented by abstract conflict 
-graph in right-side of figure~\ref{example}.  Nodes in the graph 
-denotes the corresponding updates to the program variables in 
-the CFG.  Interval analysis concludes that the $(n12:\bot)$, that 
-is the decision $x:[-\infty,1]$ leads to a {\em conflict}.  Thus, 
-the program is {\em safe} for $x:[-\infty,1]$.  
+graph in right-side of figure~\ref{example}.  Nodes in the abstract 
+conflict graph denotes the corresponding updates to the program 
+variables in the CFG.  Interval analysis concludes that the $(ERROR:\bot)$, that 
+is the decision $c:=[1,1]$ leads to a {\em conflict}.  Thus, 
+the program is {\em safe} for $c:=[1,1]$.  
 
 A clause learning SAT solver would learn the reason for conflict at this 
 point and then backtrack to a level such that the learnt clause is UNIT.  
 Similar to conflict analysis phase in SAT solvers, ACDCL learns that 
-(\(I: x = [2,+\infty]\)), that is all error traces must satisfy $(x \geq 2)$ 
+(\(I: c:=[0,0]\)), that is all error traces must satisfy $(c \neq 1)$ 
 at node $I$.  The analysis discards all interval constraints that
 lead to the conflict and backtrack to decision level 0.  ACDCL then 
-performs interval analysis with the learnt constraint $(x>=2)$ which again 
+performs interval analysis with the learnt constraint $(c \neq 1)$ which also 
 leads to a conflict.  The analysis cannot backtrack further and therefore 
 it terminates proving that the program is safe.  A DPLL-style solver would 
 perform proof by cases.  However, decision and clause learning are used 
 to avoid case based reasoning and prevents enumeration behavior.     
    
-The result of the analysis using ACDCL is shown in table~\ref{solver}.  
-Compared to a SAT solver, ACDCL makes only a single decision which lead 
-to 23 interval constraint propagations, and learns a single conflict clause 
-involving only one literal.  Compared to abstract interpretation, ACDCL does 
-not require external hints to proof the program, thus automatically performing 
-program and property driven trace partitioning to generate proofs using decision 
-and clause learning.  
+For $N=46000$, table~\ref{solver} shows the statistics from 
+MiniSAT~\cite{minisat} solver for analysis using BMC, and 
+analysis using ACDCL with interval and octagon domains.  
+Compared to a SAT solver, there is a significant reduction 
+in the number of decisions, propagations, learnt clauses and 
+restrarts.  Compared to abstract interpretation, ACDCL does 
+not require external hints to proof the program, thus 
+automatically performing program and property driven trace 
+partitioning to generate proofs using decision and clause learning.  
