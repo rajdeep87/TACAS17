@@ -1,126 +1,5 @@
-\section{Experiments}
-\label{section:experiments}
-\Omit {
-We performed a number of experiments to demonstrate the utility and
-applicability of {\algorithmName}.  All experiments were performed
-on an Intel Xeon X5667 at 3\,GHz running Fedora 20 with 64-bit binaries.
-Each individual run was limited to 13\,GB 
-of memory and 900 seconds of
-CPU time, % (with one exception noted below), 
-enforced by the operating
-system kernel.  We took the \emph{loops} meta-category (143 benchmarks) from the SV-COMP'15 benchmark
-set.%
-\footnote{\url{http://sv-comp.sosy-lab.org/2015/benchmarks.php}}
-%
 
-\subsection{\algorithmName\ Verifies More Programs Than the Algorithms it Simulates}
-
-Table~\ref{tab:results} gives a comparison between \systemName\ running
-\algorithmName\ (column 6) and \emph{the same system} running as an incremental
-bounded model checker (IBMC) (column 2), incremental $k$-induction (i.e. without invariant inference, column 3)
-and as an abstract interpreter (AI) (column 4).
-%
- \algorithmName\ is more complete than each of the restricted modes. 
-This is not self-evident since it could be much less efficient and,
-thus, fail to solve the problems within the given time or memory limits.
-%
-$k$-induction can solve 60.8\% of the benchmarks, 13 more than IBMC. 
-%
-32\% of the benchmarks can be solved by abstract interpretation (bugs
-are only exposed if they are reachable with 0 loop unwindings).  
-%
-\algorithmName\ solves 62.9\% of the benchmarks, 
-proving 3 more properties than $k$-induction.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%% results table %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{table}
-\centering
-\begin{tabular}{|l|ccc|c|c|c|c|}
-\hline
-& IBMC & $k$-induction & AI & portfolio & algorithmName &
-                                                               CPAchecker & ESBMC \\
-\hline
-counterexamples & \bf 38 & \bf 38 &  17 & \bf 38 & \bf 38 & 36 &  35 \\
-proofs          &    36 &  49 &  30 &  51 &  52 & 59 & \bf 91 \\
-false proofs    &     0 &   0 &   0 &   0 &   0 &  2 &  12\\
-false alarms    &     2 &   2 &   0 &   2 &   2 &  2 &   0\\
-inconclusive    &     0 &   0 &  93 &   0 &   0 &  4 &   2\\
-timeout         &    65 &  53 &   3 &  50 &  51 & 38 &   2 \\
-memory out      &     2 &   1 &   0 &   2 &   0 &  2 &   1 \\
-total runtime   & 17.1h & 13.8h & 0.89h & 13.3h & 13.2h & 10.9h & 0.54h \\
-\hline
-\end{tabular}~\\[1ex]
-\caption{Comparison between algorithmName, the algorithms it subsumes,
-the portfolio, and CPAchecker. The rows false alarms and false proofs 
-indicate soundness bugs of the tool implementations.
-\label{tab:results}}
-\end{table}
-
-\subsection{\algorithmName\ is at Least as Good as Their Na\"ive Portfolio}
-
-To show
-that \algorithmName\ is more than a mixture of three techniques and
-that they strengthen each other, consider column 5 of
-Table~\ref{tab:results}.  This gives the results of an ideal portfolio
-in which the three restricted techniques are run in parallel on and
-the portfolio terminates when the first returns a conclusive result.
-Thus the CPU time taken is three times the time taken by the fastest
-technique for each benchmark (in practice these could be run in
-parallel, giving a lower \emph{wall clock} time).
-%
-In our setup, \algorithmName\ had a disadvantage as each component of
-virtual portfolio had the same %time and 
-memory restriction as
-{\algorithmName}, thus effectively giving the portfolio three times as much memory.
-
-Still, {\algorithmName} is slightly faster and more
-accurate than the portfolio as can be seen in Table \ref{tab:results}.
-%
-The scatter plot in Figure~\ref{fig:results}a shows the results for
-each benchmark:
-%
-one can observe that {\algorithmName} is up to one order of magnitude
-slower on many unsafe benchmarks, which is obviously due to the
-additional work of invariant inference that
-{\algorithmName} has to perform in contrast to IBMC.
-%
-However, note that {\algorithmName} is faster than the 
-portfolio on some safe and even one unsafe benchmarks.
-This suggests that {\algorithmName} is more than the sum of its parts.
-
-\subsection{\algorithmName\ is Comparable with State-of-the-Art Approaches}
-
-We compared our implementation of \algorithmName\ with
-CPAchecker%
-\footnote{SVCOMP'15 version, http://cpachecker.sosy-lab.org/}%
-%
-and ESBMC%
-\footnote{SVCOMP'15 version, http://www.esbmc.org/}%
-, which uses $k$-induction.
-%
-The results are shown in the last three columns in Table \ref{tab:results}
-and in the scatter plot in Figure~\ref{fig:results}b. Additional
-results are given in \pponly{the extended version
-  \cite{extended-version}}\rronly{Appendix \ref{sec:further}}.
-%
-In comparison to CPAchecker, the winner of SVCOMP'15,
-our prototype of {\algorithmName} is overall a bit slower and proves 
-fewer properties (due to more timeouts), but as
-Figure~\ref{fig:results}b shows, it significantly outperforms
-CPAchecker on most benchmarks.
-%
-ESBMC exposes fewer bugs, but proves many more properties and is 
-significantly faster. However, it has 6 times
-more soundness bugs than our implementation.%
-\footnote{The two false alarms in our current implementation are due to 
-limited support for dynamic memory allocation.}
-%
-These results show that our prototype implementation of
-\algorithmName\ can keep up with state-of-the-art verification tools.
-
-}
-%%%%%%%%%%%%%%%%%%%%%%%%%% kiki vs vbs vs CPAchecker %%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%% scatter plots %%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[t]
 \begin{tabular}{@{\hspace{-1.5em}}c@{\hspace{1em}}c}
 \begin{tikzpicture}[scale=0.75]
@@ -131,7 +10,7 @@ These results show that our prototype implementation of
 			]
 \addplot [mark size=1pt,only marks,scatter,point meta=explicit symbolic,
 	scatter/classes={s={mark=square},u={mark=triangle*,blue}},] 
-	table [meta=label] {scatter-kiki-vbs-sas.dat};
+	table [meta=label] {plotdata/scatter-plot1.dat};
 	\legend{Safe,Unsafe}
 \addplot [domain=.1:1500] {x};
 \addplot [red,sharp plot, domain=.1:1500] {900}
@@ -153,7 +32,7 @@ These results show that our prototype implementation of
 			]
 \addplot [mark size=1pt,only marks,scatter,point meta=explicit symbolic,
 	scatter/classes={s={mark=square},u={mark=triangle*,blue}},] 
-	table [meta=label] {scatter-kiki-vbs-sas.dat};
+	table [meta=label] {plotdata/scatter-plot1.dat};
 	\legend{Safe,Unsafe}
 \addplot [domain=.1:1500] {x};
 \addplot [red,sharp plot, domain=.1:1500] {900}
@@ -167,7 +46,7 @@ These results show that our prototype implementation of
 (a) & (b)
 \end{tabular}
 \caption{\label{fig:results}
-Runtime Comparison
+Comparison
 }
 \end{figure}
 

@@ -1,7 +1,12 @@
 \section{Experimental Results}
-We have implemented the instantiation of ACDCL on relational domains 
-in 2LS verification tool~\cite{2ls}.  The abstract domains used for 
-our experiments are intervals, template polyhedra, octagons and equalities.  
+We have implemented the instantiation of ACDCL on relational domains
+in 2LS verification tool~\cite{2ls}.  We used the abstract domains
+provided by 2LS (intervals, octagons and equalities) for our
+experiments. Although the performance of these implementations is not
+competitive with dedicated implementations as found in
+APRON~\cite{apron}, for instance, they have the advantage that they
+handle all C operators (including bitwise operations) out of the box.
+
 We verified a total of 70 benchmarks in ANSI-C, which are derived from 
 (a) bit-vector regression category in SV-COMP'16, (c) bit-precise and 
 cycle accurate software models of hardware circuits automatically 
@@ -40,4 +45,6 @@ the heuristics to choose the decison variable among the set of learnt clauses.
 
 \paragraph {\em \textbf{Clause Learning}}      
 
-  
+%================  
+\input{graphs}
+%================  
