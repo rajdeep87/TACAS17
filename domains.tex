@@ -88,13 +88,12 @@ is reachable) then the assertion must hold.
 % if $\sigma_{i+1} \in post_{i}(\sigma_{i})$. 
 
 %-------------------------------------------------------------------------------
-\paragraph{Safety problem}  
+\paragraph{Safety equation}  
 %
-Based on above program representation, the safety problem that our
-ACDL solver will solve is the following:
+Based on above program representation, the safety equation solved by the ACDCL solver is the following:
 %
 \begin{equation}\label{eq:safety}
-\bigwedge_{s\in\mathcal{P}} s \wedge \neg \bigwedge_{a\in\mathcal{A}} a
+\varphi:= \bigwedge_{s\in\mathcal{P}} s \wedge \neg \bigwedge_{a\in\mathcal{A}} a
 \text{ is unsatisfiable if and only if the program is safe.}
 \end{equation}
 
@@ -108,7 +107,7 @@ In our prototype implementation and for illustrative purposes in this
 paper we use a product domain $\mathcal{B}^b\times\mathcal{R}$ where
 $\mathcal{B}$ is the Boolean domain
 $\langle\{\true,\false,\bot,\top\},\Rightarrow,\wedge,\vee\rangle$,
-$b$ the number of Boolean variables in the program, and $\mathcal{R}$
+$b$ is the number of Boolean variables in the program, and $\mathcal{R}$
 is a \emph{relational} domain over the numerical (bitvector) variables
 in their respective data types (currently, signed and unsigned
 integers are supported).
