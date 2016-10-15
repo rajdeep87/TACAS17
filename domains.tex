@@ -24,7 +24,10 @@ we are going to use.
 % $lbl \in Statement$.  For the purpose of illustration, we 
 % assume that all the procedures are inlined.  
 
-\begin{figure}
+%-------------------------------------------------------------------------------
+\subsection{Program Representation}  
+
+\begin{wrapfigure}{r}{3cm}
 \[
 \begin{array}{rcl}
 g_0 &=& \true \\
@@ -41,11 +44,8 @@ z &=& x_2 * x_2 \\
 \caption{\label{fig:ssa}
 SSA for the example in Figure~\ref{fig:example}
 }
-\end{figure}
+\end{wrapfigure}
 
-%-------------------------------------------------------------------------------
-\subsection{Program Representation}  
-%
 We consider loop-free programs (respectively bounded unwindings of
 programs with loops or recursion) with safety properties given as
 assertions in the code.
@@ -165,7 +165,7 @@ Template polyhedra subsume, for example, interval and octagon domains.
 \begin{wrapfigure}{r}{4.5cm}
 \vspace*{-3ex}
 \scalebox{.65}{\import{figures/}{octagons.pspdftex}}
-\caption{An example of Octagon}\label{octagon}
+\caption{Example of an octagon}\label{octagon}
 \vspace*{-3ex}
 \end{wrapfigure} 
 
@@ -232,49 +232,41 @@ postponing them to the point where they are actually necessary.
 % to $\infty$.  However, the closure operator is often used to reduce the degree 
 % of over-approximation resulting from the join operation. 
 
-\pscmt{TODO from here}
- 
-The abstract transformer, $apost_{stmt}$, captures the effect of different program 
-statements in the abstract domain. The transformer is precise for octagonal 
-assignments $(x:=y+1)$ but imprecise for non-octagonal assignments $(x:=y+z)$, 
-as shown below.
-\[apost_{x:=y+1}(a) = b = \langle x-y \leq 1, y-x \leq 1 \rangle \qquad apost_{x:=y+z}(b) = \langle \top \rangle \]  
+% \begin{definition}{(Abstract Valuation)} An {\em abstract valuation} is a
+% mapping of variables to an element of abstract domain, for example 
+% a mapping of variable $x$ to an interval environment is given by 
+% $\langle x \mapsto [2,5] \rangle$ or a mapping of $\{x,y\}$ to octagon 
+% environment is given by $\langle x-y \mapsto 0, y-x \mapsto 0 \rangle$.  
+% An abstract valuation is {\em atomic} if each variable is mapped to a singleton 
+% value or to $\bot$.  
+% \end{definition}
 
-\begin{definition}{(Abstract Valuation)} An {\em abstract valuation} is a
-mapping of variables to an element of abstract domain, for example 
-a mapping of variable $x$ to an interval environment is given by 
-$\langle x \mapsto [2,5] \rangle$ or a mapping of $\{x,y\}$ to octagon 
-environment is given by $\langle x-y \mapsto 0, y-x \mapsto 0 \rangle$.  
-An abstract valuation is {\em atomic} if each variable is mapped to a singleton 
-value or to $\bot$.  
+\begin{definition}{(Meet Irreducible)} A \emph{meet irreducible} $m$ 
+in a complete lattice structure $A$ is an element with the following property.
+\[\forall m_1, m_2 \in A: m_1 \meet m_2 = m \implies (m = m_1 \lor m = m_2), m \neq \top \]  
 \end{definition}
 
-\begin{definition}{(Meet Irreducibles)} A {\em meet irreducible} $(M)$ 
-in a complete lattice structure $A$ is a minimum complementable element 
-$M \in A$ that has the following property.
-\[\forall M_1, M_2 \in A, M_1 \meet M2 = M \implies (M = M_1 \lor M = M_2), M \neq \top \]  
+The meet irreducibles in the Boolean domain $\mathcal{B}$ are $\true$
+and $\false$. The meet irreducibles in the interval domain are all
+intervals that can be represented by a single inequality, i.e.\ $x \leq d$ or $x \geq d$ for constants $d$.
+
+\begin{definition}{(Complementable Meet Irreducible)} 
+A meet irreducible $m\in A$ is called complementable iff $\exists
+\bar{m} \in A: m\meet\bar{m}=\bot \wedge m\join\bar{m}=\top$.  
+%A complementable meet irreducible $\bar{M}$ of an abstract lattice $A$ is the complement of a meet 
+%irreducible $M \in A$ such that $\bar{M} \in A$ and the concretisation of $M$ 
+%is the set complement of $\bar{M}$.  
+%If every meet irreducible in $A$ is complementable, then $A$ is said to
+%be have complementable meet irreducibles.
 \end{definition}
 
-A meet irreducible in partial assignments domain are the singleton 
-assignments, for example $\{x \mapsto true \}$, which represents the set 
-of all propositional assignments where the literal $x$ is mapped to true.  
-A meet irreducible in interval domain is $\langle x \leq n \rangle$ or 
-$\langle x \geq n \rangle$.  
+The meet irreducibles in the Boolean and template polyhedra domains
+are all complementable.
 
-%
-\begin{definition}{(Complementable Meet Irreducibles)} A complementable meet
-irreducible $\bar{M}$ of an abstract lattice $A$ is the complement of a meet 
-irreducible $M \in A$ such that $\bar{M} \in A$ and the concretisation of $M$ 
-is the set complement of $\bar{M}$.  If every meet irreducible in $A$ is
-complementable, then $A$ is said to be have complementable meet irreducibles.  
-\end{definition}
-
-\Omit {
-An important property of meet irreducibles in case of partial assignments 
-domain is that they have precise complements.  
-For example, the complement of $\{x \mapsto true \}$ is a 
-singleton element,$\{x \mapsto false \}$, in the partial assignments domain. 
-}
+%An important property of meet irreducibles in case of partial assignments 
+%domain is that they have precise complements.  
+%For example, the complement of $\{x \mapsto true \}$ is a 
+%singleton element,$\{x \mapsto false \}$, in the partial assignments domain. 
 
 \subsection{Abstract Transformers}
 
@@ -283,6 +275,12 @@ over an over-approximate domain, every concrete element has a unique
 over-approximate representation in the abstract.  Likewise, every
 concrete transformer is over-approximated by a unique abstract
 transformer.  We now define an abstract deduction transformer.
+
+The abstract transformer, $apost_{stmt}$, captures the effect of different program 
+statements in the abstract domain. The transformer is precise for octagonal 
+assignments $(x:=y+1)$ but imprecise for non-octagonal assignments $(x:=y+z)$, 
+as shown below.
+\[apost_{x:=y+1}(a) = b = \langle x-y \leq 1, y-x \leq 1 \rangle \qquad apost_{x:=y+z}(b) = \langle \top \rangle \]  
 
 \begin{definition}{(Abstract Deduction Transformer)} An abstract deduction
 transformer, $\widehat{ded_{\varphi}}$ for a formula $\varphi$ over an abstract 
