@@ -272,18 +272,16 @@ An abstract transformer transforms an abstract value $a$ through a
 statement $s$, i.e.\ it \emph{deduces} information from $a$ and $s$.
 The best abstract transformer is
 \[\llbracket s
-\rrbracket^\sharp(a)=\min \{a'\mid a'\models s\}\] 
-where we write
+\rrbracket^\sharp(a)=\bigsqcup \{a'\mid a'\models s\}\] where we write
 $a\models s$ if $\forall \vec{y}\in\gamma(a): (s[\vec{y}/\vec{x}]
 \equiv \true)$, i.e.\ the constraint $s$ is valid when evaluated over
 all values $\vec{y}$ of its variables $\vec{x}$ in the concretisation
-of $a$. Any abstract transformer that computes a non-minimal element
-is still a sound over-approximating transformer and can be used in our
-algorithm.
+of $a$. Any abstract transformer that over-approximates the least
+upper bound is a sound transformer and can be used in our algorithm.
 
 In a forward analysis, we can deduce, for example, $\llbracket
-x=2(y+z)\rrbracket^\sharp(a)=(-2\leq x\leq 6)$ for $a=(0\leq y \leq 2 \wedge 1 \leq y-z \leq
-1)$.
+x=2(y+z)\rrbracket^\sharp(a)=(-2\leq x\leq 6)$ for $a=(0\leq y \leq 2
+\wedge 1 \leq y-z \leq 1)$.
 %
 We will give more details in Section~\ref{sec:abst}.
 
@@ -362,11 +360,14 @@ Thus the complement of the octagon in Figure~\ref{octagon}
 can be written as a disjunction of meet irreducibles:
 \[(x\leq -3) \lor (x\geq 2) \lor (y\leq -2) \lor (y\geq 3) \lor (x+y\geq 3) \lor (x-y\geq 2) \lor (y-x\geq 4) \lor (-x-y\geq 3)\]
 
-Standard abstract interpretation does not require complementation property.  
-Abstract Domain library, such as APRON C library~\cite{apron} is specialized 
-for abstract interpretation.  We implement a template-based polyhedra domain 
-that returns precise complements by decomposing it into half-spaces.    
-
+Standard abstract interpretation does not require a complementation
+operator. Hence, abstract domain libraries, such as APRON~\cite{apron}
+do not provide it.  However, it can be implemented with the help of a
+meet decomposition as explained above.
+%
+Another feature that abstract domain libraries do not provide is to
+track the reasons why certain deductions have been made. We come back
+to this point in Section~\ref{sec:abst}.
 
 % The abstract transformer, $apost_{stmt}$, captures the effect of different program 
 % statements in the abstract domain. The transformer is precise for octagonal 
