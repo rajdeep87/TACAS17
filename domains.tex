@@ -251,7 +251,7 @@ and $\false$. The meet irreducibles in the interval domain are all
 intervals that can be represented by a single inequality, i.e.\ $x \leq d$ or $x \geq d$ for constants $d$.
 
 \begin{definition}{(Complementable Meet Irreducible)} 
-A meet irreducible $m\in A$ is called complementable iff $\exists
+A meet irreducible $m\in A$ is called \emph{complementable} iff $\exists
 \bar{m} \in A: m\meet\bar{m}=\bot \wedge m\join\bar{m}=\top$.  
 %A complementable meet irreducible $\bar{M}$ of an abstract lattice $A$ is the complement of a meet 
 %irreducible $M \in A$ such that $\bar{M} \in A$ and the concretisation of $M$ 
@@ -267,6 +267,12 @@ are all complementable.
 %domain is that they have precise complements.  
 %For example, the complement of $\{x \mapsto true \}$ is a 
 %singleton element,$\{x \mapsto false \}$, in the partial assignments domain. 
+
+\begin{definition}{(Meet Decomposition)} A meet decomposition of an abstract
+element $a \in A$ is a set of meet irreducibles $M \subseteq A$ such that 
+$a=\bigscap_{m\in M} m$.
+%$forall m_i \in M, \meet(m_i) = a$, where $max(i) = |M|$.
+\end{definition}
 
 \subsection{Abstract Transformers}
 
@@ -303,11 +309,6 @@ is obtained by taking a meet of the element $\langle y:[3, 5] \rangle,
 $\{ \langle y \succeq 3 \rangle, \langle y \preceq 5 \rangle, 
 \langle x \succeq 2 \rangle, \langle x \preceq 4 \rangle \}$, that are 
 precisely complementable.
-
-\begin{definition}{(Meet Decomposition)} A meet decomposition of an abstract
-element $a \in A$ is a set of meet irreducibles $M \subseteq A$ such that 
-$\forall m_i \in M, \meet(m_i) = a$, where $max(i) = |M|$.
-\end{definition}
  
 For a program with $N$ variables, let $L$ be the total number of 
 meet irreducibles returned by a domain $D$.  For $D$ = {\em ItvDom}, the 
