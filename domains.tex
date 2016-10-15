@@ -260,7 +260,36 @@ postponing them to the point where they are actually necessary.
 % \end{definition}
 
 %-------------------------------------------------------------------------------
+\paragraph{Abstract Transformers}
+%
+%In a typical abstract interpretation based Galois-connection setting
+%over an over-approximate domain, every concrete element has a unique
+%over-approximate representation in the abstract.  Likewise, every
+%concrete transformer is over-approximated by a unique abstract
+%transformer.  We now define an abstract deduction transformer.
+%
+An abstract transformer transforms an abstract value $a$ through a
+statement $s$, i.e.\ it \emph{deduces} information from $a$ and $s$.
+The best abstract transformer is
+\[\llbracket s
+\rrbracket^\sharp(a)=\min \{a'\mid a'\models s\}\] 
+where we write
+$a\models s$ if $\forall \vec{y}\in\gamma(a): (s[\vec{y}/\vec{x}]
+\equiv \true)$, i.e.\ the constraint $s$ is valid when evaluated over
+all values $\vec{y}$ of its variables $\vec{x}$ in the concretisation
+of $a$. Any abstract transformer that computes a non-minimal element
+is still a sound over-approximating transformer and can be used in our
+algorithm.
+
+In a forward analysis, we can deduce, for example, $\llbracket
+x=2(y+z)\rrbracket^\sharp(a)=(-2\leq x\leq 6)$ for $a=(0\leq y \leq 2 \wedge 1 \leq y-z \leq
+1)$.
+%
+We will give more details in Section~\ref{sec:abst}.
+
+%-------------------------------------------------------------------------------
 \subsection{Properties of Abstract Domains for Learning}
+%-------------------------------------------------------------------------------
 %
 An important property of a clause learning SAT solver is that each
 element of the partial Boolean assignments domain is decomposable into
@@ -338,86 +367,28 @@ Abstract Domain library, such as APRON C library~\cite{apron} is specialized
 for abstract interpretation.  We implement a template-based polyhedra domain 
 that returns precise complements by decomposing it into half-spaces.    
 
-%-------------------------------------------------------------------------------
-\subsection{Abstract Transformers}
-%-------------------------------------------------------------------------------
-%In a typical abstract interpretation based Galois-connection setting
-%over an over-approximate domain, every concrete element has a unique
-%over-approximate representation in the abstract.  Likewise, every
-%concrete transformer is over-approximated by a unique abstract
-%transformer.  We now define an abstract deduction transformer.
 
-An abstract transformer transforms an abstract value $a$ through a
-statement $s$, i.e.\ it \emph{deduces} information from $a$ and $s$.
-The best abstract transformer is
-\[\llbracket s
-\rrbracket^\sharp(a)=\min \{a'\mid a'\models s\}\] 
-where we write
-$a\models s$ if $\forall \vec{y}\in\gamma(a): (s[\vec{y}/\vec{x}]
-\equiv \true)$, i.e.\ the constraint $s$ is valid when evaluated over
-all values $\vec{y}$ of its variables $\vec{x}$ in the concretisation
-of $a$. Any abstract transformer that computes a non-minimal element
-is still a sound over-approximating transformer and can be used in our
-algorithm.
+% The abstract transformer, $apost_{stmt}$, captures the effect of different program 
+% statements in the abstract domain. The transformer is precise for octagonal 
+% assignments $(x:=y+1)$ but imprecise for non-octagonal assignments $(x:=y+z)$, 
+% as shown below.
+% \[apost_{x:=y+1}(a) = b = \langle x-y \leq 1, y-x \leq 1 \rangle \qquad apost_{x:=y+z}(b) = \langle \top \rangle \]  
 
-To make our algorithm efficient, we have to focus abstract
-transformers on performing only the minimally necessary
-work. 
-%
-We thus define a specialised variant of the transformer to compute
-deductions w.r.t.\ a given subdomain $L\sqsubseteq A$, $\bot,\top \in L$.
-\[\llbracket s \rrbracket^\sharp(a,L)=\min \{a'\mid a'\in L, a'\models s\}\]
-We have the property $\llbracket s \rrbracket^\sharp(a)\sqsubseteq \llbracket s \rrbracket^\sharp(a,L)$.
+% \begin{definition}{(Abstract Deduction Transformer)} An abstract deduction
+% transformer, $\widehat{ded_{\varphi}}$ for a formula $\varphi$ over an abstract 
+% domain $A$ is a sound approximation of a concrete model transformer
+% $ded_{\varphi}$, given by $\widehat{ded_{\varphi}} : A \rightarrow A$, such that 
+% $\forall a \in A: \widehat{ded_{\varphi}}(a) \in \{\top, \bot, m\}$, where 
+% $m \in A$ is a meet irreducible.   
+% \end{definition}
 
-For example, for
-$a=(0\leq y \leq 1 \wedge 5\leq z)$ we have
-$\llbracket x=y+z\rrbracket^\sharp(a,\{x\})=(x\geq 6)$, whereas
-$\llbracket x=y+z\rrbracket^\sharp(a,\{y\})=\top$.
+% Let us consider a formula $\varphi = (x:=y-1)$ to be analyzed over 
+% an interval abstract domain, $A = ItvDom$, and let $a = \langle y:[3, 5]
+% \rangle \in ItvDom$, then $\widehat{ded_{\varphi}}(a) = a \meet \langle x:[2, 4]
+% \rangle$.  An abstract deduction transformer is typically computed in the form 
+% of strongest post-condition or a weakest pre-condition of a formula in the 
+% abstract domain.  
 
-%$a=(x-y \leq 1, y-x \leq 1)$
-%$\llbracket x=y+z\rrbracket^\sharp($
-
-Moreover, we want to know what the reasons for a specific deduction are.
-$ded(s,a,L)=\{R\rightarrow d\mid R=reason(s,a,L,d), d \in decomp(\llbracket s \rrbracket^\sharp(a,L))\}$
-where 
-$reason(s,a,L,d)=\min \{R'\mid R'\subseteq decomp(a), \llbracket s\rrbracket^\sharp(R,L)=d\}$.
-
-The abstract transformer, $apost_{stmt}$, captures the effect of different program 
-statements in the abstract domain. The transformer is precise for octagonal 
-assignments $(x:=y+1)$ but imprecise for non-octagonal assignments $(x:=y+z)$, 
-as shown below.
-\[apost_{x:=y+1}(a) = b = \langle x-y \leq 1, y-x \leq 1 \rangle \qquad apost_{x:=y+z}(b) = \langle \top \rangle \]  
-
-\begin{definition}{(Abstract Deduction Transformer)} An abstract deduction
-transformer, $\widehat{ded_{\varphi}}$ for a formula $\varphi$ over an abstract 
-domain $A$ is a sound approximation of a concrete model transformer
-$ded_{\varphi}$, given by $\widehat{ded_{\varphi}} : A \rightarrow A$, such that 
-$\forall a \in A: \widehat{ded_{\varphi}}(a) \in \{\top, \bot, m\}$, where 
-$m \in A$ is a meet irreducible.   
-\end{definition}
-
-Let us consider a formula $\varphi = (x:=y-1)$ to be analyzed over 
-an interval abstract domain, $A = ItvDom$, and let $a = \langle y:[3, 5]
-\rangle \in ItvDom$, then $\widehat{ded_{\varphi}}(a) = a \meet \langle x:[2, 4]
-\rangle$.  An abstract deduction transformer is typically computed in the form 
-of strongest post-condition or a weakest pre-condition of a formula in the 
-abstract domain.  
-
-A meet decomposition of the outcome of abstract deduction transformer 
-is obtained by taking a meet of the element $\langle y:[3, 5] \rangle, 
-\langle x:[2, 4] \rangle \in ItvDom$ which gives set of meet irreducibles, 
-$\{ \langle y \succeq 3 \rangle, \langle y \preceq 5 \rangle, 
-\langle x \succeq 2 \rangle, \langle x \preceq 4 \rangle \}$, that are 
-precisely complementable.
-
-\begin{definition}{(Meet Decomposition)} A meet decomposition of an abstract
-element $a \in A$ is a set of meet irreducibles $M \subseteq A$ such that 
-$\forall m_i \in M, \meet(m_i) = a$, where $max(i) = |M|$.
-\end{definition}
-For example, the meet decomposition of an interval is given as follows.
-\[x \mapsto [2,5] \mathrel{\mathop{\longrightarrow}^{\mathrm{decompose}}} \{\langle x
-\geq 2 \rangle \meet \langle x \leq 5 \rangle \} \]
- 
 % For a program with $N$ variables, let $L$ be the total number of 
 % meet irreducibles returned by a domain $D$.  For $D$ = {\em ItvDom}, the 
 % maximum value of $L$ is $2*N$, whereas the maximum value of $L$ is 
@@ -428,7 +399,7 @@ For example, the meet decomposition of an interval is given as follows.
 %\input{literals-clauses}
 %========================
 
-\subsection{Properties of Domain Elements for Learning}
+\Omit{
 %
 An important property of a clause learning SAT solver 
 is that a partial assignments domain can be decomposed 
@@ -467,55 +438,6 @@ Equality & \((x==y) \quad \longrightarrow (x \neq y)\) \\ \hline
 \label{fig:complement}
 %\caption{C Program, Control-flow Graph (CFG) and Abstract Conflict Graph}
 \end{table}
-%
-\Omit{
-Similarly, the complementation of the octagon in Figure~\ref{octagon} 
-can be written as disjunction of:
-\[(x<-2) \lor (x>1) \lor (y<-1) \lor (y>2) \lor (x+y>2) \lor (x-y>1) \lor (y-x>3) \lor (-x-y>2)\]
-Standard abstract interpretation do not require complementation property
-The application of set-complements on over-approximating 
-domains does not give necessary invariants required to reason about assertions
-in programs. 
-Abstract Domain library, such as APRON C library~\cite{apron} is specialized 
-for abstract interpretation.  
-}
-\Omit {
-The commonly used library for numerical abstract domains  
-is the APRON C library~\cite{apron}.  This library is 
-used for the static analysis of the numerical variables 
-of a program by abstract interpretation. APRON provides a 
-C API interface to various abstract domains and libraries 
-such as {\em BOX}, {\em OCTAGON}, {\em Convex Polyhedra} and
-{\em Linear Equalities} library.  The aim of such analysis is 
-to compute invariants over numerical variables in the 
-program~\cite{se2011}. 
-}
-\Omit {
-To this end, we implement our own template-based polyhedra domain and interval 
-domain which supports complementation operator.  
-%For example, the octagon in Figure~\ref{octagon} can be written as a conjunction of:
-%\[(x>=-2) \land (x<=1) \land (y>=-1) \land (y<=2) \land (x+y<=2)
-%\land (x-y<=1) \land (y-x<=3) \land (-x-y<=2)\] 
-\pscmt{That's no valid motivation. We never complement a whole octagon, but just a
-  meet-irreducible. It's trivial to do that with APRON. The reason was
-a different one: APRON does not support all C operators, e.g. the bitwise
-operators.} 
-} 
-\Omit {
-\subsection{Static Analysis Equations for Safety}
-Static program analysis based on abstract interpretation~\cite{DBLP:conf/emsoft/Cousot07} 
-perform safety analysis by computing fixed point to infer invariants 
-over program variables.  However, bounded model checking (BMC) tries to search 
-for a counterexample in a bounded execution trace, by symbolically executing a 
-program up to a finite bound.  
-Similar to BMC, ACDCL searches for a counterexample by solving the formula shown below.
-For a set $N$ of program analysis constraints defined over a set 
-of constraint variables $Var = \{X_i| i \in N\}$, representing a program
-$\mathcal{P}$ and a concrete domain $\powerset(Env)$, the static analysis equation 
-for safety of $\mathcal{P}$ is given as follows.  Here, $X_{init}, X_{Err}$ denote the initial valuation 
-and the \rmcmt{final valuation} of constraint variables.
-\[\varphi = X_{init} \subseteq Env \wedge \underset{p,q \in |\mathcal{P}|}
-{\bigwedge} \{ X_p \subseteq post_{(p,q)}(X_q) \} \wedge X_{err} \supset \emptyset \] 
 }
 % \Omit {
 % The commonly used library for numerical abstract domains  

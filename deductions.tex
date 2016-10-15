@@ -106,7 +106,42 @@ domain~\cite{dhk2013-popl}.  We present an abstract model search procedure
 that computes a greatest fixed point over meet irreducible deduction 
 transformer in $S$.  
 %
+
+%-------------------------------------------------------------------------------
+\subsection{Abstract Transformers} \label{sec:abst}
+%-------------------------------------------------------------------------------
+
+To make our algorithm efficient, we have to focus abstract
+transformers on performing only the minimally necessary
+work. 
+%
+We thus define a specialised variant of the transformer to compute
+deductions w.r.t.\ a given subdomain $L\sqsubseteq A$; $\bot,\top \in L$.
+\[\llbracket s \rrbracket^\sharp(a,L)=\min \{a'\mid a'\in L, a'\models s\}\]
+We have the property $\llbracket s \rrbracket^\sharp(a)\sqsubseteq \llbracket s \rrbracket^\sharp(a,L)$.
+%
+For example, for
+$a=(0\leq y \leq 1 \wedge 5\leq z)$ we have
+$\llbracket x=y+z\rrbracket^\sharp(a,\{x\})=(x\geq 6)$, whereas
+$\llbracket x=y+z\rrbracket^\sharp(a,\{y,z\})=\top$.
+%
+If $L=A$ then intuitively $a$ is intersected with the constraint $s$.
+Yet, with the help of $L$ we can also control whether to perform
+forward (right-hand side to left-hand side, $L=\{x\}$ in the above
+example) or backward (lhs to rhs, $L=\{y,z\}$) propagation.
+
+Moreover, we want to know what the reasons for a specific deduction are.
+\[ded(s,a,L)=\{R\rightarrow d\mid R=reasons(s,a,L,d), d \in decomp(\llbracket s \rrbracket^\sharp(a,L))\}\]
+where 
+$reasons(s,a,L,d)=\min \{R'\mid R'\subseteq decomp(a), \llbracket s\rrbracket^\sharp(R,L)=d\}$.
+
+\pscmt{give an example for $ded$}
+
+\pscmt{define $ded$ for all statements}
+
+%-------------------------------------------------------------------------------
 \subsection{Algorithm for Deduction Phase}
+%-------------------------------------------------------------------------------
 %
 \rmcmt{Talk about lazy closure operation}
 Algorithm~\ref{Alg:ms} presents the deduction phase in abstract model search procedure.
