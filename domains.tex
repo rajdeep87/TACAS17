@@ -88,14 +88,29 @@ is reachable) then the assertion must hold.
 % if $\sigma_{i+1} \in post_{i}(\sigma_{i})$. 
 
 %-------------------------------------------------------------------------------
-\paragraph{Safety equation}  
+\paragraph{Safety problem}  
 %
-Based on above program representation, the safety equation solved by the ACDCL solver is the following:
+Based on above program representation, the safety problem solved by the ACDCL solver is the following:
 %
 \begin{equation}\label{eq:safety}
 \varphi:= \bigwedge_{s\in\mathcal{P}} s \wedge \neg \bigwedge_{a\in\mathcal{A}} a
 \text{ is unsatisfiable if and only if the program is safe.}
 \end{equation}
+
+% \subsection{Static Analysis Equations for Safety}
+% Static program analysis based on abstract interpretation~\cite{DBLP:conf/emsoft/Cousot07} 
+% perform safety analysis by computing fixed point to infer invariants 
+% over program variables.  However, bounded model checking (BMC) tries to search 
+% for a counterexample in a bounded execution trace, by symbolically executing a 
+% program up to a finite bound.  
+% Similar to BMC, ACDCL searches for a counterexample by solving the formula shown below.
+% For a set $N$ of program analysis constraints defined over a set 
+% of constraint variables $Var = \{X_i| i \in N\}$, representing a program
+% $\mathcal{P}$ and a concrete domain $\powerset(Env)$, the static analysis equation 
+% for safety of $\mathcal{P}$ is given as follows.  Here, $X_{init}, X_{Err}$ denote the initial valuation 
+% and the \rmcmt{final valuation} of constraint variables.
+% \[\varphi = X_{init} \subseteq Env \wedge \underset{p,q \in |\mathcal{P}|}
+% {\bigwedge} \{ X_p \subseteq post_{(p,q)}(X_q) \} \wedge X_{err} \supset \emptyset \] 
 
 %-------------------------------------------------------------------------------
 \subsection{Abstract Domain}
@@ -105,12 +120,12 @@ for any relational domain.
 % 
 In our prototype implementation and for illustrative purposes in this
 paper we use a product domain $\mathcal{B}^b\times\mathcal{R}$ where
-$\mathcal{B}$ is the Boolean domain
-$\langle\{\true,\false,\bot,\top\},\Rightarrow,\wedge,\vee\rangle$,
-$b$ is the number of Boolean variables in the program, and $\mathcal{R}$
-is a \emph{relational} domain over the numerical (bitvector) variables
-in their respective data types (currently, signed and unsigned
-integers are supported).
+$\mathcal{B}$ is the partial Boolean assignments domain
+$\langle\{\true,\false,\bot,\top\},\Rightarrow,\wedge,\vee\rangle$ (as
+used in SAT solvers~\cite{sas12}), $b$ is the number of Boolean
+variables in the program, and $\mathcal{R}$ is a \emph{relational}
+domain over the numerical (bitvector) variables in their respective
+data types (currently, signed and unsigned integers are supported).
 %
 We instantiate $\mathcal{R}$ with the template polyhedra domain.
 
@@ -241,28 +256,32 @@ postponing them to the point where they are actually necessary.
 % value or to $\bot$.  
 % \end{definition}
 
+%-------------------------------------------------------------------------------
+\subsection{Properties of Abstract Domains for Learning}
+%
+An important property of a clause learning SAT solver is that each
+element of the partial Boolean assignments domain is decomposable into
+complementable elements.  This property of the domain is required to
+learn elements that help to guide the model search away from the
+conflicting region of the search space.
+%
+Most numerical abstract domains, such as intervals and octagons lack
+complements, but they can be represented as intersections of
+complementable half-spaces, each of which has a complement. We
+formalise this in the sequel.
+
 \begin{definition} 
 A \emph{meet irreducible} $m$ 
 in a complete lattice structure $A$ is an element with the following property.
 \[\forall m_1, m_2 \in A: m_1 \meet m_2 = m \implies (m = m_1 \lor m = m_2), m \neq \top \]  
 \end{definition}
 
-The meet irreducibles in the Boolean domain $\mathcal{B}$ are $\true$
-and $\false$. The meet irreducibles in the interval domain are all
-intervals that can be represented by a single inequality, i.e.\ $x \leq d$ or $x \geq d$ for constants $d$.
-
-\begin{definition} 
-A meet irreducible $m\in A$ is called \emph{complementable} iff $\exists
-\bar{m} \in A: m\meet\bar{m}=\bot \wedge m\join\bar{m}=\top$.  
-%A complementable meet irreducible $\bar{M}$ of an abstract lattice $A$ is the complement of a meet 
-%irreducible $M \in A$ such that $\bar{M} \in A$ and the concretisation of $M$ 
-%is the set complement of $\bar{M}$.  
-%If every meet irreducible in $A$ is complementable, then $A$ is said to
-%be have complementable meet irreducibles.
-\end{definition}
-
-The meet irreducibles in the Boolean and template polyhedra domains
-are all complementable.
+The meet irreducibles in the partial Boolean assignments domain
+$\mathcal{B}$ are $\true$ and $\false$. The meet irreducibles in the
+template polyhedra domain are all elements that concretise to
+half-spaces, i.e.\ they can be represented by a single inequality. For
+the interval domain, these are \ $x \leq d$ or $x \geq d$ for
+constants $d$.
 
 %An important property of meet irreducibles in case of partial assignments 
 %domain is that they have precise complements.  
@@ -276,6 +295,9 @@ $a=\bigsqcap_{m\in M} m$.
 %$forall m_i \in M, \meet(m_i) = a$, where $max(i) = |M|$.
 \end{definition}
 
+For polyhedra this intuitively means that each polyhedron can be
+written as an intersection of half-spaces.
+%
 For example, the meet decomposition of the interval domain element
 % $(x,y) \in [2,4]\times[3, 5]$ 
 $2\leq x\leq 4 \wedge 3\leq y\leq 5$ is
@@ -285,8 +307,37 @@ the set $\{x\geq 2, x\leq 4, y\geq 3, y\leq 5\}$.
 % \langle x \succeq 2 \rangle, \langle x \preceq 4 \rangle \}$, that are 
 % precisely complementable.
 
-\subsection{Abstract Transformers}
+\begin{definition} 
+A meet irreducible $m\in A$ is called \emph{complementable} iff $\exists
+\bar{m} \in A: m\meet\bar{m}=\bot \wedge m\join\bar{m}=\top$.  
+%A complementable meet irreducible $\bar{M}$ of an abstract lattice $A$ is the complement of a meet 
+%irreducible $M \in A$ such that $\bar{M} \in A$ and the concretisation of $M$ 
+%is the set complement of $\bar{M}$.  
+%If every meet irreducible in $A$ is complementable, then $A$ is said to
+%be have complementable meet irreducibles.
+\end{definition}
 
+The meet irreducibles in the partial Boolean assignments domain and
+template polyhedra domains are all complementable.
+%
+Note that for template polyhedra, all non-meet-irreducible elements $e$
+(except $\bot$ and $\top$) are not complementable within $A$.
+%
+However, we can complement each element in the meet decomposition of $e$ and
+re-interpret the obtained set as a disjunction. 
+%
+Thus the complement of the octagon in Figure~\ref{octagon} 
+can be written as a disjunction of meet irreducibles:
+\[(x\leq -3) \lor (x\geq 2) \lor (y\leq -2) \lor (y\geq 3) \lor (x+y\geq 3) \lor (x-y\geq 2) \lor (y-x\geq 4) \lor (-x-y\geq 3)\]
+
+Standard abstract interpretation does not require complementation property.  
+Abstract Domain library, such as APRON C library~\cite{apron} is specialized 
+for abstract interpretation.  We implement a template-based polyhedra domain 
+that returns precise complements by decomposing it into half-spaces.    
+
+%-------------------------------------------------------------------------------
+\subsection{Abstract Transformers}
+%
 In a typical abstract interpretation based Galois-connection setting
 over an over-approximate domain, every concrete element has a unique
 over-approximate representation in the abstract.  Likewise, every
@@ -324,67 +375,26 @@ abstract domain.
 \input{literals-clauses}
 %========================
 
-\subsection{Properties of Domain Elements for Learning}
-%
-\pscmt{TODO: Review by Peter}
-An important property of a clause learning SAT solver 
-is that each element of the partial assignments domain 
-are decomposable into precisely complementable 
-elements.  This property of the domain helps to guide 
-the model search away from the conflicting region of the 
-search space.  
+% \Omit {
+% The commonly used library for numerical abstract domains  
+% is the APRON C library~\cite{apron}.  This library is 
+% used for the static analysis of the numerical variables 
+% of a program by abstract interpretation. APRON provides a 
+% C API interface to various abstract domains and libraries 
+% such as {\em BOX}, {\em OCTAGON}, {\em Convex Polyhedra} and
+% {\em Linear Equalities} library.  The aim of such analysis is 
+% to compute invariants over numerical variables in the 
+% program~\cite{se2011}. 
+% }
+% \Omit {
+% To this end, we implement our own template-based polyhedra domain and interval 
+% domain which supports complementation operator.  
+% %For example, the octagon in Figure~\ref{octagon} can be written as a conjunction of:
+% %\[(x>=-2) \land (x<=1) \land (y>=-1) \land (y<=2) \land (x+y<=2)
+% %\land (x-y<=1) \land (y-x<=3) \land (-x-y<=2)\] 
+% \pscmt{That's no valid motivation. We never complement a whole octagon, but just a
+%  meet-irreducible. It's trivial to do that with APRON. The reason was
+% a different one: APRON does not support all C operators, e.g. the bitwise
+% operators.} 
+% } 
 
-Most numerical abstract domains, such as intervals, octagons, 
-polyhedra lacks precise complements, but they can be 
-represented as intersections of complementable half-spaces, 
-each of which have precise complements.  For example, intervals 
-lack complements, but the decomposition of intervals into 
-meet-irreducibles have complements.  
-\[x \mapsto [2,5] \mathrel{\mathop{\longrightarrow}^{\mathrm{decompose}}} \{\langle x
-\geq 2 \rangle \meet \langle x \leq 5 \rangle \} \]
-Similarly, the complementation of the octagon in Figure~\ref{octagon} 
-can be written as disjunction of:
-\[(x<-2) \lor (x>1) \lor (y<-1) \lor (y>2) \lor (x+y>2) \lor (x-y>1) \lor (y-x>3) \lor (-x-y>2)\]
-
-Standard abstract interpretation does not require complementation property.  
-Abstract Domain library, such as APRON C library~\cite{apron} is specialized 
-for abstract interpretation.  We implement a template-based polyhedra domain 
-that returns precise complements by decomposing it into half-spaces.    
-
-\Omit {
-The commonly used library for numerical abstract domains  
-is the APRON C library~\cite{apron}.  This library is 
-used for the static analysis of the numerical variables 
-of a program by abstract interpretation. APRON provides a 
-C API interface to various abstract domains and libraries 
-such as {\em BOX}, {\em OCTAGON}, {\em Convex Polyhedra} and
-{\em Linear Equalities} library.  The aim of such analysis is 
-to compute invariants over numerical variables in the 
-program~\cite{se2011}. 
-}
-\Omit {
-To this end, we implement our own template-based polyhedra domain and interval 
-domain which supports complementation operator.  
-%For example, the octagon in Figure~\ref{octagon} can be written as a conjunction of:
-%\[(x>=-2) \land (x<=1) \land (y>=-1) \land (y<=2) \land (x+y<=2)
-%\land (x-y<=1) \land (y-x<=3) \land (-x-y<=2)\] 
-\pscmt{That's no valid motivation. We never complement a whole octagon, but just a
-  meet-irreducible. It's trivial to do that with APRON. The reason was
-a different one: APRON does not support all C operators, e.g. the bitwise
-operators.} 
-} 
-
-\subsection{Static Analysis Equations for Safety}
-Static program analysis based on abstract interpretation~\cite{DBLP:conf/emsoft/Cousot07} 
-perform safety analysis by computing fixed point to infer invariants 
-over program variables.  However, bounded model checking (BMC) tries to search 
-for a counterexample in a bounded execution trace, by symbolically executing a 
-program up to a finite bound.  
-Similar to BMC, ACDCL searches for a counterexample by solving the formula shown below.
-For a set $N$ of program analysis constraints defined over a set 
-of constraint variables $Var = \{X_i| i \in N\}$, representing a program
-$\mathcal{P}$ and a concrete domain $\powerset(Env)$, the static analysis equation 
-for safety of $\mathcal{P}$ is given as follows.  Here, $X_{init}, X_{Err}$ denote the initial valuation 
-and the \rmcmt{final valuation} of constraint variables.
-\[\varphi = X_{init} \subseteq Env \wedge \underset{p,q \in |\mathcal{P}|}
-{\bigwedge} \{ X_p \subseteq post_{(p,q)}(X_q) \} \wedge X_{err} \supset \emptyset \] 
