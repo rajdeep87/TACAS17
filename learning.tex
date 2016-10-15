@@ -3,35 +3,48 @@ A conflict analysis in a SAT solver can be seen as abductive
 reasoning where a singleton assignment $c$ is replaced by a partial 
 assignment that is sufficient to infer $c$.  Thus, a conflict 
 analysis is a generalization of an underapproximation of a set of 
-countermodels~\cite{sas,dhk2013-popl}, where a countermodel is a 
+countermodels~\cite{sas12,dhk2013-popl}, where a countermodel is a 
 set of structures that do not satisfy a formula.  Since relational 
 abstract domains have more complex structure than a partial 
 assignments domain, so the lifting of {\em first-UIP} algorithm~\cite{uip} 
 and clause learning to any arbitraty lattice structure is a non-trivial task. 
 
+\paragraph {\textbf{Abstract Conflict Graph}}
 The first-UIP algorithm in SAT solver works on a data structure called 
 {\em implication graph} that computes a cut that suffices to produce a 
 conflict.  The trail in ACDCL implicitly encodes a graph structure called 
 {\em abstract conflict graph}, which records the dependencies between 
-deductions made during abstract model search phase.  For example, consider a
-formula $\varphi:= (x=5 \wedge y=x \wedge y=y+x \wedge y \leq 0)$ with current 
-abstract valuation $v:= (x=5)$.  
-Figure~\ref{conflict} shows a snapshot of an abstract conflict graph that 
+deductions made during abstract model search phase.  Nodes in the graph 
+represent elements of the trail $\mathcal{T}$.  Nodes can be either 
+{\em decision} node or {\em deduction} node. Edges can be extracted from
+the transformers in the reason trail.  Incoming arrows to node $n$ 
+indicate that the predecessors of $n$ are sufficient to deduce $n$.  
+A decision node has no incoming edges.  
+For example, consider a formula 
+$\varphi:= (x=5 \wedge y=x \wedge y=y+x \wedge y \leq 0)$ with current 
+abstract valuation $v:= (x=5)$.  Figure~\ref{conflict} shows a 
+snapshot of an abstract conflict graph that 
 stores the deductions obtained from abstract model search using octagon domain.  
-An arrow in the graph indicate that the predecessors of each node $n$ are 
-sufficient to deduce $n$.  The last deduction conflict with the constraint 
-$(y \leq 0)$.  Every cut in the graph, marked as {\em cut0, cut1}, provides a 
-reason for conflict that can be used in learning.  An UIP is a special node such 
-that any path from the last decision node to the conflict node must pass 
+The last deduction conflict with the constraint $(y \leq 0)$.  
+
+\paragraph {\textbf{Lifting UIP to relational domains}}
+An UIP is a special node in the abstract conflict graph such that 
+any path from the last decision node to the conflict node must pass 
 through it.  Unlike a SAT solver, a UIP in ACDCL may involve meet irreducibles 
 that involves the same variables.  The first-UIP is a node closest to the 
 conflict, and the last UIP is the decision node itself.  Computing UIPs ensures 
 asserting cuts, that is, it yields clauses that generates new deduction after 
-backtracking.  For our example, there exists multiple incomaparable reasons 
-for conflict.  Here, cut0 is the first UIP.  Choosing cut0 yields a learnt 
-clause $L_0: (x+y<15 \vee -x-y<-15 \vee -x+y<5 \vee x-y<-5 \vee y-10<0 \vee 
--y+10<0)$.  A learnt clause $\mathcal{L}$ is obtained by negating the reason 
-for conflict.  
+backtracking.  Every cut in the graph reason for conflict that can be used in learning.  
+A first-UIP algorithm traverses the trail $\mathcal{T}$ starting from the 
+conflict node and iteratively finds new nodes that contradict with the 
+transformer stored in $reasons[\bot]$.  
+
+For our example, there exists multiple incomaparable reasons for conflict,
+marked as {\em cut0, cut1}, in figure~\ref{conflict}.  Here, cut0 is the first UIP.  
+Choosing cut0 yields a learnt clause 
+$L_0: (x+y<15 \vee -x-y<-15 \vee -x+y<5 \vee x-y<-5 \vee y-10<0 \vee -y+10<0)$.  
+A learnt clause $\mathcal{L}$ is obtained by negating the reason for conflict.   
+\rmcmt{shall we call learnt clause or learnt transformer ?}
 %
 \begin{figure}
 %\caption{An example of Octagon}\label{octagon}
