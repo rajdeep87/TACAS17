@@ -402,6 +402,21 @@ an interval abstract domain, $A = ItvDom$, and let $a = \langle y:[3, 5]
 \rangle$.  An abstract deduction transformer is typically computed in the form 
 of strongest post-condition or a weakest pre-condition of a formula in the 
 abstract domain.  
+
+A meet decomposition of the outcome of abstract deduction transformer 
+is obtained by taking a meet of the element $\langle y:[3, 5] \rangle, 
+\langle x:[2, 4] \rangle \in ItvDom$ which gives set of meet irreducibles, 
+$\{ \langle y \succeq 3 \rangle, \langle y \preceq 5 \rangle, 
+\langle x \succeq 2 \rangle, \langle x \preceq 4 \rangle \}$, that are 
+precisely complementable.
+
+\begin{definition}{(Meet Decomposition)} A meet decomposition of an abstract
+element $a \in A$ is a set of meet irreducibles $M \subseteq A$ such that 
+$\forall m_i \in M, \meet(m_i) = a$, where $max(i) = |M|$.
+\end{definition}
+For example, the meet decomposition of an interval is given as follows.
+\[x \mapsto [2,5] \mathrel{\mathop{\longrightarrow}^{\mathrm{decompose}}} \{\langle x
+\geq 2 \rangle \meet \langle x \leq 5 \rangle \} \]
  
 % For a program with $N$ variables, let $L$ be the total number of 
 % meet irreducibles returned by a domain $D$.  For $D$ = {\em ItvDom}, the 
@@ -413,6 +428,95 @@ abstract domain.
 %\input{literals-clauses}
 %========================
 
+\subsection{Properties of Domain Elements for Learning}
+%
+An important property of a clause learning SAT solver 
+is that a partial assignments domain can be decomposed 
+into a set of precisely complementable singleton assignments.  
+This property of the partial assignments domain helps to 
+guide the model search away from the conflicting region 
+of the search space and allows case-based analysis.  
+%
+\begin{definition}{(Precise complement)} A precise complement of an abstract
+element $a \in A$ in abstract lattice $A$ is an element $\bar{a}$ such that 
+$\gamma(\bar{a} = \neg \gamma(a))$.
+\end{definition}
+%
+The precise complementation property of partial assignment lattice 
+can be generalized to other lattice structures.  Most numerical 
+abstract domains, such as intervals, octagons, polyhedra, can be 
+decomposed into half-spaces, that admits precise complements.  
+For example, intervals lack complements, but the meet decomposition 
+of intervals into meet-irreducibles have precise complements.  
+Numerical abstract domains that admit complementable decomposition 
+are shown in Figure~\ref{complement}.  Our template-based domain 
+implementation precisely complements a meet irreducible in an abstraction.
+% 
+\begin{table}
+\begin{center}
+{
+\begin{tabular}{l|l}
+\hline
+Domain & Precise Complements \\ \hline 
+Interval & \((x \leq n) \quad \longrightarrow (x > n)\) \\ \hline
+Octagon & \((x+y < 1) \quad \longrightarrow (-x-y < 0)\) \\ \hline
+Equality & \((x==y) \quad \longrightarrow (x \neq y)\) \\ \hline 
+\end{tabular}
+}
+\end{center}
+\label{fig:complement}
+%\caption{C Program, Control-flow Graph (CFG) and Abstract Conflict Graph}
+\end{table}
+%
+\Omit{
+Similarly, the complementation of the octagon in Figure~\ref{octagon} 
+can be written as disjunction of:
+\[(x<-2) \lor (x>1) \lor (y<-1) \lor (y>2) \lor (x+y>2) \lor (x-y>1) \lor (y-x>3) \lor (-x-y>2)\]
+Standard abstract interpretation do not require complementation property
+The application of set-complements on over-approximating 
+domains does not give necessary invariants required to reason about assertions
+in programs. 
+Abstract Domain library, such as APRON C library~\cite{apron} is specialized 
+for abstract interpretation.  
+}
+\Omit {
+The commonly used library for numerical abstract domains  
+is the APRON C library~\cite{apron}.  This library is 
+used for the static analysis of the numerical variables 
+of a program by abstract interpretation. APRON provides a 
+C API interface to various abstract domains and libraries 
+such as {\em BOX}, {\em OCTAGON}, {\em Convex Polyhedra} and
+{\em Linear Equalities} library.  The aim of such analysis is 
+to compute invariants over numerical variables in the 
+program~\cite{se2011}. 
+}
+\Omit {
+To this end, we implement our own template-based polyhedra domain and interval 
+domain which supports complementation operator.  
+%For example, the octagon in Figure~\ref{octagon} can be written as a conjunction of:
+%\[(x>=-2) \land (x<=1) \land (y>=-1) \land (y<=2) \land (x+y<=2)
+%\land (x-y<=1) \land (y-x<=3) \land (-x-y<=2)\] 
+\pscmt{That's no valid motivation. We never complement a whole octagon, but just a
+  meet-irreducible. It's trivial to do that with APRON. The reason was
+a different one: APRON does not support all C operators, e.g. the bitwise
+operators.} 
+} 
+\Omit {
+\subsection{Static Analysis Equations for Safety}
+Static program analysis based on abstract interpretation~\cite{DBLP:conf/emsoft/Cousot07} 
+perform safety analysis by computing fixed point to infer invariants 
+over program variables.  However, bounded model checking (BMC) tries to search 
+for a counterexample in a bounded execution trace, by symbolically executing a 
+program up to a finite bound.  
+Similar to BMC, ACDCL searches for a counterexample by solving the formula shown below.
+For a set $N$ of program analysis constraints defined over a set 
+of constraint variables $Var = \{X_i| i \in N\}$, representing a program
+$\mathcal{P}$ and a concrete domain $\powerset(Env)$, the static analysis equation 
+for safety of $\mathcal{P}$ is given as follows.  Here, $X_{init}, X_{Err}$ denote the initial valuation 
+and the \rmcmt{final valuation} of constraint variables.
+\[\varphi = X_{init} \subseteq Env \wedge \underset{p,q \in |\mathcal{P}|}
+{\bigwedge} \{ X_p \subseteq post_{(p,q)}(X_q) \} \wedge X_{err} \supset \emptyset \] 
+}
 % \Omit {
 % The commonly used library for numerical abstract domains  
 % is the APRON C library~\cite{apron}.  This library is 
