@@ -26,7 +26,7 @@ we are going to use.
 
 %-------------------------------------------------------------------------------
 \subsection{Program Representation}  
-
+\Omit {
 \begin{wrapfigure}{r}{3cm}
 \[
 \begin{array}{rcl}
@@ -45,7 +45,38 @@ z &=& x_2 * x_2 \\
 SSA for the example in Figure~\ref{fig:example}
 }
 \end{wrapfigure}
-
+}
+\begin{figure}[t]
+\scriptsize
+\begin{tabular}{l|l}
+\hline
+ SSA & Octagon \\
+\hline
+\begin{minipage}{4.20cm}
+$\begin{array}{rcl}
+(g_0 = \true) \wedge (c = 0 \leq v\leq N) \\
+(g_1 = g_0 \wedge c) \wedge (x_0 = v) \wedge \\
+(x_1 = -v) \wedge (x_2 = g_1?x_0:x_1) \wedge \\
+(g_2 = g_1 \vee g_0\wedge \neg c) \wedge \\
+(z  = x_2 * x_2) \wedge (z<0 \wedge g_2)
+\end{array}$
+\end{minipage}
+&
+\begin{minipage}{4.50cm}
+$\begin{array}{l@{\,\,}c@{\,\,}l}
+C &\iff& ((x \geq -5) \land (x \leq 5) \land \\
+  &    & (z \geq 0) \land (z \leq 25) \land \\
+  &    & (x-z \leq 5) \land (x-z \geq -30) \land \\
+  &    & (x+z \geq -5) \land (x+z \leq 30))  
+\end{array}$
+\end{minipage}
+\\
+\hline
+\end{tabular}
+\caption{SSA and Octagonal Inequalities}
+\label{ssa}
+\end{figure}
+%
 We consider loop-free programs (respectively bounded unwindings of
 programs with loops or recursion) with safety properties given as
 assertions in the code.
@@ -55,8 +86,7 @@ Such a program is represented as set $\mathcal{P}$ of
 translating the program into single static assignment (SSA) form via a
 data flow analysis.
 %
-Figure~\ref{fig:ssa} shows the constraints for the example program in
-Figure~\ref{fig:example}.
+Figure~\ref{ssa} shows the SSA constraints for the program in figure~\ref{fig:example}. 
 %
 Assignments such as \texttt{x=v;} become equalities $x_1=v$ where the
 left-hand side variable gets a fresh name (subscript).
@@ -68,7 +98,9 @@ Data flow joins become conditional expressions, e.g.\ $x_3=g_1?x_1:x_2$.
 Assertions $\mathcal{A}$ are constraints $a$ of the form $g_3
 \Rightarrow z\geq 0$, meaning that if $g_3$ holds (i.e.\ the assertion
 is reachable) then the assertion must hold.
-
+%
+%
+%
 %For example, figure~\ref{swssa} presents the program analysis constraints for 
 %a C program in Static Single Assignment (SSA) form.  
 
@@ -115,16 +147,18 @@ Based on above program representation, the safety problem solved by the ACDCL so
 %-------------------------------------------------------------------------------
 \subsection{Abstract Domain}
 %-------------------------------------------------------------------------------
-The results that we present on lifting ACDL to relational domains hold
-for any relational domain.
+The work of~\cite{sas12,dhk2013-popl} shows that CDCL based SAT solvers 
+operates on the partial assignment domains. We present a generic instantiation 
+of CDCL architecture that can be extended to any relational and non-relational
+domains.  
 % 
 In our prototype implementation and for illustrative purposes in this
 paper we use a product domain $\mathcal{B}^b\times\mathcal{R}$ where
-$\mathcal{B}$ is the partial Boolean assignments domain
-$\langle\{\true,\false,\bot,\top\},\Rightarrow,\wedge,\vee\rangle$ (as
-used in SAT solvers~\cite{sas12}), $b$ is the number of Boolean
-variables in the program, and $\mathcal{R}$ is a \emph{relational}
-domain over the numerical (bitvector) variables in their respective
+$\mathcal{B}$ is the Boolean domain
+$\langle\{\true,\false,\bot,\top\},\Rightarrow,\wedge,\vee\rangle$, 
+$b$ is the number of Boolean variables in the program, 
+and $\mathcal{R}$ is a \emph{relational} domain over the 
+numerical (bitvector) variables in their respective
 data types (currently, signed and unsigned integers are supported).
 %
 We instantiate $\mathcal{R}$ with the template polyhedra domain.
@@ -288,32 +322,38 @@ x=2(y+z)\rrbracket^\sharp(a)=(-2\leq x\leq 6)$ for $a=(0\leq y \leq 2 \wedge 1 \
 We will give more details in Section~\ref{sec:abst}.
 
 %-------------------------------------------------------------------------------
-\subsection{Properties of Abstract Domains for Learning}
+\subsection{Properties of Abstract Domains}
 %-------------------------------------------------------------------------------
 %
+\Omit {
 An important property of a clause learning SAT solver is that each
-element of the partial Boolean assignments domain is decomposable into
+element of the partial assignments domain is decomposable into
 complementable elements.  This property of the domain is required to
 learn elements that help to guide the model search away from the
 conflicting region of the search space.
 %
 Most numerical abstract domains, such as intervals and octagons lack
 complements, but they can be represented as intersections of
-complementable half-spaces, each of which has a complement. We
-formalise this in the sequel.
+complementable half-spaces, each of which has a complement. 
+}
 
+We identify specific properties of domain elements necessary for 
+abstract model search and learning in abstractions.  We formalise 
+this in the sequel.
+%
 \begin{definition} 
-A \emph{meet irreducible} $m$ 
-in a complete lattice structure $A$ is an element with the following property.
+A \emph{meet irreducible} $m$ in a complete lattice 
+structure $A$ is an element with the following property.
 \[\forall m_1, m_2 \in A: m_1 \meet m_2 = m \implies (m = m_1 \lor m = m_2), m \neq \top \]  
+\rmcmt{mention minimum complementable element}
 \end{definition}
-
-The meet irreducibles in the partial Boolean assignments domain
-$\mathcal{B}$ are $\true$ and $\false$. The meet irreducibles in the
-template polyhedra domain are all elements that concretise to
-half-spaces, i.e.\ they can be represented by a single inequality. For
-the interval domain, these are \ $x \leq d$ or $x \geq d$ for
-constants $d$.
+%
+The meet irreducibles in boolean domain $\mathcal{B}$ are 
+$\{x \mapsto \true\}$ and $\{x \mapsto \false\}$. The meet 
+irreducibles in the template polyhedra domain are all elements 
+that concretise to half-spaces, i.e.\ they can be represented 
+by a single inequality. For the interval domain, these are 
+\ $x \leq d$ or $x \geq d$ for constants $d$. 
 
 %An important property of meet irreducibles in case of partial assignments 
 %domain is that they have precise complements.  
@@ -321,7 +361,7 @@ constants $d$.
 %singleton element,$\{x \mapsto false \}$, in the partial assignments domain. 
 
 \begin{definition}
- A \emph{meet decomposition} $\mathit{decomp}(a)$ of an abstract
+A \emph{meet decomposition} $\mathit{decomp}(a)$ of an abstract
 element $a \in A$ is a set of meet irreducibles $M \subseteq A$ such that 
 $a=\bigsqcap_{m\in M} m$.
 %$forall m_i \in M, \meet(m_i) = a$, where $max(i) = |M|$.
@@ -332,7 +372,7 @@ written as an intersection of half-spaces.
 %
 For example, the meet decomposition of the interval domain element
 % $(x,y) \in [2,4]\times[3, 5]$ 
-$2\leq x\leq 4 \wedge 3\leq y\leq 5$ is
+$decomp(2\leq x\leq 4 \wedge 3\leq y\leq 5)$ is
 the set $\{x\geq 2, x\leq 4, y\geq 3, y\leq 5\}$.
 % \langle x:[2, 4] \rangle \in ItvDom$ which gives set of meet irreducibles, 
 % $\{ \langle y \succeq 3 \rangle, \langle y \preceq 5 \rangle, 
@@ -349,6 +389,47 @@ A meet irreducible $m\in A$ is called \emph{complementable} iff $\exists
 %be have complementable meet irreducibles.
 \end{definition}
 
+An important property of a clause learning SAT solver 
+is that a partial assignments domain can be decomposed 
+into a set of precisely complementable singleton assignments.  
+This property of the partial assignments domain helps to 
+guide the model search away from the conflicting region 
+of the search space and allows case-based analysis.  Complementation 
+operator in abstract domains is different from the notion of precise
+complements. 
+%
+\begin{definition}{(Precise complement)} Let $A$ be an lattice. A precise 
+complement of an abstract element $a \in A$ is an element $\bar{a} \in A$ 
+such that the negation of concretization $(\gamma)$ of $a$ is equivalent to 
+concretization of $\bar{a}$, that is, $\gamma(\bar{a}) = \neg \gamma(a))$.
+\end{definition}
+%
+The precise complementation property of partial assignment lattice 
+can be generalized to other lattice structures.  Most numerical 
+abstract domains, such as intervals, octagons, polyhedra, can be 
+decomposed into half-spaces, that admits precise complements.  
+For example, intervals lack complements, but the meet decomposition 
+of intervals into meet-irreducibles have precise complements.  
+Numerical abstract domains that admit complementable decomposition 
+are shown in Figure~\ref{complement}.  Our template-based domain 
+implementation precisely complements a meet irreducible in an abstraction.
+% 
+\begin{table}
+\begin{center}
+{
+\begin{tabular}{l|l}
+\hline
+Domain & Precise Complements \\ \hline 
+Interval & \((x \leq n) \quad \longrightarrow (x > n)\) \\ \hline
+Octagon & \((x+y < 1) \quad \longrightarrow (-x-y < 0)\) \\ \hline
+Equality & \((x==y) \quad \longrightarrow (x \neq y)\) \\ \hline 
+\end{tabular}
+}
+\end{center}
+\label{fig:complement}
+\end{table}
+
+\Omit {
 The meet irreducibles in the partial Boolean assignments domain and
 template polyhedra domains are all complementable.
 %
@@ -366,7 +447,7 @@ Standard abstract interpretation does not require complementation property.
 Abstract Domain library, such as APRON C library~\cite{apron} is specialized 
 for abstract interpretation.  We implement a template-based polyhedra domain 
 that returns precise complements by decomposing it into half-spaces.    
-
+}
 
 % The abstract transformer, $apost_{stmt}$, captures the effect of different program 
 % statements in the abstract domain. The transformer is precise for octagonal 
@@ -401,43 +482,6 @@ that returns precise complements by decomposing it into half-spaces.
 
 \Omit{
 %
-An important property of a clause learning SAT solver 
-is that a partial assignments domain can be decomposed 
-into a set of precisely complementable singleton assignments.  
-This property of the partial assignments domain helps to 
-guide the model search away from the conflicting region 
-of the search space and allows case-based analysis.  
-%
-\begin{definition}{(Precise complement)} A precise complement of an abstract
-element $a \in A$ in abstract lattice $A$ is an element $\bar{a}$ such that 
-$\gamma(\bar{a} = \neg \gamma(a))$.
-\end{definition}
-%
-The precise complementation property of partial assignment lattice 
-can be generalized to other lattice structures.  Most numerical 
-abstract domains, such as intervals, octagons, polyhedra, can be 
-decomposed into half-spaces, that admits precise complements.  
-For example, intervals lack complements, but the meet decomposition 
-of intervals into meet-irreducibles have precise complements.  
-Numerical abstract domains that admit complementable decomposition 
-are shown in Figure~\ref{complement}.  Our template-based domain 
-implementation precisely complements a meet irreducible in an abstraction.
-% 
-\begin{table}
-\begin{center}
-{
-\begin{tabular}{l|l}
-\hline
-Domain & Precise Complements \\ \hline 
-Interval & \((x \leq n) \quad \longrightarrow (x > n)\) \\ \hline
-Octagon & \((x+y < 1) \quad \longrightarrow (-x-y < 0)\) \\ \hline
-Equality & \((x==y) \quad \longrightarrow (x \neq y)\) \\ \hline 
-\end{tabular}
-}
-\end{center}
-\label{fig:complement}
-%\caption{C Program, Control-flow Graph (CFG) and Abstract Conflict Graph}
-\end{table}
 }
 % \Omit {
 % The commonly used library for numerical abstract domains  
