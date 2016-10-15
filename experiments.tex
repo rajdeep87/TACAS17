@@ -14,11 +14,11 @@ generated using v2c~\cite{mtk2016}, (c) controller code generated
 from Simulink (d) several hand-crafted benchmarks for equivalence 
 checking and bounded loop analysis.  All benchmarks containing 
 bounded loops are completely unrolled before analysis.  We compare 
-our tool with a state-of-the-art bounded model checker CBMC and a 
-commercial static analysis tool, Astr{\'e}e.  CBMC uses MiniSAT 
-solver in the backend.  Astr{\'e}e was configured with interval 
-domain, trace-partition domain, and relational domains.  All the 
-bounded loops are completely unrolled in Astr{\'e}e.   
+our tool with a state-of-the-art SAT-based bounded model checker 
+CBMC~\cite{cbmc} and a commercial static analysis tool, Astr{\'e}e.  
+CBMC uses MiniSAT solver in the backend.  Astr{\'e}e was configured with 
+interval domain, trace-partition domain, and relational domains.  
+All the bounded loops are completely unrolled in Astr{\'e}e.   
 
 \Omit {
 To enable precise analysis using Astr{\'e}e, all our benchmarks are 
@@ -28,7 +28,7 @@ such high-precision is not needed for static analysis, since it makes
 the analysis very expensive.  Without trace partitioning, the 
 analysis using Astr{\'e}e shows high degree of imprecision. 
 }
-\paragraph {\em Observation of Analysis}
+\paragraph {\em \textbf{Observation of Analysis}}
 
 \paragraph {\em \textbf{Decision Heuristics}} We compare the performance of 
 different decision heuristic on our benchmarks.  We observe that 
@@ -45,4 +45,6 @@ the heuristics to choose the decison variable among the set of learnt clauses.
 
 \paragraph {\em \textbf{Clause Learning}}      
 
-  
+%================  
+\input{graphs}
+%================  

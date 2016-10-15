@@ -17,11 +17,11 @@ int main() {
 &
 \begin{minipage}{4.40cm}
 $\begin{array}{l@{\,\,}c@{\,\,}l}
-SSA &\iff& ((guard0 == TRUE) \land \\
+SSA &\iff& ((g0 == TRUE) \land \\
     &    & (cond == (x == y)) \land \\
-    &    & (guard1 == (cond \&\& guard0)) \land \\
+    &    & (g1 == (cond \&\& guard0)) \land \\
     &    & (x' == 1u + x) \land \\
-    &    & (x' == 1u + y || !guard1))
+    &    & (x' == 1u + y || !1))
 \end{array}$
 \end{minipage}
 &
@@ -41,7 +41,7 @@ C &\iff& ((x' > 1) \land (-x'-y < -2) \land \\
 \hline
 \end{tabular}
 \caption{C Program, corresponding SSA and Octagonal Inequalities}
-\label{swssa}
+\label{ssa}
 \end{figure}
 %
 %    
