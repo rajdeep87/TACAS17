@@ -9,13 +9,13 @@ C program & Control-Flow Graph & Abstract Conflict Graph \\
 \begin{lstlisting}[mathescape=true,language=C]
 void main() {
  int x,z;
- int val;
- assume(val>=0 && val<=N);
+ int v;
+ assume(v>=0 $\wedge$ v<=N);
  _Bool c;
  if(c)
-   x = val;
+   x = v;
  else 
-   x = -val;
+   x = -v;
  z = x * x;
  assert(z>=0);
 }
