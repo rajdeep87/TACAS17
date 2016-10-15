@@ -289,7 +289,7 @@ constants $d$.
 %singleton element,$\{x \mapsto false \}$, in the partial assignments domain. 
 
 \begin{definition}
- A \emph{meet decomposition} of an abstract
+ A \emph{meet decomposition} $\mathit{decomp}(a)$ of an abstract
 element $a \in A$ is a set of meet irreducibles $M \subseteq A$ such that 
 $a=\bigsqcap_{m\in M} m$.
 %$forall m_i \in M, \meet(m_i) = a$, where $max(i) = |M|$.
@@ -337,12 +337,37 @@ that returns precise complements by decomposing it into half-spaces.
 
 %-------------------------------------------------------------------------------
 \subsection{Abstract Transformers}
-%
+%-------------------------------------------------------------------------------
 In a typical abstract interpretation based Galois-connection setting
 over an over-approximate domain, every concrete element has a unique
 over-approximate representation in the abstract.  Likewise, every
 concrete transformer is over-approximated by a unique abstract
 transformer.  We now define an abstract deduction transformer.
+
+$\llbracket s \rrbracket^\sharp(a)=\min \{a'\mid a'\sqsubset a, a'\models s\}$
+
+\pscmt{define $a'\models s$}
+
+We define a specialised variant of the transformer to compute deductions w.r.t.\ a given subdomain $L\subseteq A$.
+
+$\llbracket s \rrbracket^\sharp(a,L)=\min \{a'\mid a'\sqsubset a, a'\in L, a'\models s\}$
+
+We have the property $\llbracket s \rrbracket^\sharp(a)\sqsubseteq a\meet\llbracket s \rrbracket^\sharp(a,L)$.
+
+For example,
+$a=(0\leq y \leq 1 \wedge 5\leq z)$
+$\llbracket x=y+z\rrbracket^\sharp(a,\{x\})=(x\geq 6)$, whereas
+$\llbracket x=y+z\rrbracket^\sharp(a,\{y\})=\top$.
+
+%$a=(x-y \leq 1, y-x \leq 1)$
+%$\llbracket x=y+z\rrbracket^\sharp($
+
+Moreover, we want to know what the reasons for a specific deduction are.
+$ded(s,a,L)=\{R\rightarrow d\mid R=reason(s,a,L,d), d \in decomp(\llbracket s \rrbracket^\sharp(a,L))\}$
+where 
+$reason(s,a,L,d)=\min \{R'\mid R'\subseteq decomp(a), \llbracket s\rrbracket^\sharp(R,L)=d\}$.
+
+\pscmt{TODO from here}
 
 The abstract transformer, $apost_{stmt}$, captures the effect of different program 
 statements in the abstract domain. The transformer is precise for octagonal 
@@ -372,7 +397,7 @@ abstract domain.
 % of all octagonal inequalities in the set $L$.
 %
 %========================
-\input{literals-clauses}
+%\input{literals-clauses}
 %========================
 
 % \Omit {
