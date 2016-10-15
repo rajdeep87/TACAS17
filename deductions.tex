@@ -116,7 +116,7 @@ transformers on performing only the minimally necessary
 work. 
 %
 We thus define a specialised variant of the transformer to compute
-deductions w.r.t.\ a given subdomain $L\sqsubseteq A$; $\bot,\top \in L$.
+deductions w.r.t.\ a given subdomain $L\subseteq A$; $\bot,\top \in L$.
 \[\llbracket s \rrbracket^\sharp(a,L)=\bigsqcup \{a'\mid a'\in L, a'\models s\}\]
 We have the property $\llbracket s \rrbracket^\sharp(a)\sqsubseteq \llbracket s \rrbracket^\sharp(a,L)$.
 %
@@ -146,6 +146,31 @@ $reasons(s,a,L,d)=\text{argmin}_{R\in\{R'\mid R'\subseteq decomp(a), \llbracket 
 %-------------------------------------------------------------------------------
 %
 \rmcmt{Talk about lazy closure operation}
+
+\pscmt{
+Rough and sketchy:
+%
+$espan(V)=$all meet irreducibles $\in A$ that contain at most one variable that is not in $V$.
+%
+$select(S,PV)$ is the set of statements that contain variables in $PV$ where $PV$ is the set of variables in the previous deduction.
+%
+$LV(s)$ are the live variables of a statement $s$, i.e.\ the intersection of $PV$ with the variables in $s$.
+\begin{theorem}
+$$
+\gfp\lambda a. \bigsqcap_{s\in S} ded(s,a,A) = 
+\gfp\lambda a. \bigsqcap_{s\in select(S,PV)} ded(s,a,espan(LV(s)))
+$$
+\end{theorem}
+Proof sketch:
+When computing $ded$, we obtain a deduction that affects variables $V$.
+This has two consequences: (1) we have to compute the closure; (2) we have to propagate through all statements $s$ affected by the changes to $V$. 
+We do only (2): $espan$ augments the set of affected variables by one transitivity step that we would have to compute in the closure. $ded$ on this subdomain hence performs the deduction w.r.t. $a$ and $s$ plus one transitivity step of the closure. Thus, by induction, we eventually compute the entire closure just by doing (2).
+
+What are the consequences regarding complexity?
+Assuming we require $m$ iterations to reach the fixed point with eager closure; we have to perform $|A|^c|S|m$ (idealised) computation steps to do that (where $c=3$ for octagons). With the lazy closure we have to do $|L|^c|S|mk$ computations taking into account that we need $k$ times more iterations to converge. Hence, the approach pays off if $k<<\frac{|A|^c}{|L|^c}$, which seems likely for $c=3$.
+
+}
+
 Algorithm~\ref{Alg:ms} presents the deduction phase in abstract model search procedure.
 A {\em worklist} is initialized following a heuristics choice for iteration 
 strategies. A {\em forward} iteration strategy initializes the worklist with 
