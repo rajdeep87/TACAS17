@@ -1,6 +1,6 @@
 \section{Preliminaries}
-This section explains the program model and the abstract domains that
-we are going to use.
+This section introduces the program model and identifies properties of abstract
+domains that are necesary for learning in abstract lattice structures.
 % \subsection{Programs:}
 % %
 % A {\em program} $\mathcal{P}$ is formally defined as follows.
@@ -47,14 +47,15 @@ SSA for the example in Figure~\ref{fig:example}
 \end{wrapfigure}
 }
 \begin{figure}[t]
+\center
 \scriptsize
 \begin{tabular}{l|l}
 \hline
  SSA & Octagon \\
 \hline
-\begin{minipage}{4.20cm}
+\begin{minipage}{4.50cm}
 $\begin{array}{rcl}
-(g_0 = \true) \wedge (c = 0 \leq v\leq N) \\
+\mathcal{P}:= (g_0 = \true) \wedge (c = 0 \leq v\leq N) \\
 (g_1 = g_0 \wedge c) \wedge (x_0 = v) \wedge \\
 (x_1 = -v) \wedge (x_2 = g_1?x_0:x_1) \wedge \\
 (g_2 = g_1 \vee g_0\wedge \neg c) \wedge \\
@@ -77,9 +78,9 @@ C &\iff& ((x \geq -5) \land (x \leq 5) \land \\
 \label{ssa}
 \end{figure}
 %
-We consider loop-free programs (respectively bounded unwindings of
-programs with loops or recursion) with safety properties given as
-assertions in the code.
+We consider programs with bounded loops 
+%(respectively bounded unwindings of programs with loops or recursion) with 
+containing safety properties given as assertions in the code.
 %
 Such a program is represented as set $\mathcal{P}$ of
 \emph{statements} $s$.  These are constraints as typically obtained by
@@ -324,10 +325,12 @@ We will give more details in Section~\ref{sec:abst}.
 %-------------------------------------------------------------------------------
 %
 An important property of a clause learning SAT solver is that each
-non-singleton element of the partial assignment domain is decomposable into
-complementable elements.  This property of the domain is required to
-learn elements that help to guide the model search away from the
-conflicting region of the search space.
+non-singleton element of the partial assignment domain can be 
+decomposed into a set of precisely complementable singleton elements.  
+This property of the partial assignment domain is required to learn 
+elements that help to guide the model search away from the
+conflicting region of the search space.  Complementation operator 
+in abstract domains is different from the notion of precise complements. 
 \rmcmt{Convention to be followed: In SAT world, partial assignment (PA) is a data structure. Previous ACDL paper 
 showed that PA is an abstract domain and called it partial assignment domain. Likewise, in this paper, 
 whenever we refer to SAT, we also call partial assignment domain. But When we refer 
@@ -409,30 +412,30 @@ the concretisation of $a$.
 % concretization of $\bar{a}$, that is, $\gamma(\bar{a}) = \neg \gamma(a))$.
 % \end{definition}
 %
-% The precise complementation property of partial assignment lattice 
-% can be generalized to other lattice structures.  Most numerical 
-% abstract domains, such as intervals, octagons, polyhedra, can be 
-% decomposed into half-spaces, that admits precise complements.  
-% Numerical abstract domains that admit complementable decomposition 
-% are shown in Figure~\ref{complement}.  Our template-based domain 
-% implementation precisely complements a meet irreducible in an abstraction.
-% % 
-% \begin{table}
-% \begin{center}
-% {
-% \begin{tabular}{l|l}
-% \hline
-% Domain & Precise Complements \\ \hline 
-% Interval & \((x \leq n) \quad \longrightarrow (x > n)\) \\ \hline
-% Octagon & \((x+y < 1) \quad \longrightarrow (-x-y < 0)\) \\ \hline
-% Equality & \((x==y) \quad \longrightarrow (x \neq y)\) \\ \hline 
-% \end{tabular}
-% }
-% \end{center}
-% \label{fig:complement}
-% \end{table}
-% }
-
+The precise complementation property of partial assignment lattice 
+can be generalized to other lattice structures.  Most numerical 
+abstract domains, such as intervals, octagons, polyhedra, can be 
+decomposed into half-spaces, that admits precise complements.  
+Numerical abstract domains that admit complementable decomposition 
+are shown in Figure~\ref{fig:complement}.  Our template-based domain 
+implementation precisely complements a meet irreducible in an abstraction.
+% 
+\begin{table}
+\begin{center}
+{
+\begin{tabular}{l|l}
+\hline
+Domain & Precise Complements \\ \hline 
+Interval & \((x \leq n) \quad \longrightarrow (x > n)\) \\ \hline
+Octagon & \((x+y < 1) \quad \longrightarrow (-x-y < 0)\) \\ \hline
+Equality & \((x==y) \quad \longrightarrow (x \neq y)\) \\ \hline 
+\end{tabular}
+}
+\end{center}
+\label{fig:complement}
+\end{table}
+%
+\Omit {
 Note that for many domains $A$ including template polyhedra
 most domain elements are not precisely complementable within $A$.
 %
@@ -443,10 +446,10 @@ whereas all meet irreducibles are precisely complementable.
 Hence, we can complement each element in the meet decomposition of $e$ and
 re-interpret the obtained set as a disjunction. 
 %
-Thus the complement of the octagon in Figure~\ref{octagon} 
-can be written as a disjunction of meet irreducibles:
-\[(x{\leq} -3) \lor (x{\geq} 2) \lor (y{\leq} -2) \lor (y{\geq} 3) \lor (x+y{\geq} 3) \lor (x-y{\geq} 2) \lor (y-x{\geq} 4) \lor (-x-y{\geq} 3)\]
-
+%Thus the complement of the octagon in Figure~\ref{octagon} 
+%can be written as a disjunction of meet irreducibles:
+%\[(x{\leq} -3) \lor (x{\geq} 2) \lor (y{\leq} -2) \lor (y{\geq} 3) \lor (x+y{\geq} 3) \lor (x-y{\geq} 2) \lor (y-x{\geq} 4) \lor (-x-y{\geq} 3)\]
+}
 Standard abstract interpretation does not require a complementation
 operator. Hence, abstract domain libraries, such as APRON~\cite{apron}
 do not provide it.  However, it can be implemented with the help of a
