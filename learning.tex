@@ -52,7 +52,7 @@ which is obtained by negating the reason for conflict.
 \end{figure} 
 %    
 \paragraph{\textbf{Learning in Relational Lattice}}
-We model a learning as a meet irreducible deduction transformer, called 
+We model learning as a meet irreducible deduction transformer, called 
 {\em abstract unit transformer (AUnit)}.  For an 
 abstract lattice $A$ with complementable meet irreducibles 
 and a set of conflicting meet irreducibles (countermodels) 
@@ -71,12 +71,12 @@ satisfy $\varphi$, $AUnit_C: A \rightarrow A$ is defined as follows.
  \end{cases}
 \]
 For example, let $C = \langle x+z \geq 10,  k \geq 0 \rangle$ be the conflicting set 
-of meet irreducibles of $\varphi$.  Let $a= \langle x+y \geq 2, y+z \geq 5, x+z \leq 15, k:[1,1] \rangle$, 
-then $AUnit_C(a) = (x+z < 10)$.  Applying the third rule, we get a decomposition 
-of $a$ into $a'$ and $a''$ where 
+of meet irreducibles of $\varphi$ and let $a= \langle x+y \geq 2, y+z \geq 5,
+x+z \leq 15, k:[1,1] \rangle$.  Applying the third rule of $AUnit_C$, we get a 
+decomposition of $a$ into $a'$ and $a''$ where 
 $a'= \langle x+y \geq 2, y+z \geq 5, x+z \leq 15 \rangle \not\sqsubseteq (x+z \geq 10)$, and 
-$a''= \langle k:[1,1] \rangle \sqsubseteq (k \geq 0)$.  $AUnit_C(a)$ returns a new 
-deduction $x+z \leq 9$, which constrains the bound of the octagonal constraint.  
+$a''= \langle k:[1,1] \rangle \sqsubseteq (k \geq 0)$.  Then, $AUnit_C(a) = (x+z < 10)$, 
+which constrains the bound of the octagonal constraint.  
 Let us consider another example, where $C = \langle x \geq 2, x \leq 5, y \leq 7 \rangle$
 and let $a = \langle x:[3,4], y:[5,6] \rangle$, then $AUnit_C(a) = \bot$ using
 the first rule, since $a \sqsubseteq C$.  Now, let $a' = \langle x:[3,4] \rangle$, 
