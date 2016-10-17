@@ -1,11 +1,12 @@
 \section{Experimental Results}
 We have implemented the instantiation of ACDCL on relational domains
-in 2LS verification tool~\cite{2ls}.  We used the abstract domains
-provided by 2LS (intervals, octagons and equalities) for our
-experiments. Although the performance of these implementations is not
-competitive with dedicated implementations as found in
-APRON~\cite{apron}, for instance, they have the advantage that they
-handle all C operators (including bitwise operations) out of the box.
+in 2LS verification tool~\cite{2ls}.  We have used the abstract domains
+provided by 2LS (intervals, octagons, polyhedra and equalities) for our
+experiments. Although the performance of the abstract domain implementations 
+in 2LS is not competitive with that of APRON~\cite{apron} library, but 
+the domain implementation in 2LS can handle all C operators 
+(including bitwise operations) out of the box and support precise
+complementation of meet irreducibles, which are necessary for our algorithm. 
 
 We verified a total of 70 benchmarks in ANSI-C, which are derived from 
 (a) bit-vector regression category in SV-COMP'16, (c) bit-precise and 
@@ -17,8 +18,9 @@ bounded loops are completely unrolled before analysis.  We compare
 our tool with a state-of-the-art SAT-based bounded model checker 
 CBMC~\cite{cbmc} and a commercial static analysis tool, Astr{\'e}e.  
 CBMC uses MiniSAT solver in the backend.  Astr{\'e}e was configured with 
-interval domain, trace-partition domain, and relational domains.  
-All the bounded loops are completely unrolled in Astr{\'e}e.   
+default set of domains which includes interval, bit-field, congurence and 
+relational domains.  Additionally, to enable precise analysis using 
+Astr{\'e}e, we also used trace-partition domain.   
 
 \Omit {
 To enable precise analysis using Astr{\'e}e, all our benchmarks are 
