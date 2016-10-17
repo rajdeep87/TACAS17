@@ -42,7 +42,8 @@ transformer stored in $reasons[\bot]$.
 For our example, there exists multiple incomaparable reasons for conflict,
 marked as {\em cut0, cut1}, in figure~\ref{conflict}.  Here, cut0 is the first UIP.  
 Choosing cut0 yields a learnt clause 
-$L_0: (x+y<15 \vee -x-y<-15 \vee -x+y<5 \vee x-y<-5 \vee y-10<0 \vee -y+10<0)$.  
+$L_0: (x+y<15 \vee -x-y<-15 \vee -x+y<5 \vee x-y<-5 \vee y-10<0 \vee -y+10<0)$, 
+which is obtained by negating the reason for conflict.  
 %
 \begin{figure}
 %\caption{An example of Octagon}\label{octagon}
@@ -50,20 +51,38 @@ $L_0: (x+y<15 \vee -x-y<-15 \vee -x+y<5 \vee x-y<-5 \vee y-10<0 \vee -y+10<0)$.
 \label{conflict}
 \end{figure} 
 %    
-\paragraph{\textbf{Clause Learning in Abstract Lattice}}
-A learnt clause $\mathcal{L}$ in propositional solver is obtained 
-by negating the reason for conflict.  An asserting clause guarantees 
-new deductions using unit rule~\cite{cdcl}.  However, we model a 
-learnt clause as meet irreducible deduction transformer, 
-called {\em abstract unit transformer (AUnit)}.  For an 
+\paragraph{\textbf{Learning in Relational Lattice}}
+We model a learning as a meet irreducible deduction transformer, called 
+{\em abstract unit transformer (AUnit)}.  For an 
 abstract lattice $A$ with complementable meet irreducibles 
-and a set of countermodels $C \subseteq A$ of $\varphi$ such that \meet{C} does not 
-satisfy $\varphi$, $AUnit_C: A \rightarrow A$ is $\top$ if $\exists a \in A$ 
-such that $a \subseteq \meet{C}$.  However, if $t \in C$ and 
-$\forall t' \in C \\ \{t\}$ such that $a \sqsubseteq t'$, $AUnit$ 
-infers a valid deduction $\bar{t}$, which directs the search 
-away from the conflict region. Else, $AUnit$ returns $\top$.   
-
+and a set of conflicting meet irreducibles (countermodels) 
+$C \subseteq A$ of $\varphi$ such that \meet{C} does not 
+satisfy $\varphi$, $AUnit_C: A \rightarrow A$ is defined as follows. 
+\[ AUnit(a) =
+ \begin{cases}
+  \bot       & \quad \text{if } a \sqsubseteq \meet{C} \\
+  \bar{t}    & \quad \text{if } t \in C \; \text{and} \; \forall t' \in C
+  \setminus \{t\}. a  \sqsubseteq t' \\
+  \bar{t}    & \quad \text{if } t \in C \; \text{and} \; \forall t' \in C \setminus \{t\}. a
+  \not\sqsubseteq t', \; \text{then} \\ 
+             & \quad \forall a' \subseteq decomp(a) \;  \text{and} \; \forall a'' \in a \setminus \{a'\}, \\ 
+             & \quad \meet{a''} \sqsubseteq r' \; \text{and} \; a' \not\sqsubseteq t  \\
+  \top & \quad \text{otherwise} \\
+ \end{cases}
+\]
+For example, let $C = \langle x+z \geq 10,  k \geq 0 \rangle$ be the conflicting set 
+of meet irreducibles of $\varphi$.  Let $a= \langle x+y \geq 2, y+z \geq 5, x+z \leq 15, k:[1,1] \rangle$, 
+then $AUnit_C(a) = (x+z < 10)$.  Applying the third rule, we get a decomposition 
+of $a$ into $a'$ and $a''$ where 
+$a'= \langle x+y \geq 2, y+z \geq 5, x+z \leq 15 \rangle \not\sqsubseteq (x+z \geq 10)$, and 
+$a''= \langle k:[1,1] \rangle \sqsubseteq (k \geq 0)$.  $AUnit_C(a)$ returns a new 
+deduction $x+z \leq 9$, which constrains the bound of the octagonal constraint.  
+Let us consider another example, where $C = \langle x \geq 2, x \leq 5, y \leq 7 \rangle$
+and let $a = \langle x:[3,4], y:[5,6] \rangle$, then $AUnit_C(a) = \bot$ using
+the first rule, since $a \sqsubseteq C$.  Now, let $a' = \langle x:[3,4] \rangle$, 
+then $AUnit_C(a') = (y > 7)$ using second rule, since $a' \sqsubseteq (x \geq 2)$
+and $a' \sqsubseteq (x \leq 5)$.
+ 
 \paragraph {\textbf{Backjumping}}
 A backjumping procedure undo all the assignments in the trail up to 
 a decision level that restores the solver to a consistent state 
