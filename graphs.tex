@@ -12,7 +12,7 @@
 	scatter/classes={s={mark=square},u={mark=triangle*,blue}},] 
 	table [meta=label] {plotdata/scatter-decision.dat};
 	\legend{Safe,Unsafe}
-\addplot [domain=.1:1500] {x};
+\addplot [domain=.1:4000] {x};
 %\addplot [red,sharp plot, domain=.1:1500] {900}
 %          node [below] at (axis cs:10,850) {timeout};
 %\addplot [red,sharp plot, domain=.1:1500] coordinates{(900,.1) (900,1500)}
@@ -25,7 +25,7 @@
 \end{tikzpicture}
  &
 \begin{tikzpicture}[scale=0.75]
-	\begin{loglogaxis} [xmin=.1,xmax=1500, ymin=.1, ymax=1500, xlabel=SAT (Propagation),
+	\begin{loglogaxis} [xmin=.1,xmax=83000, ymin=.1, ymax=83000, xlabel=SAT (Propagation),
 			ylabel=ACDCL (Propagation),
 			legend style={at={(0.8,0.15)},
 			anchor=north,legend columns=-1 },
@@ -34,7 +34,7 @@
 	scatter/classes={s={mark=square},u={mark=triangle*,blue}},] 
 	table [meta=label] {plotdata/scatter-propagation.dat};
 	\legend{Safe,Unsafe}
-\addplot [domain=.1:1500] {x};
+\addplot [domain=.1:83000] {x};
 %\addplot [red,sharp plot, domain=.1:1500] {900}
 %          node [below] at (axis cs:10,850) {timeout};
 %\addplot [red,sharp plot, domain=.1:1500] coordinates{(900,.1) (900,1500)}
@@ -46,7 +46,7 @@
 (a) & (b)
 \end{tabular}
 \caption{\label{fig:results}
-Comparison
+Comparison of SAT and ACDCL 
 }
 \end{figure}
 
