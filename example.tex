@@ -117,10 +117,11 @@ Similar to conflict analysis phase in SAT solvers, ACDCL learns that
 at node $I$.  The analysis discards all interval constraints that
 lead to the conflict and backtrack to decision level 0.  ACDCL then 
 performs interval analysis with the learnt constraint $(c \neq 1)$ which also 
-leads to a conflict.  The analysis cannot backtrack further and therefore 
-it terminates proving that the program is safe.  A DPLL-style solver would 
-perform proof by cases.  However, decision and clause learning are used 
-to avoid case based reasoning and prevents enumeration behavior.     
+leads to a conflict, as shown in right side of figure~\ref{ssa}.  The 
+analysis cannot backtrack further and therefore it terminates proving 
+that the program is safe.  A DPLL-style solver would perform proof by 
+cases.  However, decision and clause learning are used to avoid case 
+based reasoning and prevents enumeration behavior.     
    
 For $N=46000$, table~\ref{solver} shows the statistics from 
 MiniSAT~\cite{minisat} solver for analysis using BMC, and 

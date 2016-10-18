@@ -51,7 +51,7 @@ SSA for the example in Figure~\ref{fig:example}
 \scriptsize
 \begin{tabular}{l|l}
 \hline
- SSA & Octagon \\
+ SSA & Abstract Conflict Graph \\
 \hline
 \begin{minipage}{4.50cm}
 $\begin{array}{rcl}
@@ -63,18 +63,14 @@ $\begin{array}{rcl}
 \end{array}$
 \end{minipage}
 &
-\begin{minipage}{4.50cm}
-$\begin{array}{l@{\,\,}c@{\,\,}l}
-C &\iff& ((x \geq -5) \land (x \leq 5) \land \\
-  &    & (z \geq 0) \land (z \leq 25) \land \\
-  &    & (x-z \leq 5) \land (x-z \geq -30) \land \\
-  &    & (x+z \geq -5) \land (x+z \leq 30))  
-\end{array}$
+{minipage}{5.2cm}
+\centering
+\scalebox{.45}{\import{figures/}{learning.pspdftex}}
 \end{minipage}
 \\
 \hline
 \end{tabular}
-\caption{SSA and Octagonal Inequalities}
+\caption{SSA and abstract conflict graph}
 \label{ssa}
 \end{figure}
 %
@@ -383,7 +379,6 @@ An element $a\in A$ is called \emph{precisely complementable}
 iff $\exists \bar{a} \in A: \neg\gamma(\bar{a})=\gamma(a)$, 
 i.e.\ there is an element whose negated concretisation equals
 the concretisation of $a$.
-\rmcmt{$\gamma$ is not defined before and used here for the first time}
 %m\meet\bar{m}=\bot \wedge m\join\bar{m}=\top$.
 %A complementable meet irreducible $\bar{M}$ of an abstract lattice $A$ is the complement of a meet 
 %irreducible $M \in A$ such that $\bar{M} \in A$ and the concretisation of $M$ 
