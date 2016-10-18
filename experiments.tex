@@ -7,7 +7,7 @@ in 2LS is not competitive with that of APRON~\cite{apron} library, but
 the domain implementation in 2LS can handle all C operators 
 (including bitwise operations) out of the box and support precise
 complementation of meet irreducibles, which are necessary for conflict-driven 
-learning. 
+learning. Our tool and benchmarks are available online\footnote{http://www.cprover.org/acdcl/}.
 
 We verified a total of 66 benchmarks in ANSI-C, which are derived from 
 (a) bit-vector regression category in SV-COMP'16, (c) bit-precise and 
@@ -19,9 +19,8 @@ unrolled before analysis.  We compare our tool with a state-of-the-art
 SAT-based bounded model checker CBMC~\cite{cbmc} and a commercial 
 static analysis tool, Astr{\'e}e.  CBMC uses MiniSAT solver in the backend.  
 Astr{\'e}e was configured with default set of domains which includes 
-interval, bit-field, congurence and relational domains (octagons, polyhedra, 
-zones, equalities, filter).  Additionally, to enable precise analysis 
-using Astr{\'e}e, we also used trace-partition domain.   
+interval, bit-field, congurence, trace partitioning and relational 
+domains (octagons, polyhedra, zones, equalities, filter).   
 
 \Omit {
 To enable precise analysis using Astr{\'e}e, all our benchmarks are 
@@ -79,7 +78,15 @@ of conflicts to prove safety, thus allowing the heuristics to choose
 the decison variable among the set of learnt clauses.   
 
 \paragraph {\em \textbf{Propagation Strategy}}      
-
+Figure~\ref{} presents a comparison between {\em forward} iteration strategy and
+{\em chaotic} iteration strategy in ACDCL.  The iteration strategy influences the total 
+number of decisions and clause learning iterations.  Forward iteration strategy
+is similar to forward analysis in abstract interpretation.  However, the chaotic 
+or multi-way strategy performs both-ways propagations which may take several 
+iterations to reach the fixed-point, but significantly reduces the total number of
+decisions and learning.  We observe that the deductions made during chaotic iteration 
+helps the decision heuristics to make better decisions compared to forward analysis.       
+ 
 \paragraph {\em \textbf{Clause Learning}}      
 
 %================  
