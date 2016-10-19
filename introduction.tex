@@ -30,22 +30,11 @@ lifts learning techniques in SAT solver to operate on non-distributive
 lattice -- thus equipping the analysis with negation. This enables the 
 analyzer to refine the analysis and prevent enumeration behavior.
 
-\rmcmt{cite Natural-domain SMT}
-\rmcmt{relational domains}
-
 The instantiation of ACDCL has so far been limited to interval domains only.  
 In this paper, we identify specific properties of the CDCL algorithm that 
 are necessary to lift the propositional skeleton of CDCL to relational 
-abstract domains such as template polyhedra domains~\cite{sriram} (octagons, zones and 
-equalities).  To this end, we present a characterization of abstract 
-model search procedure and conflict analysis procedure that lift 
+abstract domains such as template polyhedra domains~\cite{sriram} 
+(octagons, zones and equalities).  To this end, we present a characterization 
+of abstract model search procedure and conflict analysis procedure that lift 
 the abstract deduction transformer and the first-UIP algorithm to 
 relational lattice structures. 
-
-Clause learning SAT solvers requires a weak complementation property 
-of the partial assignments domain.  However,  abstract domain 
-library, such as APRON~\cite{apron}, is specialized for abstract 
-interpretation framework which does not require complementation 
-operator.  Thus, we implement our own template-based numerical abstract 
-domains that support complementation property, required for clause learning 
-in the domain.  

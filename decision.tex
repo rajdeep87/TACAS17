@@ -13,10 +13,12 @@ singleton value, for example, $\langle x:[1,1] \rangle$.  Otherwise,
 the variable is non-singleton.  Given a set of variables $\mathcal{V}$, 
 a decision phase heuristically chooses a non-singleton branching 
 variable $v \in \mathcal{V}$, a bound $c$, and the polarity ($\succeq$ or 
-$\preceq$).  
+$\preceq$).  A decision changes the sate of the solver by adding new element 
+$m$ and labelling information $s=decision$ to the trail, which is described below. 
+\[decide: \quad (\mathcal{E},S) \rightarrow (\mathcal{E}(m,s),S) \]
 
-{\em Titlis} support several decision heuristics namely, {\em ordered} 
-{\em longest-range}, {\em random}, {\em Berkmin}~\cite{} decision heuristics.  
+ACDL supports several decision heuristics namely, {\em ordered} 
+{\em longest-range}, {\em random}, {\em Berkmin}~\cite{eugoldberg07} decision heuristics.  
 The {\em ordered} decision heuristics creates an ordering among non-singleton 
 variables, thereby making decisions on conditional variables (variables that 
 appear in conditional branches) first before choosing numerical variables.  

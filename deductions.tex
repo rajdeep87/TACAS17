@@ -1,5 +1,6 @@
 \section{Abstract Model Search}
 %
+\Omit {
 \begin{figure}[t]
 \scriptsize
 \begin{tabular}{l|l|l}
@@ -17,11 +18,11 @@ int main() {
 &
 \begin{minipage}{4.40cm}
 $\begin{array}{l@{\,\,}c@{\,\,}l}
-SSA &\iff& ((guard0 == TRUE) \land \\
+SSA &\iff& ((g0 == TRUE) \land \\
     &    & (cond == (x == y)) \land \\
-    &    & (guard1 == (cond \&\& guard0)) \land \\
+    &    & (g1 == (cond \&\& guard0)) \land \\
     &    & (x' == 1u + x) \land \\
-    &    & (x' == 1u + y || !guard1))
+    &    & (x' == 1u + y || !1))
 \end{array}$
 \end{minipage}
 &
@@ -41,8 +42,9 @@ C &\iff& ((x' > 1) \land (-x'-y < -2) \land \\
 \hline
 \end{tabular}
 \caption{C Program, corresponding SSA and Octagonal Inequalities}
-\label{swssa}
+\label{ssa}
 \end{figure}
+}
 %
 %    
 \begin{algorithm2e}[t]
@@ -106,8 +108,71 @@ domain~\cite{dhk2013-popl}.  We present an abstract model search procedure
 that computes a greatest fixed point over meet irreducible deduction 
 transformer in $S$.  
 %
-\subsection{Algorithm for Deduction Phase}
+
+%-------------------------------------------------------------------------------
+\subsection{Abstract Transformers} \label{sec:abst}
+%-------------------------------------------------------------------------------
+
+To make our algorithm efficient, we have to focus abstract
+transformers on performing only the minimally necessary
+work. 
 %
+We thus define a specialised variant of the transformer to compute
+deductions w.r.t.\ a given subdomain $L\subseteq A$; $\bot,\top \in L$.
+\[\llbracket s \rrbracket^\sharp(a,L)=\bigsqcup \{a'\mid a'\in L, a'\models s\}\]
+We have the property $\llbracket s \rrbracket^\sharp(a)\sqsubseteq \llbracket s \rrbracket^\sharp(a,L)$.
+%
+For example, for
+$a=(0\leq y \leq 1 \wedge 5\leq z)$ we have
+$\llbracket x=y+z\rrbracket^\sharp(a,\{x\})=(x\geq 6)$, whereas
+$\llbracket x=y+z\rrbracket^\sharp(a,\{y,z\})=\top$.
+%
+If $L=A$ then intuitively $a$ is intersected with the constraint $s$.
+Yet, with the help of $L$ we can also control whether to perform
+forward (right-hand side to left-hand side, $L=\{x\}$ in the above
+example) or backward (lhs to rhs, $L=\{y,z\}$) propagation.
+
+%Moreover, we want to know what the reasons for a specific deduction are.
+%\[ded(s,a,L)=\{R\rightarrow d\mid R=reasons(s,a,L,d), d \in decomp(\llbracket s \rrbracket^\sharp(a,L))\}\]
+%where 
+%$reasons(s,a,L,d)=\text{argmin}_{R\in\{R'\mid R'\subseteq decomp(a), \llbracket s\rrbracket^\sharp(R,L)=d\}} |R| $.
+
+\pscmt{give an example for $ded$, link it to the reason trail}
+
+\pscmt{define $ded$ for all statements, connect this to worklist}
+
+\pscmt{link livevars to $L$ -- the subdomain spanned by livevars}
+
+%-------------------------------------------------------------------------------
+\subsection{Algorithm for Deduction Phase}
+%-------------------------------------------------------------------------------
+%
+\rmcmt{Talk about lazy closure operation}
+
+\pscmt{
+Rough and sketchy:
+%
+$espan(V)=$all meet irreducibles $\in A$ that contain at most one variable that is not in $V$.
+%
+$select(S,PV)$ is the set of statements that contain variables in $PV$ where $PV$ is the set of variables in the previous deduction.
+%
+$LV(s)$ are the live variables of a statement $s$, i.e.\ the intersection of $PV$ with the variables in $s$.
+\begin{theorem}
+$$
+\gfp\lambda a. \bigsqcap_{s\in S} ded(s,a,A) = 
+\gfp\lambda a. \bigsqcap_{s\in select(S,PV)} ded(s,a,espan(LV(s)))
+$$
+\end{theorem}
+Proof sketch:
+When computing $ded$, we obtain a deduction that affects variables $V$.
+This has two consequences: (1) we have to compute the closure; (2) we have to propagate through all statements $s$ affected by the changes to $V$. 
+We do only (2): $espan$ augments the set of affected variables by one transitivity step that we would have to compute in the closure. $ded$ on this subdomain hence performs the deduction w.r.t. $a$ and $s$ plus one transitivity step of the closure. Thus, by induction, we eventually compute the entire closure just by doing (2).
+
+What are the consequences regarding complexity?
+Assuming we require $m$ iterations to reach the fixed point with eager closure; we have to perform $|A|^c|S|m$ (idealised) computation steps to do that (where $c=3$ for octagons). With the lazy closure we have to do $|L|^c|S|mk$ computations taking into account that we need $k$ times more iterations to converge. Hence, the approach pays off if $k<<\frac{|A|^c}{|L|^c}$, which seems likely for $c=3$.
+
+}
+
 Algorithm~\ref{Alg:ms} presents the deduction phase in abstract model search procedure.
 A {\em worklist} is initialized following a heuristics choice for iteration 
 strategies. A {\em forward} iteration strategy initializes the worklist with 

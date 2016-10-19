@@ -1,6 +1,94 @@
 \section{Experimental Results}
-We classify our benchmarks into two groups: {\em bounds checking}, 
-{\em equivalence checking}.  We use interval, octagon, and equality 
-domain for our verification task.  We analyze programs with bounded 
-loops.  All loops in the program are completely unrolled before analysis.
-  
+We have implemented the instantiation of ACDCL on relational domains
+in 2LS verification tool~\cite{2ls}.  We have used the abstract domains
+provided by 2LS (intervals, octagons, polyhedra and equalities) for our
+experiments. Although the performance of the abstract domain implementations 
+in 2LS is not competitive with that of APRON~\cite{apron} library, but 
+the domain implementation in 2LS can handle all C operators 
+(including bitwise operations) out of the box and support precise
+complementation of meet irreducibles, which are necessary for conflict-driven 
+learning. Our tool and benchmarks are available online\footnote{http://www.cprover.org/acdcl/}.
+
+We verified a total of 66 benchmarks in ANSI-C, which are derived from 
+(a) bit-vector regression category in SV-COMP'16, (c) bit-precise and 
+cycle accurate software models of hardware circuits automatically 
+generated using v2c~\cite{mtk2016}, (c) controller code generated 
+from Simulink (d) several hand-crafted benchmarks for equivalence 
+checking and bounded loop analysis.  All bounded loops are completely 
+unrolled before analysis.  We compare our tool with a state-of-the-art 
+SAT-based bounded model checker CBMC~\cite{cbmc} and a commercial 
+static analysis tool, Astr{\'e}e.  CBMC uses MiniSAT solver in the backend.  
+Astr{\'e}e was configured with default set of domains which includes 
+interval, bit-field, congurence, trace partitioning and relational 
+domains (octagons, polyhedra, zones, equalities, filter).   
+
+\Omit {
+To enable precise analysis using Astr{\'e}e, all our benchmarks are 
+manually instrumented with partition directives which provides external 
+hint to the tool to guide the trace partitioning heuristics.  Usually, 
+such high-precision is not needed for static analysis, since it makes 
+the analysis very expensive.  Without trace partitioning, the 
+analysis using Astr{\'e}e shows high degree of imprecision. 
+}
+\paragraph {\em \textbf{Observation of Analysis}}
+Figure~\ref{fig:results} presents a comparison of the solver statistics
+(decision and learning) for the analysis using CBMC and ACDCL.  The cumulative 
+statistics corresponding to each phase of the algorithm for all 66 benchmarks 
+is presented in Table~\ref{result}.  The reasoning using ACDCL is atleast 
+\rmcmt{1.5X} effecient compared to SAT in terms of number of decisions, propagations 
+and learning.    
+%
+\begin{table}
+\begin{center}
+{
+\begin{tabular}{l|l|l|l|l|l}
+\hline
+Solver & Decisions & propagations & conflict & conflict literals & restarts \\ \hline
+SAT & 27917 & 304031 & 3949 & 33646 & 64 \\ \hline
+ACDCL (Product Domain) & 161 & 3130 & 10 & 5 & 0 \\ \hline  
+\end{tabular}
+}
+\end{center}
+\caption{Solver statistics}
+\label{result}
+\end{table}
+%
+Out of 66 benchmarks, CBMC with MiniSAT backend could only prove 16 benchmarks 
+without any restarts.  The solver is restarted in 50 cases to avoid spending 
+too much time in branches that does not easily lead to a satisfying assignment or 
+stronger clause learning.  In contrast, the analysis using ACDCL solved all
+66 benchmarks without any restarts.  This is attributed to intelligent decision 
+heuristics which exploits the high-level structure of the program combined 
+with stronger deductions and clause learning mechanism aided by the richer 
+abstract domains.
+
+On the other hand, Ast{\'e}e is often faster than ACDCL, but the analysis using 
+Astr{\'e}e shows high degree of imprecision.  Astr{\'e}e reported 15 false alarms 
+out of 41 safe benchmarks.  
+
+\paragraph {\em \textbf{Decision Heuristics}} We compare the performance of 
+different decision heuristics in ACDCL.  We observe that the ordered heuristic 
+outperforms other heuristics on control-intensive benchmarks due to its 
+ability to prioritize decisions on variables that appears in conditional 
+branches.  For straight-line code and most of the bit-vector regression 
+suite, random heuristics performs the best.  Whereas, the activity based 
+heuristics such as Berkmin heuristic which works well in propositional 
+cases performs best for benchmarks that encountered the maximum number 
+of conflicts to prove safety, thus allowing the heuristics to choose 
+the decison variable among the set of learnt clauses.   
+
+\paragraph {\em \textbf{Propagation Strategy}}      
+Figure~\ref{} presents a comparison between {\em forward} iteration strategy and
+{\em chaotic} iteration strategy in ACDCL.  The iteration strategy influences the total 
+number of decisions and clause learning iterations.  Forward iteration strategy
+is similar to forward analysis in abstract interpretation.  However, the chaotic 
+or multi-way strategy performs both-ways propagations which may take several 
+iterations to reach the fixed-point, but significantly reduces the total number of
+decisions and learning.  We observe that the deductions made during chaotic iteration 
+helps the decision heuristics to make better decisions compared to forward analysis.       
+ 
+\paragraph {\em \textbf{Clause Learning}}      
+
+%================  
+\input{graphs}
+%================  
