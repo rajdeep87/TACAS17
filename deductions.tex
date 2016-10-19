@@ -64,36 +64,31 @@ C &\iff& ((x' > 1) \land (-x'-y < -2) \land \\
 \SetKwFor{Loop}{Loop}{}{}
 \SetKw{KwNot}{not}
 \begin{small}
-\Input{Set $S$ of $\widehat{ded_{\varphi}}$ for $\varphi$ over Abstract domain $A$,
-abstract valuation $v$, propagation trail $\mathcal{T}$, reason trail $\mathcal{R}$}
-\Output{The status (\sat or \conflict or \unknown)}
+\Input{Set $S$ of $\widehat{ded_{\varphi}}$ for $\varphi$ over Abstract domain $A$, propagation trail $\mathcal{T}$, reason trail $\mathcal{R}$}
+\Output{\sat or \conflict or \unknown}
 worklist $\leftarrow$ initialize\_worklist($S$) \;
-\Loop{}
-{
-// Greatest fixed point \;
 \While{$!worklist.empty()$} 
 {
-  $\langle live\_vars, s \rangle \leftarrow$ worklist.pop() \;
-  $\mathit{meet\_irrd} \leftarrow$ domain(s, live\_vars, $v$)\;
-  \uIf{$meet\_irrd == \bot$} {
-    $\mathcal{R}[\bot] \leftarrow s$ \;
-    worklist.delete() \;
+  $(s,\mathit{live\_vars}) \leftarrow$ worklist.pop() \;
+  $v \leftarrow ded(s, \mathit{espan}(\mathit{live\_vars}), \mathit{abs}(\mathcal{T}))$\;
+  \uIf{$v = \bot$} {
+    $\mathcal{R}[\bot] \leftarrow s$ \pscmt{how is this used in the conflict analysis? wouldn't it be more uniform to add $\bot$ to the $\mathcal{T}$?}\;
+    worklist.clear() \pscmt{why can't you clean up the worklist during conflict analysis? it seems inefficient to throw everything away...} \;
     \return \conflict \;
   }
   \uElse
   {
-    $\mathcal{T} \leftarrow \mathcal{T} . \mathit{meet\_irrd}$ \; 
-    $v \leftarrow v \meet \mathit{meet\_irrd}$ \; 
+    $\mathcal{T} \leftarrow \mathcal{T} \cdot \mathit{decomp}(v)$ \; 
+%    $v \leftarrow v \meet \mathit{meet\_irrd}$ \; 
     $\mathcal{R}[|\mathcal{T}|] \leftarrow s$ \;
-    worklist.update(v, s) \; 
+    worklist.update($v$) \; 
   }
 }
-\uIf{$v$ is $\gamma$-complete} {
+\lIf{$\mathit{abs}(\mathcal{T})$ is $\gamma$-complete} {
   \return \sat;
 }
-\uElse {
+\lElse {
  \return \unknown \;
-}
 }
 \end{small}
 \caption{Abstract Model Search $\langle deduce(S,v,\mathcal{T},\mathcal{R}) \rangle$ \label{Alg:ms}}

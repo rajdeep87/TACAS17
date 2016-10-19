@@ -17,6 +17,7 @@
 %\SetKwFunction{isf}{isFeasible}
 \SetKwData{conflict}{CONFLICT}
 \SetKwData{safe}{safe}
+\SetKwData{sat}{SAT}
 \SetKwData{unsafe}{unsafe}
 \SetKwData{unknown}{unknown}
 \SetKwData{true}{true}
@@ -28,29 +29,26 @@
 \Input{Set $S$ of abstract deduction transformer, 
 $\widehat{ded_{\varphi}}$ for a formula $\varphi$ over an abstract domain $A$}
 \Output{The status (\safe or \unsafe) and a counterexample if \unsafe}
-$v \leftarrow \top$ \;
-$\mathcal{T} \leftarrow \epsilon$ \;
+$\mathcal{T} \leftarrow \langle\rangle$ \;
 $\mathcal{R} \leftarrow \emptyset$ \;
-$result \leftarrow \deduce(S,v,\mathcal{T},\mathcal{R})$ \;
-\uIf{$result$ == \conflict} {
-  \return \safe \;
-}
+$\mathit{result} \leftarrow \deduce(S,\mathcal{T},\mathcal{R})$ \;
+\lIf{$\mathit{result}$ = \conflict} {
+  \return \safe}
 \While{$true$} 
 {
-  \uIf{$v$ is $\gamma$-complete} {
-    \return \unsafe;
-  }
-  $d \leftarrow decide(v)$ \;
-  $v \leftarrow v \meet d$ \; 
-  $\mathcal{T} \leftarrow \mathcal{T} . d$ \; 
-  $\mathcal{R}[|\mathcal{T}|] \leftarrow nil$ \;
-  $result \leftarrow \deduce(S,v,\mathcal{T},\mathcal{R})$\;
-  \Do{$result == \conflict$} {
-    learn() \;
-    \uIf{$\neg$ conflict\_analysis()} {
-      return \safe \;  
+\lIf{$\mathit{result}$ = \sat} {
+  \return \unsafe}
+  $d \leftarrow decide(\mathit{abs}(\mathcal{T}))$ \;
+%  $v \leftarrow v \meet d$ \; 
+  $\mathcal{T} \leftarrow \mathcal{T} \cdot d$ \; 
+  $\mathcal{R}[|\mathcal{T}|] \leftarrow $\textsf{nil} \;
+  $\mathit{result} \leftarrow \deduce(S,v,\mathcal{T},\mathcal{R})$\;
+  \Do{$\mathit{result} = \conflict$} {
+%    learn() \;
+    \lIf{$\neg \mathit{conflict\_analysis}(S,\mathcal{T},\mathcal{R})$} {
+      \return \safe
     }
-    result $\leftarrow \deduce(S,v,\mathcal{T},\mathcal{R})$ \;
+    $\mathit{result} \leftarrow \deduce(S,\mathcal{T},\mathcal{R})$ \;
   }
 }
 \end{small}
@@ -66,12 +64,12 @@ and an empty propagation trail and reason trail, $\mathcal{T}$, $\mathcal{R}$,
 respectively.  The propagation trail stores all meet irreducibles inferred 
 by the abstract model search phase (deductions and decisions), while the 
 reason trail maps elements of propagation trail to transformers that were 
-used to derive them. \pscmt{define operator to turn trail into abstract value $\bigsqcap\mathcal{T}=\bigsqcap_{m\in\mathcal{T}}m$} 
+used to derive them. We convert the propagation trail into an abstract value as follows; $\mathit{abs}(\mathcal{T})=\bigsqcap_{m\text{ in }\mathcal{T}}m$ with $\mathit{abs}(\mathcal{T})=\top$ if $\mathcal{T}$ is the empty sequence $\langle\rangle$.
 
 The procedure $deduce(S,v,\mathcal{T},\mathcal{R})$ computes a greatest 
 fixed point over the transformers in $\varphi$ that refines the abstract valuation 
 $v$, similar to the BCP step in SAT solvers.  If the result of $deduce$ 
-returns {\em CONFLICT} \pscmt{don't use capitals} ($\perp$), the algorithm terminates with {\em safe}. 
+returns \textsf{CONFLICT} ($\perp$), the algorithm terminates with \textsf{safe}. 
 Else, the analysis enters into the while($true$) loop and makes a new decision 
 by a call to $decide(v)$ which returns a new meet irreducible $d$ that is
 consistent to the state of the solver. \pscmt{why do we have to store $v$ and $\mathcal{T}$?} If $d$ refines the current abstract 
@@ -87,14 +85,14 @@ intervals for variables.
 The procedure $deduce$ is called next to infer a new 
 set of meet irreducibles for the current decision.  The model search phase 
 alternates between the decision and deduction until the abstract value $v$ 
-precisely \pscmt{not true} represents the set of models or the deduction leads to a {\em CONFLICT}.  
+precisely \pscmt{not true} represents the set of models or the deduction leads to a \textsf{CONFLICT}.  
 Checking whether the abstract model $v$ concretises to a set of models of $\varphi$; this corresponds to a 
 $\gamma$-completeness~\cite{dhk2013-popl} check in abstract interpretation.  
 If $v$ is $\gamma$-complete, then it cannot be refined further.  Thus, the 
 algorithm returns the abstract model $v$, which is a set of concrete models, and terminates with UNSAFE or the 
 current abstraction is insufficient to determine the satisfiability of $\varphi$.  
-However, in case of {\em CONFLICT}, the algorithm enters in the 
-$conflict\_analysis()$ phase to learn the reason for {\em conflict}.  
+However, in case of \textsf{CONFLICT}, the algorithm enters in the 
+$conflict\_analysis()$ phase to learn the reason for the conflict.  
 There can be multiple incomparable reasons for conflict -- based on 
 the choice of Unique Implication Point (UIP)~\cite{cdcl}.  ACDCL heuristically 
 chooses one reason.  A learnt clause must include asserting cuts which 
@@ -102,10 +100,10 @@ guarantees derivation of new meet irreducibles after backtracking. The clause
 learning and backtracking continues as long as the result of deduction 
 is conflicting ($\perp$), that is, the abstract valuation $v$ does not
 abstractly satisfy the formula \pscmt{define}.  If no further backtrack is possible, 
-then the algorithm terminates and $\varphi$ is {\em SAFE}. Else, the 
+then the algorithm terminates and $\varphi$ is \textsf{safe}. Else, the 
 algorithm makes a new decision and the above process is repeated 
 until a real counterexample \pscmt{is this a model?} is obtained or the algorithm backtracks to 
-decision level 0 after a conflict in which case it returns {\em SAFE}. 
+decision level 0 after a conflict in which case it returns \textsf{safe}. 
 
 \paragraph \em{Solver State:}  The state of a ACDCL solver is a tuple 
 of the form $\langle \mathcal{E}, S \rangle$.  Here, $\mathcal{E}$ 
@@ -122,7 +120,7 @@ can be assigned \pscmt{constrained?} multiple times, each time with increasingly
 bounds \pscmt{that's specific for a particular domain}.  A current valuation $v$ is a meet of all elements of trail
 $\mathcal{T}$, such that $v = \top$ when $\mathcal{T}$ is 
 empty or $v=\underset{i \geq 0 \wedge i \leq |\mathcal{T}|}{\meet m_i}$, where 
-$m_i \in \mathcal{T}$.  A solver is in {\em conflict} if some clauses in
+$m_i \in \mathcal{T}$.  A solver is in conflict if some clauses in
 $\mathcal{S}$ is not abstractly satisfied by $v$.
 
 \pscmt{define ``consistent with trail''}
