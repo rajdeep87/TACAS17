@@ -100,13 +100,13 @@ worklist $\leftarrow$ initialize\_worklist($S$) \;
 \end{algorithm2e}
 %  
 A model search procedure in a SAT solver involves two steps -- {\em deductions} 
-using unit rule refines current partial assignments and 
+using the unit rule refines current partial assignments and 
 {\em decisions} to heuristically guess a value for an unassigned 
-literal.  A unit rule overapproximates a model transformer and deduction 
+literal.  The unit rule overapproximates a model transformer and deduction 
 computes a greatest fixed point over the partial assignments
 domain~\cite{dhk2013-popl}.  We present an abstract model search procedure 
 that computes a greatest fixed point over meet irreducible deduction 
-transformer in $S$.  
+transformer in $S$ \pscmt{???}.  
 %
 
 %-------------------------------------------------------------------------------
@@ -119,7 +119,7 @@ work.
 %
 We thus define a specialised variant of the transformer to compute
 deductions w.r.t.\ a given subdomain $L\subseteq A$; $\bot,\top \in L$.
-\[\llbracket s \rrbracket^\sharp(a,L)=\bigsqcup \{a'\mid a'\in L, a'\models s\}\]
+\[\llbracket s \rrbracket^\sharp(a,L)=\bigsqcup \{a'\mid a'\in L, a' \sqsubseteq a, a'\models s\}\]
 We have the property $\llbracket s \rrbracket^\sharp(a)\sqsubseteq \llbracket s \rrbracket^\sharp(a,L)$.
 %
 For example, for
@@ -178,18 +178,18 @@ A {\em worklist} is initialized following a heuristics choice for iteration
 strategies. A {\em forward} iteration strategy initializes the worklist with 
 transformers that has constants in the right-hand side. Whereas, a {\em backward} 
 iteration strategy starts with a set of assertions. On the other hand, a 
-{\em chaotic} iteration strategy initializes the worklist with set of all 
-transformers.  For every meet irreducible deduction transformer $s \in S$ 
+{\em chaotic} \pscmt{that's not a good name because it is not chaotic in the meaning of chaotic iterations} iteration strategy initializes the worklist with set of all 
+transformers.  For every meet irreducible deduction transformer \pscmt{rename} $s \in S$ 
 passed to the abstract domain, if the domain infers a new meet irreducible 
-$\mathit{meet\_irrd}$, it is added to $\mathcal{T}$.  Additionally, the reason 
-trail $\mathcal{R}$ is updated with the transformer $s$ as the reason for inferring
+$\mathit{meet\_irrd}$, it is added to $\mathcal{T}$ \pscmt{It usually infers several ones.}.  Additionally, the reason 
+trail $\mathcal{R}$ \pscmt{define} is updated with the transformer $s$ as the reason for inferring
 $\mathit{meet\_irrd}$. If a conflict is deduced, that is, $\mathit{meet\_irrd} = \bot$ 
 is inferred by the domain, the algorithm terminates with CONFLICT.  However,
 when a fixed-point is reached, the abstract valuation $v$ is checked for set of
 models.  This is determined by checking whether the set of assignments in $v$ is 
-$\gamma$-complete~\cite{gamma}.  This can be achieved by checking if there is a 
+$\gamma$-complete~\cite{dhk2013-popl}.  This can be achieved by checking if there is a 
 concrete solution $c$ such that the inequality $c(x) \subseteq \gamma \circ
-v(x)$ holds for every meet irreducible $x$.  If $v$ is $\gamma$-complete, that is, the 
+v(x)$ holds for every meet irreducible $x$ \pscmt{No, you have to consider $\bigsqcap x$}.  If $v$ is $\gamma$-complete, that is, the 
 abstract valuation $v$ is abstractly satisfying, the abstract model 
 search terminates with SAT.  Otherwise, the algorithm returns UNKNOWN and the 
 model search procedure makes a new decision.    
