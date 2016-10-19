@@ -406,10 +406,16 @@ The precise complementation property of partial assignment lattice
 can be generalized to other lattice structures.  Most numerical 
 abstract domains, such as intervals, octagons, polyhedra, can be 
 decomposed into half-spaces, that admits precise complements.  
+For example, a precise complement of a meet irreducible $(x \leq n)$ 
+in interval domain is $(x > n)$, or a meet irreducible $(x+y < 1)$ in 
+octagon domain is $(-x-y < 0)$.  Our template-based domain implementation 
+precisely complements a meet irreducible in an abstraction.
+\Omit{
 Numerical abstract domains that admit complementable decomposition 
-are shown in Figure~\ref{fig:complement}.  Our template-based domain 
-implementation precisely complements a meet irreducible in an abstraction.
+are shown in Figure~\ref{fig:complement}.  
+}
 % 
+\Omit{
 \begin{table}
 \begin{center}
 {
@@ -424,6 +430,7 @@ Equality & \((x==y) \quad \longrightarrow (x \neq y)\) \\ \hline
 \end{center}
 \label{fig:complement}
 \end{table}
+}
 %
 \Omit {
 Note that for many domains $A$ including template polyhedra
