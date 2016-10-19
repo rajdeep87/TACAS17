@@ -1,11 +1,11 @@
 \subsection{Decision}
 A decision $\mathcal{D}$ is a meet irreducible that refines the 
 current abstract valuation.  A decision can be of the form 
-$\langle x \preceq c \rangle$ or $\langle x \succeq c \rangle$, 
-where $c$ is the bound and $x$ is a program variable.  A 
-decision must always be consistent with respect to the 
-trail $\mathcal{T}$, that is, it must not contradict with 
-the elements in the trail.  
+$\langle x R c \rangle$ or $\langle x R y \rangle$, where 
+$R \in \{\preceq, \succeq\}$, $c$ is the bound and 
+$\{x, y\}$ are program variables.  A decision must always 
+be consistent with respect to the trail $\mathcal{T}$, that 
+is, it must not contradict with the elements in the trail.  
 
 Let $\mathcal{V}$ be a set of all singletons and non-singletons 
 variables.  A singleton variable is one that has been assigned a 
@@ -17,8 +17,9 @@ $\preceq$).  A decision changes the sate of the solver by adding new element
 $m$ and labelling information $s=decision$ to the trail, which is described below. 
 \[decide: \quad (\mathcal{E},S) \rightarrow (\mathcal{E}(m,s),S) \]
 
-ACDL supports several decision heuristics namely, {\em ordered} 
-{\em longest-range}, {\em random}, {\em Berkmin}~\cite{eugoldberg07} decision heuristics.  
+ACDCL supports several decision heuristics namely, {\em ordered} 
+{\em longest-range}, {\em random}, {\em relational} and 
+{\em Berkmin}~\cite{eugoldberg07} decision heuristics.  
 The {\em ordered} decision heuristics creates an ordering among non-singleton 
 variables, thereby making decisions on conditional variables (variables that 
 appear in conditional branches) first before choosing numerical variables.  
@@ -28,7 +29,9 @@ interval $[l,u]$ range ($r=u-l$) of a variable and chooses a variable with
 the longest range value.  This ensures a fairness policy in selecting a 
 variable since it guarantees that the intervals of variables are uniformly 
 restricted.  A {\em random} decision heuristics arbitrarily picks a variable 
-for making decision.  Whereas, a {\em berkmin} decision heuristics is inspired 
+for making decision.  A {\em relational} decision heuristics is of the form 
+$x R y$ for $R \in \{preceq, succceq\}$ and is only relevant for relational 
+abstract domains.  Whereas, a {\em berkmin} decision heuristics is inspired 
 from decision heuristics used in Berkmin~\cite{eugoldberg07} SAT solver, which 
 keeps track of the activity of a variable that participate in conflict clauses 
 as well as variables that actively contribute to conflicts but do not explicitly 
