@@ -1,13 +1,16 @@
 \section{Abstract Conflict Analysis}
 A conflict analysis in a SAT solver can be seen as abductive 
-reasoning where a singleton assignment $c$ is replaced by a partial 
-assignment that is sufficient to infer $c$ \pscmt{???}.  Thus, a conflict 
+reasoning which underapproximate a set of models that do not satisfy a 
+formula~\cite{sas12,dhk2013-popl}.  
+\Omit {
+where a singleton assignment $c$ is replaced by a partial 
+assignment that is sufficient to infer $c$.  Thus, a conflict 
 analysis is a generalization of an under-approximation of a set of 
-countermodels~\cite{sas12,dhk2013-popl}, where a countermodel is a 
-set of structures that do not satisfy a formula \pscmt{this explanation does not help the reader, who will mix up counterexamples and countermodels}.  Since relational 
-abstract domains have more complex structure than a partial 
-assignments domain, so the lifting of {\em first-UIP} algorithm~\cite{uip} 
-and clause learning to any arbitrary lattice structure is a non-trivial task. 
+countermodels, where a countermodel is a 
+set of structures that do not satisfy a formula 
+}
+Since relational abstract domains have more complex structure than a partial 
+assignments domain or interval domain, so the generalization of {\em first-UIP} algorithm~\cite{uip} and clause learning in a relational lattice structure is non-trivial. 
 
 \paragraph {\textbf{Abstract Conflict Graph}}
 The first-UIP algorithm in SAT solver works on a data structure called 
