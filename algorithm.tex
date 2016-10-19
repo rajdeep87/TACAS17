@@ -84,8 +84,10 @@ greatest fixed-point. Note that the widening operation in abstract interpretatio
 jumps above a least fixed-point, so decisions can be viewed as 
 {\em dual widening}.  The procedure $deduce$ is called next to infer new 
 set of meet irreducibles for the current decision.  The model search phase 
-alternates between the decision and deduction until the result of deduction 
-is either $\gamma$-complete~\cite{gamma} or the deduction leads to a {\em CONFLICT}.  
+alternates between the decision and deduction until the abstract value $v$ 
+precisely represents the set of models or the deduction leads to a {\em CONFLICT}.  
+Checking whether $v$ precisely represents set of models corresponds to 
+$\gamma$-completeness~\cite{dhk2013-popl} check in abstract interpretation.  
 If $v$ is $\gamma$-complete, then it cannot be refined further.  Thus, the 
 algorithm returns the error trace $v$ and terminates with UNSAFE or the 
 current abstraction is insufficient to determine the satisfiability of $\varphi$.  
