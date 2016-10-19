@@ -19,7 +19,7 @@ unrolled before analysis.  We compare our tool with a state-of-the-art
 SAT-based bounded model checker CBMC~\cite{cbmc} and a commercial 
 static analysis tool, Astr{\'e}e.  CBMC uses MiniSAT solver in the backend.  
 Astr{\'e}e was configured with default set of domains which includes 
-interval, bit-field, congurence, trace partitioning and relational 
+interval, bit-field, congruence, trace partitioning and relational 
 domains (octagons, polyhedra, zones, equalities, filter).   
 
 \Omit {
@@ -34,9 +34,9 @@ analysis using Astr{\'e}e shows high degree of imprecision.
 Figure~\ref{fig:results} presents a comparison of the solver statistics
 (decision and learning) for the analysis using CBMC and ACDCL.  The cumulative 
 statistics corresponding to each phase of the algorithm for all 66 benchmarks 
-is presented in Table~\ref{result}.  The reasoning using ACDCL is atleast 
-\rmcmt{1.5X} effecient compared to SAT in terms of number of decisions, propagations 
-and learning.    
+is presented in Table~\ref{result}.  The reasoning using ACDCL is at least 
+\rmcmt{1.5X} more efficient compared to propositional SAT in terms of number of decisions, propagations 
+and learning \pscmt{what learning???}.    
 %
 \begin{table}
 \begin{center}
@@ -67,23 +67,23 @@ Astr{\'e}e reported 15 false alarms out of 41 safe benchmarks.
 \paragraph {\textbf{Decision Heuristics}} We compare the performance of 
 different decision heuristics in ACDCL.  We observe that the ordered heuristic 
 outperforms other heuristics on control-intensive benchmarks due to its 
-ability to prioritize decisions on variables that appears in conditional 
+ability to prioritize decisions on variables that appear in conditional 
 branches.  For straight-line code and most of the bit-vector regression 
-suite, random heuristics performs the best.  Whereas, the activity based 
+suite, random heuristics performs the best.  Whereas activity-based 
 heuristics such as Berkmin heuristic which works well in propositional 
-cases performs best for benchmarks that encountered the maximum number 
-of conflicts to prove safety, thus allowing the heuristics to choose 
+cases performs best for benchmarks that encountered \pscmt{???} the maximum number 
+of conflicts to prove safety, thus allowing the heuristics \pscmt{???} to choose  
 the decison variable among the set of learnt clauses.   
 
 \paragraph {\textbf{Propagation Strategy}}      
-Figure~\ref{prop-dec} presents a comparison between {\em forward} analysis and
-{\em chaotic} analysis in ACDCL.  The choice of analysis influences the 
+Figure~\ref{prop-dec} presents a comparison between {\em forward} analysis \pscmt{iteration/propagation strategy} and
+{\em chaotic} analysis in ACDCL \pscmt{what about backward?}.  The choice of analysis influences the 
 total number of decisions and clause learning iterations.  Hence, the 
 propagation strategy has a significant influence on the run time which 
-can be visualised in Figure~\ref{prop-dec}.  Unlike the forward analysis, 
+can be visualised in Figure~\ref{prop-dec}. \pscmt{Are the graphs up-to-date?} Unlike the forward analysis, 
 the chaotic or multi-way strategy performs both forward and backward 
 propagations.  This may take several iterations to reach the fixed-point, but 
-significantly reduces the total number of decisions and learning.  
+significantly reduces the total number of decisions and learning. \pscmt{Why?} 
 \Omit {
 We observe that the deductions made during chaotic analysis helps the decision 
 heuristics to make better decisions compared to forward analysis.  This is 
@@ -92,11 +92,11 @@ attributed to the precision of deductions inferred by the chaotic analysis.
 
 \paragraph {\textbf{Learning}} Learning has a significant influence on
 the runtime of ACDCL.  We compare the first-UIP learning technique with 
-a DPLL-style conflict analysis without learning.  The effect of UIP computation 
+a DPLL-style conflict analysis without learning \pscmt{you learn the negation of the last decision}.  The effect of UIP computation 
 allows ACDCL to backtrack non-chronologically and guide the model search with 
 a learnt transformer.  However, the DPLL-style analysis exhibits
 case-enumeration behavior and thus immediately runs out of capacity for programs 
-which require relational domains.          
+which require relational domains. \pscmt{Is there a significant difference between intervals and octagons that indicates that for relational domains DPLL is even worse than in the propositional case?}        
 
 %================  
 \input{graphs}
