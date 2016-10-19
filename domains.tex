@@ -70,7 +70,7 @@ $\begin{array}{rcl}
 \\
 \hline
 \end{tabular}
-\caption{SSA and abstract conflict graph}
+\caption{SSA and abstract conflict graph \pscmt{Where do you refer to this graph?}}
 \label{ssa}
 \end{figure}
 %
@@ -83,7 +83,7 @@ Such a program is represented as set $\mathcal{P}$ of
 translating the program into single static assignment (SSA) form via a
 data flow analysis.
 %
-Figure~\ref{ssa} shows the SSA constraints for the program in figure~\ref{fig:example}. 
+Figure~\ref{ssa} shows the SSA constraints for the program in Figure~\ref{fig:example}. 
 %
 Assignments such as \texttt{x=v;} become equalities $x_1=v$ where the
 left-hand side variable gets a fresh name (subscript).
@@ -303,7 +303,7 @@ An abstract transformer transforms an abstract value $a$ through a
 statement $s$, i.e.\ it \emph{deduces} information from $a$ and $s$.
 The best abstract transformer is
 \[\llbracket s
-\rrbracket^\sharp(a)=\bigsqcup \{a'\mid a'\models s\}\] where we write
+\rrbracket^\sharp(a)=\bigsqcup \{a'\mid a'\sqsubseteq a, a'\models s\}\] where we write
 $a\models s$ if $\forall \vec{y}\in\gamma(a): (s[\vec{y}/\vec{x}]
 \equiv \true)$, i.e.\ the constraint $s$ is valid when evaluated over
 all values $\vec{y}$ of its variables $\vec{x}$ in the concretisation
@@ -311,7 +311,7 @@ of $a$. Any abstract transformer that over-approximates the least
 upper bound is a sound transformer and can be used in our algorithm.
 
 In a forward analysis, we can deduce, for example, $\llbracket
-x=2(y+z)\rrbracket^\sharp(a)=(-2\leq x\leq 6)$ for $a=(0\leq y \leq 2
+x=2(y+z)\rrbracket^\sharp(a)=(-2\leq x\leq 6) \sqcap a$ for $a=(0\leq y \leq 2
 \wedge 1 \leq y-z \leq 1)$.
 %
 We will give more details in Section~\ref{sec:abst}.
@@ -402,18 +402,17 @@ the concretisation of $a$.
 % concretization of $\bar{a}$, that is, $\gamma(\bar{a}) = \neg \gamma(a))$.
 % \end{definition}
 %
-The precise complementation property of partial assignment lattice 
-can be generalized to other lattice structures.  Most numerical 
-abstract domains, such as intervals, octagons, polyhedra, can be 
-decomposed into half-spaces, that admits precise complements.  
-For example, a precise complement of a meet irreducible $(x \leq n)$ 
-in interval domain is $(x > n)$, or a meet irreducible $(x+y < 1)$ in 
-octagon domain is $(-x-y < 0)$.  Our template-based domain implementation 
-precisely complements a meet irreducible in an abstraction.
-\Omit{
-Numerical abstract domains that admit complementable decomposition 
-are shown in Figure~\ref{fig:complement}.  
-}
+The precise complementation property of partial assignment lattice can
+be generalized to other lattice structures.  Most numerical abstract
+domains, such as intervals, octagons, polyhedra, can be decomposed
+into half-spaces, that admits precise complements.  For example, a
+precise complement of a meet irreducible $(x \leq 2)$ in the interval
+domain over integers is $(x \geq 3)$, or the precise complement of
+the meet irreducible $(x+y \leq 1)$ in the octagon domain over
+integers is $(x+y \geq 2)$.  Our template-based domain implementation
+precisely complements a meet irreducible in an abstraction.  \Omit{
+  Numerical abstract domains that admit complementable decomposition
+  are shown in Figure~\ref{fig:complement}.  }
 % 
 \Omit{
 \begin{table}
@@ -487,9 +486,6 @@ meet decomposition as explained above.
 %\input{literals-clauses}
 %========================
 
-\Omit{
-%
-}
 % \Omit {
 % The commonly used library for numerical abstract domains  
 % is the APRON C library~\cite{apron}.  This library is 

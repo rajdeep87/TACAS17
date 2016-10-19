@@ -38,7 +38,7 @@ void main() {
 \hline
 \end{tabular}
 \caption{\label{fig:example}
-C Program, Control-flow Graph (CFG) and Abstract Conflict Graph}
+C Program, Control-flow Graph (CFG) and Abstract Conflict Graph \pscmt{I do not understand the arrow from n2 to n3 on the right hand side}}
 \end{figure}
 Let us consider a simple program in Figure~\ref{fig:example} that performs 
 multiplication of two machine integers and checks that the result of the 
@@ -95,18 +95,18 @@ safety without any decision or clause learning.  However, unlike Ast{\'e}e,
 an automatic interval analysis is also sufficient to prove safety with 
 only a single decision.  Interval constraints generated from forward 
 analysis in the initial deduction phase infers that 
-$\langle x:[-5,5], z:[-25,25] \rangle$.  Clearly, ACDCL can not prove safety.  
+$\langle x:[-5,5], z:[-25,25] \rangle$.  Clearly, ACDCL cannot prove safety.  
 
-Hence, ACDCL makes a decision $c:=[1,1]$ to refine the analysis.  
+Hence, ACDCL makes a decision $c:=[1,1]$ to refine the analysis. \pscmt{Do we want to use the product domain right away to be consistent?}  
 ACDCL implements several decision heuritics.  In this case, the 
 branching variable $c$ is chosen by an {\em ordered} decision 
 heuristics that select variables appearing in conditional branches 
 first before choosing other program variables. 
 The decision constrains the interval of $x:=[0,5]$.  The deductions made 
 during fixed point iteration are represented by abstract conflict 
-graph in right-side of figure~\ref{fig:example}.  Nodes in the abstract 
+graph in right-side of Figure~\ref{fig:example}.  Nodes in the abstract 
 conflict graph denotes the corresponding updates to the program 
-variables in the CFG.  Interval analysis concludes that the $(ERROR:\bot)$, that 
+variables in the CFG.  Interval analysis concludes that $(\text{Error}:\bot)$, that 
 is the decision $c:=[1,1]$ leads to a {\em conflict}.  Thus, 
 the program is {\em safe} for $c:=[1,1]$.  
 
@@ -117,7 +117,7 @@ Similar to conflict analysis phase in SAT solvers, ACDCL learns that
 at node $I$.  The analysis discards all interval constraints that
 lead to the conflict and backtrack to decision level 0.  ACDCL then 
 performs interval analysis with the learnt constraint $(c \neq 1)$ which also 
-leads to a conflict, as shown in right side of figure~\ref{ssa}.  The 
+leads to a conflict, as shown in right side of Figure~\ref{ssa}.  The 
 analysis cannot backtrack further and therefore it terminates proving 
 that the program is safe.  A DPLL-style solver would perform proof by 
 cases.  However, decision and clause learning are used to avoid case 
