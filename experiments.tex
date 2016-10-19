@@ -30,7 +30,7 @@ such high-precision is not needed for static analysis, since it makes
 the analysis very expensive.  Without trace partitioning, the 
 analysis using Astr{\'e}e shows high degree of imprecision. 
 }
-\paragraph {\em \textbf{Observation of Analysis}}
+\paragraph {\textbf{Precision and Efficiency of Analysis}}
 Figure~\ref{fig:results} presents a comparison of the solver statistics
 (decision and learning) for the analysis using CBMC and ACDCL.  The cumulative 
 statistics corresponding to each phase of the algorithm for all 66 benchmarks 
@@ -60,13 +60,11 @@ stronger clause learning.  In contrast, the analysis using ACDCL solved all
 66 benchmarks without any restarts.  This is attributed to intelligent decision 
 heuristics which exploits the high-level structure of the program combined 
 with stronger deductions and clause learning mechanism aided by the richer 
-abstract domains.
+abstract domains.  On the other hand, Ast{\'e}e is often faster than ACDCL, 
+but the analysis using Astr{\'e}e shows high degree of imprecision.  
+Astr{\'e}e reported 15 false alarms out of 41 safe benchmarks.  
 
-On the other hand, Ast{\'e}e is often faster than ACDCL, but the analysis using 
-Astr{\'e}e shows high degree of imprecision.  Astr{\'e}e reported 15 false alarms 
-out of 41 safe benchmarks.  
-
-\paragraph {\em \textbf{Decision Heuristics}} We compare the performance of 
+\paragraph {\textbf{Decision Heuristics}} We compare the performance of 
 different decision heuristics in ACDCL.  We observe that the ordered heuristic 
 outperforms other heuristics on control-intensive benchmarks due to its 
 ability to prioritize decisions on variables that appears in conditional 
@@ -77,17 +75,28 @@ cases performs best for benchmarks that encountered the maximum number
 of conflicts to prove safety, thus allowing the heuristics to choose 
 the decison variable among the set of learnt clauses.   
 
-\paragraph {\em \textbf{Propagation Strategy}}      
-Figure~\ref{} presents a comparison between {\em forward} iteration strategy and
-{\em chaotic} iteration strategy in ACDCL.  The iteration strategy influences the total 
-number of decisions and clause learning iterations.  Forward iteration strategy
-is similar to forward analysis in abstract interpretation.  However, the chaotic 
-or multi-way strategy performs both-ways propagations which may take several 
-iterations to reach the fixed-point, but significantly reduces the total number of
-decisions and learning.  We observe that the deductions made during chaotic iteration 
-helps the decision heuristics to make better decisions compared to forward analysis.       
- 
-\paragraph {\em \textbf{Clause Learning}}      
+\paragraph {\textbf{Propagation Strategy}}      
+Figure~\ref{prop-dec} presents a comparison between {\em forward} analysis and
+{\em chaotic} analysis in ACDCL.  The choice of analysis influences the 
+total number of decisions and clause learning iterations.  Hence, the 
+propagation strategy has a significant influence on the run time which 
+can be visualised in Figure~\ref{prop-dec}.  Unlike the forward analysis, 
+the chaotic or multi-way strategy performs both forward and backward 
+propagations.  This may take several iterations to reach the fixed-point, but 
+significantly reduces the total number of decisions and learning.  
+\Omit {
+We observe that the deductions made during chaotic analysis helps the decision 
+heuristics to make better decisions compared to forward analysis.  This is 
+attributed to the precision of deductions inferred by the chaotic analysis.         
+} 
+
+\paragraph {\textbf{Learning}} Learning has a significant influence on
+the runtime of ACDCL.  We compare the first-UIP learning technique with 
+a DPLL-style conflict analysis without learning.  The effect of UIP computation 
+allows ACDCL to backtrack non-chronologically and guide the model search with 
+a learnt transformer.  However, the DPLL-style analysis exhibits
+case-enumeration behavior and thus immediately runs out of capacity for programs 
+which require relational domains.          
 
 %================  
 \input{graphs}
