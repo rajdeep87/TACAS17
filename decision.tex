@@ -1,11 +1,14 @@
 \subsection{Decision}
 A decision $\mathcal{D}$ is a meet irreducible that refines the 
-current abstract valuation.  A decision can be of the form \pscmt{that's too restrictive?}
-$\langle x R c \rangle$ or $\langle x R y \rangle$, where 
-$R \in \{\preceq, \succeq\}$, $c$ is the bound and 
-$\{x, y\}$ are program variables.  A decision must always 
-be consistent with respect to the trail $\mathcal{T}$, that 
-is, it must not contradict with the elements in the trail.  
+current abstract valuation.  For example, a decision in interval 
+domain can be of the form $\langle x R c \rangle$ where 
+$R \in \{\leq, \geq\}$, $c$ is the bound.  A decision in 
+relational domain such as octagon is of the form $ax - by \leq c$, 
+where $x$ and $y$ are variables, $a,b \in \{-1,0,1\}$ are co-efficients, 
+and $c \in \mathbb{R}\cup\{\infty\}$ is the bound of the inequality.    
+A decision must always be consistent with respect to the trail 
+$\mathcal{T}$, that is, it must not contradict with the elements 
+in the trail.  
 
 Let $\mathcal{V}$ be a set of all singletons and non-singletons 
 variables.  A singleton variable is one that has been assigned a 
