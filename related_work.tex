@@ -1,10 +1,27 @@
 \section{Related Work}
-The natural domain SMT framework proposed in~\cite{ndsmt} operates on
-a fixed first-order partial assignment lattice structure, where first-order 
-variables are mapped to domain values, similar to constants lattice 
-in program analysis.  However, ACDCL can be instantiated on different 
-abstract lattices.  The abstract lattice in natural domain SMT does 
+The work of~\cite{} present an instantiation of ACDCL as a decision 
+procedure for floating-point arithmetic that uses interval constraint 
+propagation.  The use of ACDCL as program analysis is proposed
+in~\cite{sas12,tacas12}.  The analysis operate over the abstract domain of 
+floating-point and machine-integer.  Thus, it is restricted to bounds 
+checking for numerical programs.  A similar technique that lifts DPLL(T) 
+to programs is Satisfiability Modulo Path Programs (SMPP). SMPP enumerates 
+path programs using a SAT formula which are then verified using abstract 
+interpretation.  The lifting of CDCL to first-order theory is proposed 
+in~\cite{dpll,cp09} and natural domain SMT framework~\cite{ndsmt}.  
+\Omit{
+operates on a fixed first-order partial assignment lattice structure, 
+where first-order variables are mapped to domain values, similar to constants lattice 
+in program analysis.  
+}
+However, unlike previous works that operate on a fixed first-order 
+lattice structure, ACDCL can be instantiated with different 
+abstract domains.  This involves model search and learning in 
+abstract lattices.     
+\Omit {
+The abstract lattice in natural domain SMT does 
 not have complementable meet irreducibles, and therefore does not 
 support generalized clause learning~\cite{sas}.  On the other hand, 
 most abstract lattice have complementation property, thus enabling 
 ACDCL to perform generalized clause learning.
+}
