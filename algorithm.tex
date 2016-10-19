@@ -60,17 +60,17 @@ $result \leftarrow \deduce(S,v,\mathcal{T},\mathcal{R})$ \;
 %\subsection{Algorithm for Abstract Conflict Driven Clause Learning}
 Algorithm~\ref{Alg:acdcl} presents an overview of the ACDCL algorithm.
 The algorithm begins with a set $S$ of abstract deduction transformer 
-$\widehat{ded_{\varphi}}$ \pscmt{???} for a formula $\varphi$ over an abstract 
+$\widehat{ded_{\varphi}}$ \pscmt{define in terms of P and A} for a formula $\varphi$ over an abstract 
 domain $A$, an abstract valuation $\langle v \leftarrow \top \rangle$, 
 and an empty propagation trail and reason trail, $\mathcal{T}$, $\mathcal{R}$, 
 respectively.  The propagation trail stores all meet irreducibles inferred 
 by the abstract model search phase (deductions and decisions), while the 
 reason trail maps elements of propagation trail to transformers that were 
-used to derive them.  
+used to derive them. \pscmt{define operator to turn trail into abstract value $\bigsqcap\mathcal{T}=\bigsqcap_{m\in\mathcal{T}}m$} 
 
 The procedure $deduce(S,v,\mathcal{T},\mathcal{R})$ computes a greatest 
-fixed point over the transformers in F \pscmt{what is F?} that refines the abstract valuation 
-$v$, similar to the BCP \pscmt{mentioned before?} step in SAT solvers.  If the result of $deduce$ 
+fixed point over the transformers in $\varphi$ that refines the abstract valuation 
+$v$, similar to the BCP step in SAT solvers.  If the result of $deduce$ 
 returns {\em CONFLICT} \pscmt{don't use capitals} ($\perp$), the algorithm terminates with {\em safe}. 
 Else, the analysis enters into the while($true$) loop and makes a new decision 
 by a call to $decide(v)$ which returns a new meet irreducible $d$ that is
@@ -78,18 +78,20 @@ consistent to the state of the solver. \pscmt{why do we have to store $v$ and $\
 value $v$, the corresponding propagation and reason trail, $\mathcal{T}$ 
 and $\mathcal{R}$ are updated. 
 
-For example, a decision in interval domain restricts the range of 
-intervals for variables, so the analysis jumps under a 
-greatest fixed-point \pscmt{???}. Note that the widening operation in abstract interpretation 
-jumps above a least fixed-point, so decisions can be viewed as 
-{\em dual widening} \pscmt{what do we learn?}.  The procedure $deduce$ is called next to infer new 
+For example, a decision in the interval domain restricts the range of 
+intervals for variables.
+% so the analysis jumps under a 
+%greatest fixed-point \pscmt{???}. Note that the widening operation in abstract interpretation 
+%jumps above a least fixed-point, so decisions can be viewed as 
+%{\em dual widening} \pscmt{what do we learn?}.  
+The procedure $deduce$ is called next to infer a new 
 set of meet irreducibles for the current decision.  The model search phase 
 alternates between the decision and deduction until the abstract value $v$ 
-precisely represents the set of models or the deduction leads to a {\em CONFLICT}.  
-Checking whether $v$ precisely represents set of models corresponds to 
+precisely \pscmt{not true} represents the set of models or the deduction leads to a {\em CONFLICT}.  
+Checking whether the abstract model $v$ concretises to a set of models of $\varphi$; this corresponds to a 
 $\gamma$-completeness~\cite{dhk2013-popl} check in abstract interpretation.  
 If $v$ is $\gamma$-complete, then it cannot be refined further.  Thus, the 
-algorithm returns the error trace $v$ \pscmt{this is not a trace} and terminates with UNSAFE or the 
+algorithm returns the abstract model $v$, which is a set of concrete models, and terminates with UNSAFE or the 
 current abstraction is insufficient to determine the satisfiability of $\varphi$.  
 However, in case of {\em CONFLICT}, the algorithm enters in the 
 $conflict\_analysis()$ phase to learn the reason for {\em conflict}.  

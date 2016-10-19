@@ -178,7 +178,7 @@ A {\em worklist} is initialized following a heuristics choice for iteration
 strategies. A {\em forward} iteration strategy initializes the worklist with 
 transformers that has constants in the right-hand side. Whereas, a {\em backward} 
 iteration strategy starts with a set of assertions. On the other hand, a 
-{\em chaotic} \pscmt{that's not a good name because it is not chaotic in the meaning of chaotic iterations} iteration strategy initializes the worklist with set of all 
+{\em multi-way} iteration strategy initializes the worklist with set of all 
 transformers.  For every meet irreducible deduction transformer \pscmt{rename} $s \in S$ 
 passed to the abstract domain, if the domain infers a new meet irreducible 
 $\mathit{meet\_irrd}$, it is added to $\mathcal{T}$ \pscmt{It usually infers several ones.}.  Additionally, the reason 
@@ -187,9 +187,7 @@ $\mathit{meet\_irrd}$. If a conflict is deduced, that is, $\mathit{meet\_irrd} =
 is inferred by the domain, the algorithm terminates with CONFLICT.  However,
 when a fixed-point is reached, the abstract valuation $v$ is checked for set of
 models.  This is determined by checking whether the set of assignments in $v$ is 
-$\gamma$-complete~\cite{dhk2013-popl}.  This can be achieved by checking if there is a 
-concrete solution $c$ such that the inequality $c(x) \subseteq \gamma \circ
-v(x)$ holds for every meet irreducible $x$ \pscmt{No, you have to consider $\bigsqcap x$}.  If $v$ is $\gamma$-complete, that is, the 
+$\gamma$-complete~\cite{dhk2013-popl}. If $v$ is $\gamma$-complete, that is, the 
 abstract valuation $v$ is abstractly satisfying, the abstract model 
 search terminates with SAT.  Otherwise, the algorithm returns UNKNOWN and the 
 model search procedure makes a new decision.    
