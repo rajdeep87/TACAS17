@@ -25,7 +25,7 @@ the transformers in the reason trail.  Incoming arrows to node $n$
 indicate that the predecessors of $n$ are sufficient to deduce $n$.  
 A decision node has no incoming edges.  
 For example, consider a formula 
-$\varphi:= (x=5 \wedge y=x \wedge y=y+x \wedge y \leq 0)$ with current 
+$\varphi:= (x=5 \; \wedge \; y=x \; \wedge \; y=y+x \; \wedge \; y \leq 0)$ with current 
 abstract valuation $v:= (x=5)$.  Figure~\ref{conflict} shows a 
 snapshot of an abstract conflict graph that 
 stores the deductions obtained from abstract model search using octagon domain.  
@@ -34,19 +34,23 @@ The last deduction conflict with the constraint $(y \leq 0)$.
 \paragraph {\textbf{Lifting UIP to relational domains}}
 An UIP is a special node in the abstract conflict graph such that 
 any path from the last decision node to the conflict node must pass 
-through it.  Unlike a SAT solver, a UIP in ACDCL may have meet irreducibles 
-that involve the same variables.  The first-UIP is a node closest \pscmt{unique?} to the 
-conflict, and the last UIP is the decision node itself.  Computing UIPs ensures 
-asserting cuts, that is, it yields clauses that generates new deduction after 
-backtracking.  Every cut in the graph reason for conflict that can be used in learning.  
-A first-UIP algorithm traverses the trail $\mathcal{T}$ starting from the 
-conflict node and iteratively finds new nodes that contradict \pscmt{we have to define what that means in the preliminaries} with the 
-transformer stored in $\mathcal{R}[\bot]$.  
-
+through it.  Unlike a SAT solver, a UIP for relational domain may 
+involve meet irreducibles that contains the same variables.  The 
+first-UIP is a unique node closest to the conflict, and the last UIP 
+is the decision node itself.  Computing UIPs ensures asserting
+cuts~\cite{cdcl,DBLP:journals/fmsd/BrainDGHK14}, that is, it 
+yields clauses that generates new deduction after backtracking.  
+Every cut in the graph is a reason for conflict that can be 
+used in learning.  An abstract first-UIP algorithm~\cite{DBLP:journals/fmsd/BrainDGHK14} 
+traverses the trail $\mathcal{T}$ starting from the conflict node and 
+computes a cut that suffices to produce a conflict. 
+\Omit {
+contradict with the transformer stored in $\mathcal{R}[\bot]$.  
+}
 For our example, there exists multiple incomaparable reasons for conflict,
 marked as {\em cut0, cut1}, in figure~\ref{conflict}.  Here, cut0 is the first UIP.  
-Choosing cut0 yields a learnt clause \pscmt{use $\leq$ instead of $<$} 
-$L_0: (x+y<15 \vee -x-y<-15 \vee -x+y<5 \vee x-y<-5 \vee y-10<0 \vee -y+10<0)$, 
+Choosing cut0 yields a learnt clause 
+$(x+y<15 \vee -x-y<-15 \vee -x+y<5 \vee x-y<-5 \vee y-10<0 \vee -y+10<0)$, 
 which is obtained by negating the reason for conflict.  
 %
 \begin{figure}[t]
@@ -56,35 +60,42 @@ which is obtained by negating the reason for conflict.
 \end{figure} 
 %    
 \paragraph{\textbf{Learning in Relational Lattice}}
-We model learning as a meet irreducible deduction transformer \pscmt{???}, called 
-{\em abstract unit transformer (AUnit)} \pscmt{why the name? seems confusing as we are talking about learning and not about deduction}.  For an 
-abstract lattice $A$ with complementable meet irreducibles 
-and a set of conflicting meet irreducibles (countermodels) \pscmt{The term countermodels for $C$ is misleading since $\bigsqcap C$ is a set of countermodels, but the elements of $C$ individually are no countermodels.}
-$C \subseteq A$ of $\varphi$ such that $\bigsqcap C$ does not 
-satisfy $\varphi$, $AUnit_C: A \rightarrow A$ is defined as follows. 
-\pscmt{explain which cases are different in non-relational domains}
+Learning in propositional solver yields a asserting clause~\cite{cdcl} 
+that express the negation of the conflict reasons.  However, we model 
+learning in relational domains as learning a transformer which infers 
+new meet irreducibles using the abstract unit rule called 
+{\em abstract unit transformer (AUnit)}.  We add $AUnit$ to the set of 
+transformers \rmcmt{give symbol} used during model search. $AUnit$ is 
+a generalization of propositional unit rule for numerical domains.  For 
+an abstract lattice $A$ with complementable meet irreducibles and a set 
+of meet irreducibles $C \subseteq A$ of $\varphi$ such that $\bigsqcap C$ does not 
+satisfy $\varphi$, $AUnit_C: A \rightarrow A$ is formally defined as follows. 
 \[ AUnit(a) =
  \begin{cases}
-  \bot       & \quad \text{if } a \sqsubseteq \meet{C} \\
+  \bot       & \quad \text{if } a \sqsubseteq \meet{C} \qquad \qquad \qquad
+  \qquad \qquad \qquad \quad (1)\\
   \bar{t}    & \quad \text{if } t \in C \; \text{and} \; \forall t' \in C
-  \setminus \{t\}. a  \sqsubseteq t' \\
+  \setminus \{t\}. a  \sqsubseteq t' \qquad \quad (2) \\
   \bar{t}    & \quad \text{if } t \in C \; \text{and} \; \forall t' \in C \setminus \{t\}. a
   \not\sqsubseteq t', \; \text{then} \\ 
              & \quad \forall a' \subseteq decomp(a) \;  \text{and} \; \forall a'' \in a \setminus \{a'\}, \\ 
-             & \quad \meet{a''} \sqsubseteq r' \; \text{and} \; a' \not\sqsubseteq t  \\
-  \top & \quad \text{otherwise} \\
+             & \quad \meet{a''} \sqsubseteq r' \; \text{and} \; a'
+             \not\sqsubseteq t   \qquad \qquad \qquad \qquad (3) \\
+  \top & \quad \text{otherwise} \qquad \qquad \qquad \qquad \qquad \qquad \quad (4) \\
  \end{cases}
 \]
-For example, let $C = \langle x+z \geq 10,  k \geq 0 \rangle$ \pscmt{why suddenly a different notation for $k$? The variable name $k$ might be confusing because it is usually used for counting or indices} be the conflicting set 
-of meet irreducibles of $\varphi$ and let $a= \langle x+y \geq 2, y+z \geq 5,
-x+z \leq 15, k:[1,1] \rangle$.  Applying the third rule of $AUnit_C$, we get a 
+
+\pscmt{explain which cases are different in non-relational domains}
+For example, let $C = \langle x+z \geq 10,  w \geq 0 \rangle$ 
+be a conflicting element that does not satisfy $\varphi$ and let $a= \langle x+y \geq 2, y+z \geq 5,
+x+z \leq 15, w \geq 1, w \leq 1 \rangle$.  Applying the rule (3) of $AUnit_C$, we get a 
 decomposition of $a$ into $a'$ and $a''$ where 
 $a'= \langle x+y \geq 2, y+z \geq 5, x+z \leq 15 \rangle \not\sqsubseteq (x+z \geq 10)$, and 
-$a''= \langle k:[1,1] \rangle \sqsubseteq (k \geq 0)$.  Then, $AUnit_C(a) = (x+z < 10)$, 
+$a''= \langle w \geq 1, w \leq 1 \rangle \sqsubseteq (w \geq 0)$.  Then, $AUnit_C(a) = (x+z < 10)$, 
 which constrains the bound of the octagonal constraint.  
 Let us consider another example, where $C = \langle x \geq 2, x \leq 5, y \leq 7 \rangle$
-and let $a = \langle x:[3,4], y:[5,6] \rangle$, then $AUnit_C(a) = \bot$ using
-the first rule, since $a \sqsubseteq C$.  Now, let $a' = \langle x:[3,4] \rangle$, 
+and let $a = \langle x \geq 3, x \leq 4, y \geq 5, y \leq 6 \rangle$, then $AUnit_C(a) = \bot$ using
+the first rule, since $a \sqsubseteq C$.  Now, let $a' = \langle x \geq 3, x \leq 4 \rangle$, 
 then $AUnit_C(a') = (y > 7)$ using second rule, since $a' \sqsubseteq (x \geq 2)$
 and $a' \sqsubseteq (x \leq 5)$.
  
