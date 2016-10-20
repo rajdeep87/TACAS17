@@ -31,6 +31,9 @@
 \usepackage[subnum]{cases}
 \makeatother
 
+\newcommand{\extendedonly}[1]{#1}
+\newcommand{\paperonly}[1]{}
+
 \newcommand{\tool}[1]{\textsc{#1}\xspace}
 \newcommand{\cbmcv}{\tool{cbmc 5.0}}
 \newcommand{\Omit}[1]{}
@@ -134,5 +137,9 @@ abstract domains.
 
 \bibliographystyle{splncs03}
 \bibliography{biblio.bib}
+
+\extendedonly{
+\input{appendix}
+}
 
 \end{document}

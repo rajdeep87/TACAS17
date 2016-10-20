@@ -1,4 +1,4 @@
-SRC=algorithm.tex deductions.tex invariant.tex background.tex definitions.tex learning.tex cdcl.tex domains.tex literals-clauses.tex conclusion.tex example.tex paper.tex contributions.tex experiments.tex decision.tex introduction.tex symbols.tex
+SRC=algorithm.tex deductions.tex invariant.tex background.tex definitions.tex learning.tex cdcl.tex domains.tex literals-clauses.tex conclusion.tex example.tex paper.tex contributions.tex experiments.tex decision.tex introduction.tex symbols.tex appendix.tex
 TARGET=paper
 BIB=biblio.bib
 
