@@ -42,7 +42,7 @@ $\mathit{result} \leftarrow \deduce(S,\mathcal{T},\mathcal{R})$ \;
 %  $v \leftarrow v \meet d$ \; 
   $\mathcal{T} \leftarrow \mathcal{T} \cdot d$ \; 
   $\mathcal{R}[|\mathcal{T}|] \leftarrow $\textsf{nil} \;
-  $\mathit{result} \leftarrow \deduce(S,v,\mathcal{T},\mathcal{R})$\;
+  $\mathit{result} \leftarrow \deduce(S,\mathcal{T},\mathcal{R})$\;
   \Do{$\mathit{result} = \conflict$} {
 %    learn() \;
     \lIf{$\neg \mathit{conflict\_analysis}(S,\mathcal{T},\mathcal{R})$} {
