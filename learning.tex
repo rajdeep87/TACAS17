@@ -25,9 +25,9 @@ the transformers in the reason trail.  Incoming arrows to node $n$
 indicate that the predecessors of $n$ are sufficient to deduce $n$.  
 A decision node has no incoming edges.  
 For example, consider a formula 
-$\varphi:= (x=5 \; \wedge \; y=x \; \wedge \; y=y+x \; \wedge \; y \leq 0)$ with current 
-abstract valuation $v:= (x=5)$.  Figure~\ref{conflict} shows a 
-snapshot of an abstract conflict graph that 
+$\varphi:= (y=x \; \wedge \; y=y+x \; \wedge \; y \leq 0)$ with current 
+abstract valuation $v:= (x-5 \geq 0 \wedge -x+5 \geq 0)$.  
+Figure~\ref{conflict} shows a snapshot of an abstract conflict graph that 
 stores the deductions obtained from abstract model search using octagon domain.  
 The last deduction conflict with the constraint $(y \leq 0)$.  
 
@@ -56,8 +56,7 @@ which is obtained by negating the reason for conflict.
 \begin{figure}[t]
 %\caption{An example of Octagon}\label{octagon}
 \scalebox{.65}{\import{figures/}{conflict_graph.pspdftex}}
-\caption{\label{conflict} Abstract Conflict Graph \pscmt{What is the
-    semantics of ``;'' \rmcmt{and}?}}
+\caption{\label{conflict} Abstract Conflict Graph}
 \end{figure} 
 %    
 \paragraph{\textbf{Learning in Relational Lattice}}
@@ -100,7 +99,7 @@ and let $a = \langle x \geq 3, x \leq 4, y \geq 5, y \leq 6 \rangle$, then $AUni
 the rule (1), since $a \sqsubseteq C$.  Now, let $a' = \langle x \geq 3, x \leq 4 \rangle$, 
 then $AUnit_C(a') = (y > 7)$ using rule (2), since $a' \sqsubseteq (x \geq 2)$
 and $a' \sqsubseteq (x \leq 5)$.  However, if none of the above rule holds true, $AUnit$ 
-returns $\top$. 
+returns $\top$.   
  
 \paragraph {\textbf{Backjumping}}
 A backjumping procedure undo all the assignments in the trail up to 
