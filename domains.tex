@@ -74,14 +74,15 @@ $\begin{array}{rcl}
 \label{ssa}
 \end{figure}
 %
-We consider programs with bounded loops 
-%(respectively bounded unwindings of programs with loops or recursion) with 
-containing safety properties given as assertions in the code.
+In this paper we consider safety checking of loop-free programs, including
+bounded unwindings of programs with loops or recursion.  We assume
+that safety properties given as assertions $\mathcal{A}$ in the code.
 %
-Such a program is represented as set $\mathcal{P}$ of
-\emph{statements} $s$.  These are constraints as typically obtained by
-translating the program into single static assignment (SSA) form via a
-data flow analysis.
+Such a program is represented as set
+$\mathcal{S}=\mathcal{P}\cup\{\neg \bigwedge_{a\in\mathcal{A}} a\}$
+where $\mathcal{P}$ are the statements of the program in the form of
+constraints as typically obtained by translating the program into
+single static assignment (SSA) form via a data flow analysis.
 %
 Figure~\ref{ssa} shows the SSA constraints for the program in Figure~\ref{fig:example}. 
 %
@@ -92,9 +93,9 @@ Control flow is encoded into guard variables such as $g_1=g_0\wedge c$.
 %
 Data flow joins become conditional expressions, e.g.\ $x_3=g_1?x_1:x_2$.
 %
-Assertions $\mathcal{A}$ are constraints $a$ of the form $g_3
-\Rightarrow z\geq 0$, meaning that if $g_3$ holds (i.e.\ the assertion
-is reachable) then the assertion must hold.
+The assertions $\mathcal{A}$ are constraints of the form $g_3
+\Rightarrow z\geq 0$, for instance, meaning that if $g_3$ holds
+(i.e.\ the assertion is reachable) then the assertion must hold.
 %
 %
 %
@@ -117,14 +118,11 @@ is reachable) then the assertion must hold.
 % if $\sigma_{i+1} \in post_{i}(\sigma_{i})$. 
 
 %-------------------------------------------------------------------------------
-\paragraph{Safety problem}  
+%\paragraph{Safety problem}  
 %
-Based on above program representation, the safety problem solved by the ACDCL solver is the following:
-%
-\begin{equation}\label{eq:safety}
-\varphi:= \bigwedge_{s\in\mathcal{P}} s \wedge \neg \bigwedge_{a\in\mathcal{A}} a
-\text{ is unsatisfiable if and only if the program is safe.}
-\end{equation}
+Based on the above program representation, we define $\varphi:=
+\bigwedge_{s\in\mathcal{S}} s$. The formula $\varphi$ is unsatisfiable
+if and only if the program is safe.
 
 % \subsection{Static Analysis Equations for Safety}
 % Static program analysis based on abstract interpretation~\cite{DBLP:conf/emsoft/Cousot07} 
