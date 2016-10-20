@@ -64,19 +64,8 @@ abstract domains.  On the other hand, Ast{\'e}e is often faster than ACDCL,
 but the analysis using Astr{\'e}e shows high degree of imprecision.  
 Astr{\'e}e reported 15 false alarms out of 41 safe benchmarks.  
 
-\paragraph {\textbf{Decision Heuristics}} We compare the performance of 
-different decision heuristics in ACDCL.  We observe that the ordered heuristic 
-outperforms other heuristics on control-intensive benchmarks due to its 
-ability to prioritize decisions on variables that appear in conditional 
-branches.  For straight-line code and most of the bit-vector regression 
-suite, random heuristics performs the best.  Whereas activity-based 
-heuristics such as Berkmin heuristic which works well in propositional 
-cases performs best for benchmarks that encountered \pscmt{???} the maximum number 
-of conflicts to prove safety, thus allowing the heuristics \pscmt{???} to choose  
-the decison variable among the set of learnt clauses.   
-
 \paragraph {\textbf{Propagation Strategy}}      
-Figure~\ref{prop-dec} presents a comparison between {\em forward} propagation 
+Figure~\ref{prop-dec}(a) presents a comparison between {\em forward} propagation 
 strategy and {\em multi-way} propagation strategy in ACDCL.  The choice of 
 propagation strategy influences the total number of decisions and clause 
 learning iterations.  Hence, the propagation strategy has a significant 
@@ -91,6 +80,20 @@ We observe that the deductions made during chaotic analysis helps the decision
 heuristics to make better decisions compared to forward analysis.  This is 
 attributed to the precision of deductions inferred by the chaotic analysis.         
 } 
+
+\paragraph {\textbf{Decision Heuristics}} Figure~\ref{prop-dec}(b) presents a 
+visualization of different decision heuristics in ACDCL.  We observe that 
+the ordered heuristic outperforms other heuristics due to its ability to 
+prioritize decisions on meet irreducibles that appear in conditional 
+branches.  For straight-line code and most of the bit-vector regression 
+suite, random heuristics performs the best.  
+
+\Omit{
+Whereas activity-based heuristics such as Berkmin heuristic which 
+works well in propositional cases performs best for benchmarks 
+that encountered the maximum number of conflicts to prove safety, 
+thus allowing the heuristics to choose the decison variable among the set of learnt clauses.   
+}
 
 \paragraph {\textbf{Learning}} Learning has a significant influence on
 the runtime of ACDCL.  We compare the UIP-based learning technique with 
