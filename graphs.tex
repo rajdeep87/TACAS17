@@ -5,8 +5,9 @@
 \begin{tikzpicture}[scale=0.75]
 	\begin{loglogaxis} [xmin=0.1,xmax=4000, ymin=0.1, ymax=4000, xlabel= SAT (decision),
 			ylabel=ACDCL (decision), 
-			legend style={at={(0.8,0.15)},
-			anchor=north,legend columns=-1 },
+			legend pos = north west,
+			%legend style={at={(0.8,0.15)},
+			%anchor=north,legend columns=-1 },
 			]
 \addplot [mark size=1pt,only marks,scatter,point meta=explicit symbolic,
 	scatter/classes={s={mark=square},u={mark=triangle*,blue}},] 
@@ -27,8 +28,9 @@
 \begin{tikzpicture}[scale=0.75]
 	\begin{loglogaxis} [xmin=.1,xmax=83000, ymin=.1, ymax=83000, xlabel=SAT (Propagation),
 			ylabel=ACDCL (Propagation),
-			legend style={at={(0.8,0.15)},
-			anchor=north,legend columns=-1 },
+			legend pos = north west,
+      %legend style={at={(0.8,0.15)},
+			%anchor=north,legend columns=-1 },
 			]
 \addplot [mark size=1pt,only marks,scatter,point meta=explicit symbolic,
 	scatter/classes={s={mark=square},u={mark=triangle*,blue}},] 

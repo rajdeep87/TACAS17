@@ -31,12 +31,12 @@ the analysis very expensive.  Without trace partitioning, the
 analysis using Astr{\'e}e shows high degree of imprecision. 
 }
 \paragraph {\textbf{Precision and Efficiency of Analysis}}
-Figure~\ref{fig:results} presents a comparison of the solver statistics
-(decision and learning) for the analysis using CBMC and ACDCL.  The cumulative 
-statistics corresponding to each phase of the algorithm for all 66 benchmarks 
-is presented in Table~\ref{result}.  The reasoning using ACDCL is at least 
-\rmcmt{1.5X} more efficient compared to propositional SAT in terms of number of decisions, propagations 
-and learning \pscmt{what learning???}.    
+Figure~\ref{fig:results} presents a comparison of the analysis 
+using CBMC and ACDCL.  The cumulative statistics corresponding to 
+each phase of the algorithm for all 66 benchmarks is presented in 
+Table~\ref{result}.  Experimental result shows a reduction of at least 
+two orders of magnitude in the number of decisions, propagations and conflicts 
+compared to analyis using CBMC.    
 %
 \begin{table}
 \begin{center}
@@ -76,14 +76,16 @@ of conflicts to prove safety, thus allowing the heuristics \pscmt{???} to choose
 the decison variable among the set of learnt clauses.   
 
 \paragraph {\textbf{Propagation Strategy}}      
-Figure~\ref{prop-dec} presents a comparison between {\em forward} analysis \pscmt{iteration/propagation strategy} and
-{\em chaotic} analysis in ACDCL \pscmt{what about backward?}.  The choice of analysis influences the 
-total number of decisions and clause learning iterations.  Hence, the 
-propagation strategy has a significant influence on the run time which 
-can be visualised in Figure~\ref{prop-dec}. \pscmt{Are the graphs up-to-date?} Unlike the forward analysis, 
-the chaotic or multi-way strategy performs both forward and backward 
-propagations.  This may take several iterations to reach the fixed-point, but 
-significantly reduces the total number of decisions and learning. \pscmt{Why?} 
+Figure~\ref{prop-dec} presents a comparison between {\em forward} propagation 
+strategy and {\em multi-way} propagation strategy in ACDCL.  The choice of 
+propagation strategy influences the total number of decisions and clause 
+learning iterations.  Hence, the propagation strategy has a significant 
+influence on the run time which can be visualised in Figure~\ref{prop-dec}.  
+Unlike the forward propagation, the multi-way strategy may take several 
+iterations to reach the fixed-point, but it significantly reduces the 
+total number of decisions and conflicts.  This is attributed to the higher 
+precision of the meet irreducibles inferred by the multi-way strategy which 
+subsequently aids the decision heuristics to make better decisions. 
 \Omit {
 We observe that the deductions made during chaotic analysis helps the decision 
 heuristics to make better decisions compared to forward analysis.  This is 
@@ -91,12 +93,12 @@ attributed to the precision of deductions inferred by the chaotic analysis.
 } 
 
 \paragraph {\textbf{Learning}} Learning has a significant influence on
-the runtime of ACDCL.  We compare the first-UIP learning technique with 
-a DPLL-style conflict analysis without learning \pscmt{you learn the negation of the last decision}.  The effect of UIP computation 
-allows ACDCL to backtrack non-chronologically and guide the model search with 
-a learnt transformer.  However, the DPLL-style analysis exhibits
-case-enumeration behavior and thus immediately runs out of capacity for programs 
-which require relational domains. \pscmt{Is there a significant difference between intervals and octagons that indicates that for relational domains DPLL is even worse than in the propositional case?}        
+the runtime of ACDCL.  We compare the UIP-based learning technique with 
+an analysis that performs chronoligical backtracking without learning. 
+The effect of UIP computation allows ACDCL to backtrack non-chronologically 
+and guide the model search with a learnt transformer.  However, the analysis 
+without learning exhibits case-enumeration behavior and thus immediately 
+runs out of capacity for most benchmarks. 
 
 %================  
 \input{graphs}

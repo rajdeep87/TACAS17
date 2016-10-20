@@ -173,7 +173,8 @@ strategies. A {\em forward} iteration strategy initializes the worklist with
 transformers that has constants in the right-hand side. Whereas, a {\em backward} 
 iteration strategy starts with a set of assertions. On the other hand, a 
 {\em multi-way} iteration strategy initializes the worklist with set of all 
-transformers.  For every meet irreducible deduction transformer \pscmt{rename} $s \in S$ 
+transformers and performs both forward and backward propagations in tandem.  
+For every meet irreducible deduction transformer \pscmt{rename} $s \in S$ 
 passed to the abstract domain, if the domain infers a new meet irreducible 
 $\mathit{meet\_irrd}$, it is added to $\mathcal{T}$ \pscmt{It usually infers several ones.}.  Additionally, the reason 
 trail $\mathcal{R}$ \pscmt{define} is updated with the transformer $s$ as the reason for inferring
