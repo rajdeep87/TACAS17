@@ -64,7 +64,9 @@ and an empty propagation trail and reason trail, $\mathcal{T}$, $\mathcal{R}$,
 respectively.  The propagation trail stores all meet irreducibles inferred 
 by the abstract model search phase (deductions and decisions), while the 
 reason trail maps elements of propagation trail to transformers that were 
-used to derive them. We convert the propagation trail into an abstract value as follows; $\mathit{abs}(\mathcal{T})=\bigsqcap_{m\text{ in }\mathcal{T}}m$ with $\mathit{abs}(\mathcal{T})=\top$ if $\mathcal{T}$ is the empty sequence $\langle\rangle$.
+used to derive them. A propagation trail is mapped to an abstract value as 
+follows; $\mathit{abs}(\mathcal{T})=\bigsqcap_{m \in \mathcal{T}}m$ with 
+$\mathit{abs}(\mathcal{T})=\top$ if $\mathcal{T}$ is the empty sequence $\langle\rangle$.
 
 The procedure $deduce(S,v,\mathcal{T},\mathcal{R})$ computes a greatest 
 fixed point over the transformers in $\varphi$ that refines the abstract valuation 
@@ -123,4 +125,4 @@ empty or $v=\underset{i \geq 0 \wedge i \leq |\mathcal{T}|}{\meet m_i}$, where
 $m_i \in \mathcal{T}$.  A solver is in conflict if some clauses in
 $\mathcal{S}$ is not abstractly satisfied by $v$.
 
-\pscmt{define ``consistent with trail''}
+%\pscmt{define ``consistent with trail''}
