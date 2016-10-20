@@ -1,4 +1,4 @@
-\section{Preliminaries}
+\section{Program Model and Abstract Domain}
 This section introduces the program model and identifies properties of abstract
 domains that are necesary for learning in abstract lattice structures.
 % \subsection{Programs:}
@@ -74,7 +74,7 @@ $\begin{array}{rcl}
 \label{ssa}
 \end{figure}
 %
-In this paper we consider safety checking of loop-free programs, including
+In this paper, we consider safety checking of loop-free programs, including
 bounded unwindings of programs with loops or recursion.  We assume
 that safety properties given as assertions $\mathcal{A}$ in the code.
 %
@@ -120,9 +120,9 @@ The assertions $\mathcal{A}$ are constraints of the form $g_3
 %-------------------------------------------------------------------------------
 %\paragraph{Safety problem}  
 %
-Based on the above program representation, we define $\varphi:=
-\bigwedge_{s\in\mathcal{S}} s$. The formula $\varphi$ is unsatisfiable
-if and only if the program is safe.
+Based on the above program representation, we define a safety equation as, 
+$\varphi:= \bigwedge_{s\in\mathcal{S}} s$. The formula $\varphi$ is 
+unsatisfiable if and only if the program is safe.
 
 % \subsection{Static Analysis Equations for Safety}
 % Static program analysis based on abstract interpretation~\cite{DBLP:conf/emsoft/Cousot07} 
@@ -448,6 +448,21 @@ Standard abstract interpretation does not require a complementation
 operator. Hence, abstract domain libraries, such as APRON~\cite{apron}
 do not provide it.  However, it can be implemented with the help of a
 meet decomposition as explained above.
+
+\begin{definition}{(Abstract Valuation)} An {\em abstract valuation} is a
+mapping of variables to an element of abstract domain. For example, 
+\Omit {
+a mapping of variable $x$ to an interval environment is given by 
+$\langle x \mapsto [2,5] \rangle$ or a 
+}
+a mapping of constraint variables $\{x,y\}$ to octagon environment 
+is given by $\langle x-y \mapsto 0, y-x \mapsto 0 \rangle$.  
+An abstract valuation is {\em atomic} if each variable is mapped to a singleton 
+value or to $\bot$.  An abstract valuation $(v)$ abstractly satisfies a formula 
+$\varphi$ if for every variable $\mathcal{x}$ in $\varphi$, there is a concrete solution 
+$(c)$ such that $c(\mathcal{x}) \subseteq \gamma \circ v(\mathcal{x})$ holds. 
+\end{definition}
+
 %
 %Another feature that abstract domain libraries do not provide is to
 %track the reasons why certain deductions have been made. We come back
