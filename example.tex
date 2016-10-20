@@ -38,7 +38,7 @@ void main() {
 \hline
 \end{tabular}
 \caption{\label{fig:example}
-C Program, Control-flow Graph (CFG) and Abstract Conflict Graph \pscmt{val $\rightarrow$ v; better rename $I$ to $n_0$ (also in the text); arrow from $n_2$ to $n_4$ on the rhs}}
+C Program, Control-flow Graph (CFG) and Abstract Conflict Graph}
 \end{figure}
 Let us consider a simple program in Figure~\ref{fig:example} that performs 
 multiplication of two machine integers and checks that the result of the 
@@ -63,11 +63,13 @@ to prove safety.  The partition directive helps the tool to analyze
 each program execution paths separately.  To do so, Astr{\'e}e 
 requires a product of trace partitioning domain and an interval domain 
 to determine safety.  However, a relational domain such as octagons is 
-able to prove the program without any partition.  In general, the 
-imprecision is either intended by the tool because such high 
+able to prove the program without any partition.  
+\Omit {
+In general, the imprecision is either intended by the tool because such high 
 precision analysis is normally not required for runtime error 
 analysis or the imprecision is unavoidable due to the complexity 
 of the application under analysis.  
+}
 %
 \begin{table}
 \begin{center}
@@ -113,8 +115,8 @@ the program is {\em safe} for $c:=[1,1]$.
 A clause learning SAT solver would learn the reason for conflict at this 
 point and then backtrack to a level such that the learnt clause is UNIT.  
 Similar to conflict analysis phase in SAT solvers, ACDCL learns that 
-(\(I: c:=[0,0]\)), that is all error traces must satisfy $(c \neq 1)$ 
-at node $I$.  The analysis discards all interval constraints that
+(\(n0: c:=[0,0]\)), that is all error traces must satisfy $(c \neq 1)$ 
+at node $n0$.  The analysis discards all interval constraints that
 lead to the conflict and backtrack to decision level 0.  ACDCL then 
 performs interval analysis with the learnt constraint $(c \neq 1)$ which also 
 leads to a conflict, as shown in right side of Figure~\ref{ssa}.  The 
