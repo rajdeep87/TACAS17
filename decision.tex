@@ -5,55 +5,67 @@ domain can be of the form $\langle x R c \rangle$ where
 $R \in \{\leq, \geq\}$, $c$ is the bound.  A decision in 
 relational domain such as octagon is of the form $ax - by \leq c$, 
 where $x$ and $y$ are variables, $a,b \in \{-1,0,1\}$ are co-efficients, 
-and $c \in \mathbb{R}\cup\{\infty\}$ is the bound of the inequality.    
-A decision must always be consistent with respect to the trail 
-$\mathcal{T}$, that is, it must not contradict with the elements 
+and $c \in \mathbb{R}\cup\{\infty\}$ is the bound of the inequality.  
+That is, a decision can specify relation between variables, for example 
+$\{x \leq y)$.  A decision must always be consistent with respect to 
+the trail $\mathcal{T}$, that is, it must not contradict with the elements 
 in the trail.  
 
-Let $\mathcal{V}$ be a set of all singletons and non-singletons 
-variables.  A singleton variable is one that has been assigned a 
-singleton value, for example, $\langle x:[1,1] \rangle$.  Otherwise, 
-the variable is non-singleton \pscmt{this definition only works for non-relational domains}.  Given a set of variables $\mathcal{V}$, 
-a decision phase heuristically chooses a non-singleton branching 
-variable $v \in \mathcal{V}$, a bound $c$, and the polarity ($\succeq$ or 
-$\preceq$).  A decision changes the sate of the solver by adding new element 
+A singleton meet irreducible $s$ in an abstract domain $A$ is an element 
+whose lower bound and upper bound are the same.  For example, 
+$\langle x:[1,1] \rangle$ is a singleton meet irreducible in interval domain.  
+For an octagon domain, $\langle 1 \geq x-y \leq 1 \rangle$ is a singleton meet 
+irreducible for the template $(x-y)$, though the concretisation of individual 
+template variables ($x$, $y$) may not be singletons.   
+
+Given a set of variables $\mathcal{V}$ and a current abstract value $v$, 
+a decision phase heuristically returns a non-singleton meet irreducible 
+by choosing a set of branching variables $\{B\} \subseteq \mathcal{V}$, 
+a bound $c$, and a polarity ($\leq$ or $\geq$).  For interval domain, $|B|=1$.  
+A decision changes the sate of the solver by adding a new meet irreducible 
 $m$ and labelling information $s=decision$ to the trail, which is described below. 
 \[decide: \quad (\mathcal{E},S) \rightarrow (\mathcal{E}(m,s),S) \]
+
+%Let $\mathcal{V}$ be a set of all singletons and non-singletons.  
+%Otherwise, the variable is non-singleton 
 
 ACDCL supports several decision heuristics namely, {\em ordered}, 
 {\em longest-range}, {\em random}, {\em relational} and 
 {\em Berkmin}~\cite{eugoldberg07} decision heuristics.  
 The {\em ordered} decision heuristics creates an ordering among non-singleton 
-variables, thereby making decisions on conditional variables (variables that 
-appear in conditional branches) first before choosing numerical variables.  
-This variable ordering is path-sensitive as it gives an effect of trace
-partitioning.  
+meet irreducibles, thereby making decisions on meet irreducibles that involve 
+conditional variables (variables that appear in conditional branches) first 
+before choosing meet irreducibles with numerical variables.  
+The ordering is path-sensitive as it gives an effect of trace partitioning.  
 
 The {\em longest-range} heuristics simply keeps track of the
-interval $[l,u]$ range ($r=u-l$) of a variable and chooses a variable with 
-the longest range value \pscmt{why is this restricted to variables?}.  This ensures a fairness policy in selecting a 
-variable since it guarantees that the intervals of variables are uniformly 
-restricted.  
-
-The {\em random} decision heuristics arbitrarily picks a variable 
-for making decision. \pscmt{uniformly distributed?}
-
-The {\em relational} decision heuristics is of the form 
-$x R y$ for $R \in \{preceq, succceq\}$ and is only relevant for relational 
+interval $[l,u]$ range ($r=u-l$) of a meet irreducible and chooses 
+a meet irreducible with the longest range value.  This ensures a 
+fairness policy in selecting a variable since it guarantees that 
+the intervals of meet irreducibles are uniformly restricted.  
+%
+The {\em random} decision heuristics arbitrarily picks a meet irreducible  
+for making decision. 
+%
+The {\em relational} decision heuristics is only relevant for relational 
 abstract domains.  
-
+%
 Whereas, a {\em berkmin} decision heuristics is inspired 
-from decision heuristics used in Berkmin~\cite{eugoldberg07} SAT solver, which 
-keeps track of the activity of a variable that participate in conflict clauses 
+from decision heuristic used in Berkmin~\cite{eugoldberg07} SAT solver.  
+The berkmin heuristic is currently implemented for interval constraints only.  
+The heuristic keeps track of the activity of an interval meet irreducible 
+that participate in conflict clauses. 
+\Omit {
 as well as variables that actively contribute to conflicts but do not explicitly 
-appear in conflict clauses.  The set of conflict clauses is organized 
-chronologically with the top clause as the one deduced in the last.  A 
-branching variable is chosen among the free variables whose literals are 
-in the top unsatisfied conflict clause.  A similar decision heuristics is 
-also implemented in Chaff~\cite{chaff} SAT solver, that computes the activity 
-of a variable as the number of occurrences of that variable in conflict 
-clauses only. \pscmt{how do you adapt this to relational domains?}
-
-A bound of a variable \pscmt{why restricted to variables?} is heuristically chosen to be an approximation of the 
-arithmetic average of the current bounds.  However, the polarity ($\preceq$ or
-$\succeq$) of a variable is chosen randomly.  
+appear in conflict clauses.  The set of conflict clauses is 
+organized chronologically with the top clause 
+as the one deduced in the last.  A branching variable is chosen among the 
+free variables whose literals are in the top unsatisfied conflict clause.  
+A similar decision heuristics is also implemented in Chaff~\cite{chaff} SAT 
+solver, that computes the activity of a variable as the number of occurrences 
+of that variable in conflict clauses only. 
+}
+%
+A bound of a meet irreducible is heuristically chosen to be an approximation of the 
+arithmetic average of the current bounds.  However, the polarity ($\leq$ or $\geq$) 
+of a meet irreducible is chosen randomly.  
