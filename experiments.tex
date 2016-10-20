@@ -82,12 +82,14 @@ attributed to the precision of deductions inferred by the chaotic analysis.
 } 
 
 \paragraph {\textbf{Decision Heuristics}} Figure~\ref{prop-dec}(b) presents a 
-visualization of different decision heuristics in ACDCL.  We observe that 
-the ordered heuristic outperforms other heuristics due to its ability to 
-prioritize decisions on meet irreducibles that appear in conditional 
-branches.  For straight-line code and most of the bit-vector regression 
-suite, random heuristics performs the best.  
-
+visualization of different decision heuristics in ACDCL.  Random heuristic
+performs the best for most safe benchmarks and all bit-vector category 
+benchmarks.  Whereas, the ordered heuristic performs better for programs 
+with conditional branches since it prioritizes decisions on meet 
+irreducibles that appear in conditional branches over meet irreducibles 
+that involve numerical variables.  Whereas, the runtimes for berkmin 
+heuristic is slightly greater than the random and ordered heuristic 
+for our benchmarks. 
 \Omit{
 Whereas activity-based heuristics such as Berkmin heuristic which 
 works well in propositional cases performs best for benchmarks 
