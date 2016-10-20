@@ -18,10 +18,12 @@ checking and bounded loop analysis.  All bounded loops are completely
 unrolled before analysis.  We compare our tool with a state-of-the-art 
 SAT-based bounded model checker CBMC~\cite{cbmc} and a commercial 
 static analysis tool, Astr{\'e}e.  CBMC uses MiniSAT solver in the backend.  
-Astr{\'e}e was configured with default set of domains which includes 
+Astr{\'e}e was configured with range of abstract domains which includes 
 interval, bit-field, congruence, trace partitioning and relational 
-domains (octagons, polyhedra, zones, equalities, filter).   
-
+domains (octagons, polyhedra, zones, equalities, filter).  Whereas, 
+ACDCL was instantiated with a product domain of booleans and template 
+polyhedra.   
+%
 \Omit {
 To enable precise analysis using Astr{\'e}e, all our benchmarks are 
 manually instrumented with partition directives which provides external 
@@ -32,10 +34,15 @@ analysis using Astr{\'e}e shows high degree of imprecision.
 }
 \paragraph {\textbf{Precision and Efficiency of Analysis}}
 Figure~\ref{fig:results} presents a comparison of the analysis 
-using CBMC and ACDCL.  The cumulative statistics corresponding to 
-each phase of the algorithm for all 66 benchmarks is presented in 
-Table~\ref{result}.  Experimental result shows a reduction of at least 
-two orders of magnitude in the number of decisions, propagations and conflicts 
+using CBMC and ACDCL.  Figure~\ref{fig:results}(a) clearly shows that 
+the SAT solver made significantly more decisions compared to ACDCL 
+for all the benchmarks.  Whereas, the extreme right points below the 
+diagonal in Figure~\ref{fig:results}(b) shows the propagations in SAT solver  
+is maximum for the benchmarks that exhibit relational behavior.  The 
+cumulative statistics corresponding to each phase of the algorithm 
+for all 66 benchmarks is presented in Table~\ref{result}.  
+Experimental result shows a reduction of at least two orders of 
+magnitude in the number of decisions, propagations and conflicts 
 compared to analyis using CBMC.    
 %
 \begin{table}
