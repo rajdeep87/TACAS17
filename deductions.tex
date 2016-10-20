@@ -72,8 +72,14 @@ worklist $\leftarrow$ initialize\_worklist($S$) \;
   $(s,\mathit{live\_vars}) \leftarrow$ worklist.pop() \;
   $v \leftarrow ded(s, \mathit{espan}(\mathit{live\_vars}), \mathit{abs}(\mathcal{T}))$\;
   \uIf{$v = \bot$} {
-    $\mathcal{R}[\bot] \leftarrow s$ \pscmt{how is this used in the conflict analysis? wouldn't it be more uniform to add $\bot$ to the $\mathcal{T}$?}\;
-    worklist.clear() \pscmt{why can't you clean up the worklist during conflict analysis? it seems inefficient to throw everything away...} \;
+    $\mathcal{R}[\bot] \leftarrow s$ \pscmt{how is this used in the conflict
+    analysis? wouldn't it be more uniform to add $\bot$ to the $\mathcal{T}$?}
+    \rmcmt{UIP uses the transformer stored at $\mathcal{R}[\bot]$ to derive the
+    cut. No, we dont want to make the trail inconsistent by adding $\bot$}\;
+    worklist.clear() \pscmt{why can't you clean up the worklist during conflict analysis? it seems inefficient to throw everything away...}
+    \rmcmt{When a bottom is deduced, the direction of search
+    changes--so the worklist is populated with new set of statement and must be
+    flushed out} \;
     \return \conflict \;
   }
   \uElse
