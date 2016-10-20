@@ -1,12 +1,30 @@
 \section{Conclusions}
-In this paper, we instantiate ACDCL solver with relational domains.  We explained specific properties of model search and conflict analysis procedure necessary
-for such lifting.  Experimental evaluation on different benchmark sets shows that
+In this paper, we present a procedure for lifting the model search 
+in satisfiability solvers to relational abstract domains.  We explain 
+specific properties of abstract domain elements that are necessary to infer 
+domain-specific deductions.  We present decision heuristics that takes 
+into account the high-level structure of programs and the underlying 
+expressivity of the abstract domains.  Our conflict analysis procedure 
+learns abstract transformer following UIP computation over relational 
+elements.  We instantiate our algorithms as a program analyzer to determine
+safety of C programs.  Experimental evaluation shows that ACDCL is able 
+to suitably exploit the expressivity of richer abstract domains as well 
+as precision of CDCL architecture.
+
+Generalizations of conflict reasons for relational domains 
+and non-relational domain such as trace-based abstrac domains is a 
+possible direction of future work.  We believe that domain refinement 
+in ACDCL will also help to dynamically adjust the precision of the 
+deduction in an effective manner. 
+
+
+\Omit {
+Experimental evaluation on different benchmark sets shows that
 ACDCL is able to suitably exploit the expressivity of richer
 abstract domains as well as precision of CDCL architecture.
 This is attributed to the intelligent decision heuristics
 which exploits the high-level structure of the problem
 combined with stronger deductions and clause learning
 mechanism aided by the richer abstract domains.
-
-\rmcmt{Future work -- domain refinement, incremental solving, invariant inference, intelligent $\gamma$-completeness check. Implement dedicated abstract domains to exploit full performance.
+Future work -- domain refinement, incremental solving, invariant inference, intelligent $\gamma$-completeness check. Implement dedicated abstract domains to exploit full performance.
 generalization for relational domain, instantiate acdl with trace-based domains.}
