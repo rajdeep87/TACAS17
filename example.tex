@@ -7,17 +7,17 @@
 C program & Control-Flow Graph & Abstract Conflict Graph \\
 \hline
 \begin{lstlisting}[mathescape=true,language=C]
-void main() {
- int x,z;
- int v;
- assume(v>=0 $\wedge$ v<=N);
- _Bool c;
- if(c)
-   x = v;
- else 
-   x = -v;
- z = x * x;
- assert(z>=0);
+void foo(int v, 
+         _Bool c) 
+{
+  assume(v>=0 $\wedge$ v<=N);
+  int x; 
+  if(c)
+    x = v;
+  else 
+    x = -v;
+  int z = x * x;
+  assert(z>=0);
 }
 \end{lstlisting}
 &
@@ -42,8 +42,8 @@ C Program, Control-flow Graph (CFG) and Abstract Conflict Graph}
 \end{figure}
 Let us consider a simple program in Figure~\ref{fig:example} that performs 
 multiplication of two machine integers and checks that the result of the 
-multiplication is always positive for an integer input $x$.  To avoid 
-overflow error, we assume $x$ has an upper bound $N$.  The control 
+multiplication is always positive for an integer input $v$.  To avoid 
+overflow error, we assume $v$ has an upper bound $N$.  The control 
 flow graph is shown in the middle column of Figure~\ref{fig:example}.  
 
 We analyze the program using three different analyzers -- {\em bounded 
