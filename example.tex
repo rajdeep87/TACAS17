@@ -10,7 +10,7 @@ C program & Control-Flow Graph & Abstract Conflict Graph \\
 void foo(int v, 
          _Bool c) 
 {
-  assume(v>=0 $\wedge$ v<=N);
+  assume(v>=0 && v<=N);
   int x; 
   if(c)
     x = v;

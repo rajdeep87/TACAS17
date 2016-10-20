@@ -26,12 +26,14 @@
 \SetKwFor{Loop}{Loop}{}{}
 \SetKw{KwNot}{not}
 \begin{small}
-\Input{Set $S$ of abstract deduction transformer, 
-$\widehat{ded_{\varphi}}$ for a formula $\varphi$ over an abstract domain $A$}
-\Output{The status (\safe or \unsafe) and a counterexample if \unsafe}
+\Input{%An abstract domain $A$, 
+A program $\mathcal{S}$, a
+  propagation heuristics $H$, a decision heuristics $\mathit{decide}$,
+and a conflict analysis heuristics $\mathit{conflict\_analysis}$.}
+\Output{The status \safe or \unsafe, and a counterexample if \unsafe.}
 $\mathcal{T} \leftarrow \langle\rangle$ \;
 $\mathcal{R} \leftarrow \emptyset$ \;
-$\mathit{result} \leftarrow \deduce(S,\mathcal{T},\mathcal{R})$ \;
+$\mathit{result} \leftarrow \deduce(S,\mathcal{T},\mathcal{R}, H)$ \;
 \lIf{$\mathit{result}$ = \conflict} {
   \return \safe}
 \While{$true$} 
@@ -41,18 +43,18 @@ $\mathit{result} \leftarrow \deduce(S,\mathcal{T},\mathcal{R})$ \;
   $d \leftarrow decide(\mathit{abs}(\mathcal{T}))$ \;
 %  $v \leftarrow v \meet d$ \; 
   $\mathcal{T} \leftarrow \mathcal{T} \cdot d$ \; 
-  $\mathcal{R}[|\mathcal{T}|] \leftarrow $\textsf{nil} \;
-  $\mathit{result} \leftarrow \deduce(S,\mathcal{T},\mathcal{R})$\;
+  $\mathcal{R}[|\mathcal{T}|] \leftarrow $\textsf{decision} \;
+  $\mathit{result} \leftarrow \deduce(\mathcal{S},\mathcal{T},\mathcal{R})$\;
   \Do{$\mathit{result} = \conflict$} {
 %    learn() \;
-    \lIf{$\neg \mathit{conflict\_analysis}(S,\mathcal{T},\mathcal{R})$} {
+    \lIf{$\neg \mathit{conflict\_analysis}(\mathcal{S},\mathcal{T},\mathcal{R})$} {
       \return \safe
     }
-    $\mathit{result} \leftarrow \deduce(S,\mathcal{T},\mathcal{R})$ \;
+    $\mathit{result} \leftarrow \deduce(\mathcal{S},\mathcal{T},\mathcal{R})$ \;
   }
 }
 \end{small}
-\caption{Abstract Conflict Driven Clause Learning $\langle ACDCL(S) \rangle$ \label{Alg:acdcl}}
+\caption{Abstract Conflict Driven Clause Learning $ACDCL(A)$ \label{Alg:acdcl}}
 \end{algorithm2e}
 %
 %\subsection{Algorithm for Abstract Conflict Driven Clause Learning}
