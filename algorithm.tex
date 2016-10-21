@@ -29,7 +29,10 @@
 \Input{%An abstract domain $A$, 
 A program $\mathcal{S}$, a
   propagation heuristics $H$, a decision heuristics $\mathit{decide}$,
-and a conflict analysis heuristics $\mathit{conflict\_analysis}$.}
+and a conflict analysis heuristics $\mathit{conflict\_analysis}$.\rmcmt{calling
+them heuristics is not a good idea since these are key phases of the cdcl
+algorithm. Each phase may have a heuristics for some sub phase but the algorithm
+of each phase still remians a procedure and not a heuristic}}
 \Output{The status \safe or \unsafe, and a counterexample if \unsafe.}
 $\mathcal{T} \leftarrow \langle\rangle$ \;
 $\mathcal{R} \leftarrow \emptyset$ \;
