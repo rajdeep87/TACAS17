@@ -49,11 +49,7 @@ C &\iff& ((x' > 1) \land (-x'-y < -2) \land \\
 %    
 \begin{algorithm2e}[t]
 \DontPrintSemicolon
-\SetKwFunction{deduce}{deduce}
-\SetKwFunction{print}{print}
 \SetKw{return}{return}
-\SetKwFunction{continue}{continue}
-\SetKwFunction{assign}{assign}
 \SetKwData{sat}{sat}
 \SetKwData{conflict}{conflict}
 \SetKwData{unsat}{unsat}
@@ -64,21 +60,21 @@ C &\iff& ((x' > 1) \land (-x'-y < -2) \land \\
 \SetKwFor{Loop}{Loop}{}{}
 \SetKw{KwNot}{not}
 \begin{small}
-\Input{%Abstract domain $A$
-Program $\mathcal{S}$,
-propagation trail $\mathcal{T}$, reason trail $\mathcal{R}$,
-propagation heuristics $H$}
+\Input{A program in the form of a set of abstract transformers $\abstransset$,
+a propagation trail $\trail$, and a reason trail $\reasons$.}
 \Output{\sat or \conflict or \unknown}
-$\mathit{worklist} \leftarrow H.\mathit{initialize\_worklist}(\mathcal{S})$ \;
+$\worklist \leftarrow \initworklist_{\propheur}(\abstransset)$ \;
 \While{$!\mathit{worklist.empty}()$} 
 {
-  $(s,\mathit{live\_vars}) \leftarrow \mathit{worklist.pop}()$ \;
-  $v \leftarrow ded(s, \mathit{espan}(\mathit{live\_vars}), \mathit{abs}(\mathcal{T}))$\;
+%  $(\abstransel,\livevars) \leftarrow \mathit{worklist.pop}()$ \;
+  $\abstransel{\subdomain} \leftarrow \mathit{worklist.pop}()$ \;
+%  $v \leftarrow ded(s, \makesubdomain(\livevars), \abs(\trail))$\;
+  $v \leftarrow \abstransel{\subdomain}(\abs(\trail))$\;
   \uIf{$v = \bot$} {
-    $\mathcal{R}[\bot] \leftarrow s$ \;
+    $\reasons[\bot] \leftarrow \abstransel{\subdomain}$ \;
 %\pscmt{how is this used in the conflict
-%    analysis? wouldn't it be more uniform to add $\bot$ to the $\mathcal{T}$?}
-%    \rmcmt{UIP uses the transformer stored at $\mathcal{R}[\bot]$ to derive the
+%    analysis? wouldn't it be more uniform to add $\bot$ to the $\trail$?}
+%    \rmcmt{UIP uses the transformer stored at $\reasons[\bot]$ to derive the
 %    cut. No, we dont want to make the trail inconsistent by adding $\bot$}
     $\mathit{worklist.clear}()$ \;
 %\pscmt{why can't you clean up the worklist during conflict analysis? it seems inefficient to throw everything away...}
@@ -89,19 +85,19 @@ $\mathit{worklist} \leftarrow H.\mathit{initialize\_worklist}(\mathcal{S})$ \;
   }
   \uElse
   {
-    $\mathcal{T} \leftarrow \mathcal{T} \cdot \mathit{decomp}(v)$ \; 
+    $\trail \leftarrow \trail \cdot \decomp(v)$ \; 
 %    $v \leftarrow v \meet \mathit{meet\_irrd}$ \; 
-    $\mathcal{R}[|\mathcal{T}|] \leftarrow s$ \;
-    $H.\mathit{update\_worklist}(v, \mathit{worklist})$ \; 
+    $\reasons[|\trail|] \leftarrow s$ \;
+    $\updateworklist_{\propheur}(v, \worklist)$ \; 
   }
 }
-\lIf{$\mathit{abs}(\mathcal{T})$ is $\gamma$-complete} {
+\lIf{$\abs(\trail)$ is $\gamma$-complete} {
   \return \sat;
 }
  \return \unknown \;
 
 \end{small}
-\caption{Abstract Model Search $\mathit{deduce}(\mathcal{S},\mathcal{T},\mathcal{R},H)$ \label{Alg:ms}}
+\caption{Abstract Model Search $\mathit{deduce}_{\propheur}(\abstransset,\trail,\reasons)$ \label{Alg:ms}}
 \end{algorithm2e}
 %  
 A model search procedure in a SAT solver involves two steps -- {\em deductions} 
@@ -123,19 +119,30 @@ transformers on performing only the minimally necessary
 work. 
 %
 We thus define a specialised variant of the transformer to compute
-deductions w.r.t.\ a given subdomain $L\subseteq A$; $\bot,\top \in L$.
-\[\llbracket s \rrbracket^\sharp(a,L)=\bigsqcap \{a'\mid a'\in L, a' \sqsubseteq a, a'\models s\}\]
-We have the property $\llbracket s \rrbracket^\sharp(a)\sqsubseteq \llbracket s \rrbracket^\sharp(a,L)$.
+deductions w.r.t.\ a given subdomain $\subdomain\subseteq \domain$.
+A subdomain contains a chosen subset of the elements in $\domain$ including $\bot$ and $\top$.
+\[\abstrans{\domain}{\constraint}^\subdomain(\absval)=\absval\meet_\domain \alpha_\subdomain(\{\val\mid \val\models \constraint\})\]
+For $\subdomain=\domain$, the abstract transformer behaves in the same way as the one defined in Section~\ref{sec:domains}.
 %
+The restriction to a subdomain makes it less precise. Therefore, we have the property $\abstrans{\domain}{\constraint}^\domain(\absval)\sqsubseteq \abstrans{\domain}{\constraint}^\subdomain(\absval)$.
+%
+\pscmt{explain $\makesubdomain(Vars)$}
 For example, for
-$a=(0\leq y \leq 1 \wedge 5\leq z)$ we have
-$\llbracket x=y+z\rrbracket^\sharp(a,\{x\})=(x\geq 6)$, whereas
-$\llbracket x=y+z\rrbracket^\sharp(a,\{y,z\})=\top$.
+$\absval=(0\leq y \leq 1 \wedge 5\leq z)$ we have
+$\abstrans{\domain}{x=y+z}^{\makesubdomain(\{x\})}(\absval)=(x\geq 6)$, whereas
+$\abstrans{\domain}{x=y+z}^{\makesubdomain(\{y,z\})}=\top$.
 %
-If $L=A$ then intuitively $a$ is intersected with the constraint $s$.
-Yet, with the help of $L$ we can also control whether to perform
-forward (right-hand side to left-hand side, $L=\{x\}$ in the above
-example) or backward (lhs to rhs, $L=\{y,z\}$) propagation.
+The advantage of this definition is that with the help of $\subdomain$
+we can now control how we propagate within our constraint system.
+%
+For the example above, $\subdomain=\makesubdomain(\{x\})$ performs a
+right-hand side to left-hand side propagation and hence emulates a
+forward analysis on the input program; whereas with
+$\subdomain=\makesubdomain(\{y,z\})$) we emulate a backward analysis.
+%
+We call the propagation with $\subdomain=\domain$ \emph{multi-way
+  propagation}, which simultaneously performs forward and backward
+propagation.
 
 %Moreover, we want to know what the reasons for a specific deduction are.
 %\[ded(s,a,L)=\{R\rightarrow d\mid R=reasons(s,a,L,d), d \in decomp(\llbracket s \rrbracket^\sharp(a,L))\}\]
@@ -173,8 +180,8 @@ Proof sketch: see Appendix
 
 Algorithm~\ref{Alg:ms} presents the deduction phase in abstract model
 search procedure. \pscmt{The propagation heuristics $H$ provides two
-  functions $\mathit{initialize\_worklist}$ and
-  $\mathit{update\_worklist}$. Describe them for the different
+  functions $\initworklist$ and
+  $\updateworklist$. Describe them for the different
   heuristics (already done for initialize, TBD for update...}
 A {\em worklist} is a queue which contains \rmcmt{abstract deduction
 transformers}.  A {\em worklist} is initialized following a heuristics 
@@ -186,8 +193,8 @@ iteration strategy starts with a set of assertions. On the other hand, a
 transformers and performs both forward and backward propagations in tandem.  
 For every meet irreducible deduction transformer \pscmt{rename} $s \in S$ 
 passed to the abstract domain, if the domain infers a new meet irreducible 
-$\mathit{meet\_irrd}$, it is added to $\mathcal{T}$ \pscmt{It usually infers several ones.}.  Additionally, the reason 
-trail $\mathcal{R}$ \pscmt{define} is updated with the transformer $s$ as the reason for inferring
+$\mathit{meet\_irrd}$, it is added to $\trail$ \pscmt{It usually infers several ones.}.  Additionally, the reason 
+trail $\reasons$ \pscmt{define} is updated with the transformer $s$ as the reason for inferring
 $\mathit{meet\_irrd}$. If a conflict is deduced, that is, $\mathit{meet\_irrd} = \bot$ 
 is inferred by the domain, the algorithm terminates with \textsf{conflict}.  However,
 when a fixed-point is reached, the abstract valuation $v$ is checked for set of
