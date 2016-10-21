@@ -20,10 +20,12 @@ template variables ($x$, $y$) may not be singletons.
 
 Given a set of variables $\mathcal{V}$ and a current abstract value $v$, 
 a decision phase heuristically returns a non-singleton meet irreducible 
-by choosing a set of branching variables $\{B\} \subseteq \mathcal{V}$, 
-a bound $c$, and a polarity ($\leq$ or $\geq$).  For interval domain, $|B|=1$.  
-A decision changes the sate of the solver by adding a new meet irreducible 
-$m$ and labelling information $s=decision$ to the trail, which is described below. 
+over a set of branching variables $\{B\} \subseteq \mathcal{V}$, a 
+bound $c$, and a polarity ($\leq$ or $\geq$).  For interval domain, $|B|=1$ 
+since an interval meet irreducible is defined over a single variable.  For 
+octagons, $|B|=2$.  A decision adds a new meet irreducible $m$ to the trail.  
+Subsequently, the new state of the solver is defined over $m$ and corresponding 
+label information $s=decision$, which is described below. 
 \[decide: \quad (\mathcal{E},S) \rightarrow (\mathcal{E}(m,s),S) \]
 
 %Let $\mathcal{V}$ be a set of all singletons and non-singletons.  
@@ -36,7 +38,7 @@ The {\em ordered} decision heuristics creates an ordering among non-singleton
 meet irreducibles, thereby making decisions on meet irreducibles that involve 
 conditional variables (variables that appear in conditional branches) first 
 before choosing meet irreducibles with numerical variables.  
-The ordering is path-sensitive as it gives an effect of trace partitioning.  
+The ordering heuristic is similar to trace partitioning~\cite{toplas07}.  
 
 The {\em longest-range} heuristics simply keeps track of the
 interval $[l,u]$ range ($r=u-l$) of a meet irreducible and chooses 
