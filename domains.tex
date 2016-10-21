@@ -3,17 +3,17 @@ This section introduces the program model and identifies properties of abstract
 domains that are necessary for learning in abstract lattice structures.
 % \subsection{Programs:}
 % %
-% A {\em program} $\mathcal{P}$ is formally defined as follows.
+% A {\em program} $\program$ is formally defined as follows.
 % \[
 % \begin{array}[t]{@{}lll}
-% \mathcal{P} & {:}{:}{=} & \mathit{Procedure} \\
+% \program & {:}{:}{=} & \mathit{Procedure} \\
 % \mathit{Procedure} & {:}{:}{=} & \mathit{Statement} \mid \mathit{Procedure} \\
 % \mathit{Statement} & {:}{:}{=} & CStatement \mid \mathit{function(Var_1,\dots,Var_n)} \\
 % \mathit{CStatement} & {:}{:}{=} & x {:}{=} exp \mid \mathit{ITE}(b, s_1,s_2) \mid \mathit{s_1;s_2} \mid loop\{s\} \\
 % \end{array}
 % \]
 % Consider sets of expressions $Exp$ and Boolean expressions $BExp$
-% over variables $Var$ of $\mathcal{P}$.  The variables in $Var$ 
+% over variables $Var$ of $\program$.  The variables in $Var$ 
 % can take numeric values in $Val$.  A procedure is denoted as 
 % $\mathit{function(Var_1,\dots,Var_n)}$.  A $\mathit{CStatement}$ 
 % is an assignment, conditional, sequential concatenation or a loop. \\
@@ -55,7 +55,7 @@ SSA for the example in Figure~\ref{fig:example}
 \hline
 \begin{minipage}{4.50cm}
 $\begin{array}{rcl}
-\mathcal{S}:= (g_0 = (0 \leq v\leq N)) \\
+\conctransset:= (g_0 = (0 \leq v\leq N)) \\
 (g_1 = (g_0 \wedge c)) \wedge (x_0 = v) \wedge \\
 (x_1 = -v) \wedge (x_2 = g_1?x_0:x_1) \wedge \\
 (g_2 = (g_1 \vee g_0\wedge \neg c)) \wedge \\
@@ -75,13 +75,13 @@ $\begin{array}{rcl}
 \end{figure}
 %
 In this paper, we consider \emph{bounded programs} with safety
-properties given as assertions $\mathcal{A}$ in the program.
+properties given as assertions $\assertions$ in the program.
 %
 A bounded program is obtained by a program transformation that unfolds
 loops and recursions a finite number of times. The result of this
 transformation is represented as set
-$\mathcal{S}=\mathcal{P}\cup\{\neg \bigwedge_{a\in\mathcal{A}} a\}$
-where $\mathcal{P}$ are the statements of the transformed program in the
+$\constraints=\program\cup\{\neg \bigwedge_{\assertion\in\assertions} \assertion\}$
+where $\program$ are the statements of the transformed program in the
 form of constraints as typically obtained by translating the program
 into single static assignment (SSA) form via a data flow analysis.
 %
@@ -95,7 +95,7 @@ Control flow is encoded into guard variables such as $g_1=g_0\wedge c$.
 %
 Data flow joins become conditional expressions, e.g.\ $x_3=g_1?x_1:x_2$.
 %
-The assertions $\mathcal{A}$ are constraints of the form $g_3
+The assertions $\assertions$ are constraints of the form $g_3
 \Rightarrow z\geq 0$, for instance, meaning that if $g_3$ holds
 (i.e.\ the assertion is reachable) then the assertion must hold.
 %
@@ -123,7 +123,7 @@ The assertions $\mathcal{A}$ are constraints of the form $g_3
 %\paragraph{Safety problem}  
 %
 Based on the above program representation, we define a safety equation \pscmt{why ``equation''?} as, 
-$\varphi:= \bigwedge_{s\in\mathcal{S}} s$. The formula $\varphi$ is 
+$\formula:= \bigwedge_{\constraint\in\constraints} \constraint$. The formula $\formula$ is 
 unsatisfiable if and only if the program is safe.
 
 % \subsection{Static Analysis Equations for Safety}
@@ -135,10 +135,10 @@ unsatisfiable if and only if the program is safe.
 % Similar to BMC, ACDCL searches for a counterexample by solving the formula shown below.
 % For a set $N$ of program analysis constraints defined over a set 
 % of constraint variables $Var = \{X_i| i \in N\}$, representing a program
-% $\mathcal{P}$ and a concrete domain $\powerset(Env)$, the static analysis equation 
-% for safety of $\mathcal{P}$ is given as follows.  Here, $X_{init}, X_{Err}$ denote the initial valuation 
+% $\program$ and a concrete domain $\powerset(Env)$, the static analysis equation 
+% for safety of $\program$ is given as follows.  Here, $X_{init}, X_{Err}$ denote the initial valuation 
 % and the \rmcmt{final valuation} of constraint variables.
-% \[\varphi = X_{init} \subseteq Env \wedge \underset{p,q \in |\mathcal{P}|}
+% \[\formula = X_{init} \subseteq Env \wedge \underset{p,q \in |\program|}
 % {\bigwedge} \{ X_p \subseteq post_{(p,q)}(X_q) \} \wedge X_{err} \supset \emptyset \] 
 
 %-------------------------------------------------------------------------------
@@ -149,48 +149,48 @@ We present an instantiation of ACDCL as program analyser that uses relational
 domains.  
 % 
 %In our prototype implementation and for illustrative purposes 
-In this paper we use a product domain $\mathcal{B}^b\times\mathcal{R}$ where
-$\mathcal{B}$ is the boolean domain
+In this paper we use a product domain $\domain=\booldomain^\booldim\times\reldomain$ where
+$\booldomain$ is the boolean domain
 $\langle\{\true,\false,\bot,\top\},\Rightarrow,\wedge,\vee\rangle$, 
-$b$ is the number of boolean variables in the program, 
-and $\mathcal{R}$ is a \emph{relational} domain over the 
+$\booldim$ is the number of boolean variables in the program, 
+and $\reldomain$ is a \emph{relational} domain over the 
 numerical (bitvector) variables of respective
 data types (currently, signed and unsigned integers are supported).
 %
-We instantiate $\mathcal{R}$ with the template polyhedra domain.
+We instantiate $\reldomain$ with the template polyhedra domain.
 
 For notational convenience we will denote elements of
-$\mathcal{B}^b$ by their concretisations to propositional formulae,
+$\booldomain^\booldim$ by their concretisations to propositional formulae,
 For example, the program in Figure~\ref{ssa} has four boolean variables
-written as the vector $(g_0,g_1,c,g_2)$; then we will denote an abstract value $(\top, \false, \true, \top) \in \mathcal{B}^4$ as $\neg g_1 \wedge c$.
+written as the vector $(g_0,g_1,c,g_2)$; then we will denote an abstract value $(\top, \false, \true, \top) \in \booldomain^4$ as $\neg g_1 \wedge c$.
 
 %-------------------------------------------------------------------------------
 \paragraph{Template Polyhedra Abstract Domain}
 %
 An abstract value of the template polyhedra domain~\cite{sriram}
-represents a set $X$ of values of numerical variables $\vec{x}$. For
+represents a set $\numconcval$ of values of numerical variables $\vec{\numvar}$. For
 example, in the program in Figure~\ref{ssa}, we have four numerical
-variables, written as the vector $\vec{x}:=(x_0,x_1,x_2,z)$.  We can
-represent sets of values for $\vec{x}$ such that
-$\mat{C}\vec{x}\leq\vec{d}$ for a fixed coefficient matrix $\mat{C}$
-and a constant vector $\vec{d}$. The domain of $\vec{d}$ is augmented
+variables, written as the vector $\vec{\numvar}:=(x_0,x_1,x_2,z)$.  We can
+represent sets of values for $\vec{\numvar}$ such that
+$\mat{C}\vec{\numvar}\leq\vec{\numabsval}$ for a fixed coefficient matrix $\mat{C}$
+and a constant vector $\vec{\numabsval}$. The domain of $\vec{\numabsval}$ is augmented
 by a special element $\bot$ to denote the minimal element of the
 lattice.
 %
-The abstraction function is defined as $\alpha(X) = \min \{\vec{d}\mid
-\mat{C}\vec{x}\leq\vec{d}, \vec{x}\in X\}$ where $\min$ is applied
+The abstraction function is defined as $\alpha(\numconcval) = \min \{\vec{\numabsval}\mid
+\mat{C}\vec{\numvar}\leq\vec{\numabsval}, \vec{\numvar}\in \numconcval\}$ where $\min$ is applied
 component-wise. There are several optimisation-based
 techniques~\cite{sriram,GS07b,BJKS15} for computing the domain
-operations, such as $\sqcap$, $\sqcup$, etc. In our implementation we
+operations, such as $\meet$, $\sqcup$, etc. In our implementation we
 use the strategy iteration approach available in 2LS~\cite{BJKS15}.
 %
-The concretisation $\gamma(\vec{d})$ is the set $\{\vec{x}\mid
-\mat{C}\vec{x}\leq\vec{d}\}$; $\gamma(\bot)=\emptyset$, i.e.\ the empty polyhedron.
+The concretisation $\gamma(\vec{\numabsval})$ is the set $\{\vec{\numvar}\mid
+\mat{C}\vec{\numvar}\leq\vec{\numabsval}\}$; $\gamma(\bot)=\emptyset$, i.e.\ the empty polyhedron.
 %
 For notational convenience we will use conjunctions of linear
 inequalities, e.g.\ $x_1\geq 0 \wedge x_1-z\leq 30$ to denote the
-abstract value $\vec{d}=\vecv{0}{30}$ of the template polyhedra domain
-with $\mat{C}=\qmat{-1}{0}{1}{-1}$ and $\vec{x}=\vecv{x_1}{z}$;
+abstract value $\vec{\numabsval}=\vecv{0}{30}$ of the template polyhedra domain
+with $\mat{C}=\qmat{-1}{0}{1}{-1}$ and $\vec{\numvar}=\vecv{x_1}{z}$;
 $\true$ is $\top$ and $\false$ is $\bot$.  Template polyhedra can
 express other domains, such as interval and octagon domains.
 
@@ -306,21 +306,19 @@ showing this ?}
 %concrete transformer is over-approximated by a unique abstract
 %transformer.  We now define an abstract deduction transformer.
 %
-An abstract transformer transforms an abstract value $a$ through a
-statement $s$, i.e.\ it \emph{deduces} information from $a$ and $s$.
+An abstract transformer $\abstrans{\domain}{\constraint}$ transforms an abstract value $\absval$ through a
+constraint $\constraint$, i.e.\ it \emph{deduces} information from $\absval$ and $\constraint$.
 The best abstract transformer is 
-\[\llbracket s
-\rrbracket^\sharp(a)=a\sqcap \alpha(\{c\mid c\models s\})\] where we write 
-$c\models s$ if the concrete value $c$ satisfies the constraint $s$.
-%$\forall \vec{y}\in c: (s[\vec{y}/\vec{x}]
+\[\abstrans{\domain}{\constraint}(\absval)=\absval\meet \alpha(\{\val\mid \val\models \constraint\})\] where we write 
+$\val\models \constraint$ if the concrete value $\val$ satisfies the constraint $\constraint$.
+%$\forall \vec{y}\in c: (s[\vec{y}/\vec{\numvar}]
 %\equiv \true)$, i.e.\ the constraint $s$ is valid when evaluated over
-%all values $\vec{y}$ of its variables $\vec{x}$ in the concretisation
+%all values $\vec{y}$ of its variables $\vec{\numvar}$ in the concretisation
 %of $a$. 
 Any abstract transformer that over-approximates the best abstract
 transformer is a sound transformer and can be used in our algorithm.
 %
-For example, we can deduce $\llbracket
-x=2(y+z)\rrbracket^\sharp(a)=a\sqcap(-2\leq x\leq 6)$ for the abstract value $a=(0\leq y \leq 2 \wedge 1 \leq y-z \leq 1)$.
+For example, we can deduce $\abstrans{\domain}{x=2(y+z)}(\absval)=\absval\meet(-2\leq x\leq 6)$ for the abstract value $\absval=(0\leq y \leq 2 \wedge 1 \leq y-z \leq 1)$.
 %
 %A detailed description of abstract transformer is presented in Section~\ref{sec:abst}.
 
@@ -351,7 +349,7 @@ structure $A$ is an element with the following property.
 %\rmcmt{mention minimum complementable element}
 \end{definition}
 %
-The meet irreducibles in the boolean domain $\mathcal{B}$ for a variable $x$ are 
+The meet irreducibles in the boolean domain $\booldomain$ for a variable $x$ are 
 $x$ and $\neg x$. The meet 
 irreducibles in the template polyhedra domain are all elements 
 that concretise to half-spaces, i.e.\ they can be represented 
@@ -364,9 +362,9 @@ by a single inequality. For the interval domain, these are
 %singleton element,$\{x \mapsto false \}$, in the partial assignments domain. 
 
 \begin{definition}
-A \emph{meet decomposition} $\mathit{decomp}(a)$ of an abstract
-element $a \in A$ is a set of meet irreducibles $M \subseteq A$ such that 
-$a=\bigsqcap_{m\in M} m$.
+A \emph{meet decomposition} $\decomp(\absval)$ of an abstract
+element $\absval \in \domain$ is a set of meet irreducibles $M \subseteq \domain$ such that 
+$\absval=\bigsqcap_{m\in M} m$.
 %$forall m_i \in M, \meet(m_i) = a$, where $max(i) = |M|$.
 \end{definition}
 
@@ -383,10 +381,10 @@ the set $\{x\geq 2, x\leq 4, y\geq 3, y\leq 5\}$.
 % precisely complementable.
 
 \begin{definition} 
-An element $a\in A$ is called \emph{precisely complementable}
-iff $\exists \bar{a} \in A: \neg\gamma(\bar{a})=\gamma(a)$, 
+An element $\absval\in \domain$ is called \emph{precisely complementable}
+iff $\exists \bar{\absval} \in \domain: \neg\gamma(\bar{\absval})=\gamma(\absval)$, 
 i.e.\ there is an element whose negated concretisation equals
-the concretisation of $a$.
+the concretisation of $\absval$.
 %m\meet\bar{m}=\bot \wedge m\join\bar{m}=\top$.
 %A complementable meet irreducible $\bar{M}$ of an abstract lattice $A$ is the complement of a meet 
 %irreducible $M \in A$ such that $\bar{M} \in A$ and the concretisation of $M$ 
@@ -440,7 +438,7 @@ Equality & \((x==y) \quad \longrightarrow (x \neq y)\) \\ \hline
 }
 %
 \Omit {
-Note that for many domains $A$ including template polyhedra
+Note that for many domains $A$, including template polyhedra,
 most domain elements are not precisely complementable within $A$.
 %
 In fact, for template polyhedra all non-meet-irreducible elements $e$
@@ -459,6 +457,7 @@ operator. Hence, abstract domain libraries, such as APRON~\cite{apron}
 do not provide it.  However, it can be implemented with the help of a
 meet decomposition as explained above.
 
+\pscmt{check}
 \begin{definition}{(Abstract Valuation)} An {\em abstract valuation} is a
 mapping of variables to an element of abstract domain. For example, 
 \Omit {
@@ -469,7 +468,7 @@ a mapping of constraint variables $\{x,y\}$ to octagon environment
 is given by $\langle x-y \mapsto 0, y-x \mapsto 0 \rangle$.  
 An abstract valuation is {\em atomic} if each variable is mapped to a singleton 
 value or to $\bot$.  An abstract valuation $(v)$ abstractly satisfies a formula 
-$\varphi$ if for every variable $x$ in $\varphi$, there is a concrete solution 
+$\formula$ if for every variable $x$ in $\formula$, there is a concrete solution 
 $(c)$ such that $c(x) \subseteq \gamma \circ v(x)$ holds. 
 \end{definition}
 
@@ -485,16 +484,16 @@ $(c)$ such that $c(x) \subseteq \gamma \circ v(x)$ holds.
 % \[apost_{x:=y+1}(a) = b = \langle x-y \leq 1, y-x \leq 1 \rangle \qquad apost_{x:=y+z}(b) = \langle \top \rangle \]  
 
 % \begin{definition}{(Abstract Deduction Transformer)} An abstract deduction
-% transformer, $\widehat{ded_{\varphi}}$ for a formula $\varphi$ over an abstract 
+% transformer, $\widehat{ded_{\formula}}$ for a formula $\formula$ over an abstract 
 % domain $A$ is a sound approximation of a concrete model transformer
-% $ded_{\varphi}$, given by $\widehat{ded_{\varphi}} : A \rightarrow A$, such that 
-% $\forall a \in A: \widehat{ded_{\varphi}}(a) \in \{\top, \bot, m\}$, where 
+% $ded_{\formula}$, given by $\widehat{ded_{\formula}} : A \rightarrow A$, such that 
+% $\forall a \in A: \widehat{ded_{\formula}}(a) \in \{\top, \bot, m\}$, where 
 % $m \in A$ is a meet irreducible.   
 % \end{definition}
 
-% Let us consider a formula $\varphi = (x:=y-1)$ to be analyzed over 
+% Let us consider a formula $\formula = (x:=y-1)$ to be analyzed over 
 % an interval abstract domain, $A = ItvDom$, and let $a = \langle y:[3, 5]
-% \rangle \in ItvDom$, then $\widehat{ded_{\varphi}}(a) = a \meet \langle x:[2, 4]
+% \rangle \in ItvDom$, then $\widehat{ded_{\formula}}(a) = a \meet \langle x:[2, 4]
 % \rangle$.  An abstract deduction transformer is typically computed in the form 
 % of strongest post-condition or a weakest pre-condition of a formula in the 
 % abstract domain.  
