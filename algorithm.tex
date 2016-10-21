@@ -95,20 +95,24 @@ intervals for variables.
 %jumps above a least fixed-point, so decisions can be viewed as 
 %{\em dual widening} \pscmt{what do we learn?}.  
 
-The procedure $deduce$ is called next to infer a new set of meet
-irreducibles for the current decision.  The model search phase
-alternates between the decision and deduction until the abstract value
-$v$ precisely \pscmt{not true} represents the set of models or the
-deduction leads to a \textsf{conflict}.  Checking whether the abstract
-model $v$ concretises to a set of models of $\varphi$; this
-corresponds to a $\gamma$-completeness~\cite{dhk2013-popl} check in
-abstract interpretation.  If $v$ is $\gamma$-complete, then it cannot
-be refined further.  Thus, the algorithm returns the abstract model
-$v$, which is a set of concrete models, and terminates with
-\textsf{unsafe} or the current abstraction is insufficient to
-determine the satisfiability of $\varphi$.  
+The procedure $\mathit{deduce}$ is called next to infer new meet
+irreducibles taking into account the current decision.  The model search phase
+alternates between the decision and deduction until $\mathit{deduce}$
+returns either \textsf{sat} or \textsf{conflict}.
+In the former case, we have found an abstract value that represents 
+models of $\varphi$ and thus we return \textsf{unsafe}.
+%
+% has found an abstract value that represents a set of models of $\varphi$ or the
+% deduction leads to a \textsf{conflict}.  Checking whether the abstract
+% model concretises to a set of models of $\varphi$; this
+% corresponds to a $\gamma$-completeness~\cite{dhk2013-popl} check in
+% abstract interpretation.  If $v$ is $\gamma$-complete, then it cannot
+% be refined further.  Thus, the algorithm returns the abstract model
+% $v$, which is a set of concrete models, and terminates with
+% \textsf{unsafe} or the current abstraction is insufficient to
+% determine the satisfiability of $\varphi$.  
 
-However, in case of \textsf{conflict}, the algorithm enters in the
+In the latter case the algorithm enters in the
 $\mathit{conflict\_analysis}$ phase to learn the reason for the
 conflict.  There can be multiple incomparable reasons for conflict --
 based on the choice of Unique Implication Point (UIP)~\cite{cdcl}.
