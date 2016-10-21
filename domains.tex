@@ -143,32 +143,32 @@ unsatisfiable if and only if the program is safe.
 %-------------------------------------------------------------------------------
 \subsection{Abstract Domain}
 %-------------------------------------------------------------------------------
-The work of~\cite{sas12,dhk2013-popl} shows that CDCL based SAT solvers 
-operates on the partial assignment domains. We present a generic instantiation 
-of CDCL architecture that can be extended to any relational and non-relational
+SAT solvers operates on the partial assignment domains~\cite{sas12,dhk2013-popl}.  
+We present an instantiation of ACDCL as program analyzer that uses relational
 domains.  
 % 
-In our prototype implementation and for illustrative purposes in this
-paper we use a product domain $\mathcal{B}^b\times\mathcal{R}$ where
+%In our prototype implementation and for illustrative purposes 
+In this paper we use a product domain $\mathcal{B}^b\times\mathcal{R}$ where
 $\mathcal{B}$ is the Boolean domain
 $\langle\{\true,\false,\bot,\top\},\Rightarrow,\wedge,\vee\rangle$, 
-$b$ is the number of Boolean variables in the program, 
+$b$ is the number of boolean variables in the program, 
 and $\mathcal{R}$ is a \emph{relational} domain over the 
-numerical (bitvector) variables in their respective
+numerical (bitvector) variables of respective
 data types (currently, signed and unsigned integers are supported).
 %
 We instantiate $\mathcal{R}$ with the template polyhedra domain.
 
 For notational convenience we will denote elements of
 $\mathcal{B}^b$ by their concretisations to propositional formulae,
-e.g.\ for the Boolean variable vector $(g_1,c)$ with abstract value
-$(\false,\top)$ we will write $\neg g_1$.
+e.g.\ for the boolean variable vector $(g_1,c)$ \rmcmt{what is g1, what is c?} 
+with abstract value $(\false,\top)$ we will write $\neg g_1$.
 
 %-------------------------------------------------------------------------------
 \paragraph{Template Polyhedra Abstract Domain}
 %
 The template polyhedra domain~\cite{sriram} represents sets $X$ of
-valuations of a vector of variables $\vec{x}$ such that
+valuations of a vector of variables $\vec{x}$ \rmcmt{not clear what is a
+valuation?} such that
 $\mat{C}\vec{x}\leq\vec{d}$ for a fixed coefficient matrix $\mat{C}$
 and a constant vector $\vec{d}$. The domain of $\vec{d}$ is augmented
 by a special element to denote the minimal element $\bot$ of the lattice.
@@ -177,7 +177,7 @@ The abstraction function is defined as $\alpha(X) = \min \{\vec{d}\mid
 \mat{C}\vec{x}\leq\vec{d}, \vec{x}\in X\}$ where $\min$ is
 applied component-wise. There are several optimisation-based
 techniques for computing the domain
-operations~\cite{sriram,GS07b,BJKS15}. In our implementation we use
+operations~\cite{sriram,GS07b,BJKS15}\rmcmt{like what operations?}. In our implementation we use
 the strategy iteration approach available in 2LS~\cite{BJKS15}.
 %
 The concretisation $\gamma(\vec{d})$ is the set $\{\vec{x}\mid
@@ -185,7 +185,7 @@ The concretisation $\gamma(\vec{d})$ is the set $\{\vec{x}\mid
 %
 For notational convenience we will use conjunctions of linear
 inequalities, e.g.\ $x_1\geq 0 \wedge x_1-z\leq 30$ to denote elements
-of the domain. $\true$ is $\top$ and $\false$ is $\bot$.
+of the \rmcmt{template polyhedra ?} domain. $\true$ is $\top$ and $\false$ is $\bot$.
 
 % \paragraph{Interval Abstract Domain} 
 % The {\em Interval} abstract domain is a lattice 
@@ -209,7 +209,8 @@ of the domain. $\true$ is $\top$ and $\false$ is $\bot$.
 % \[\alpha(x) = \{[inf(x), sup(x)] | x \in Var\} \qquad   \alpha(\emptyset) = \bot \]
 % \[\gamma[p,q] = \{c \in \mathbb{Z} | p \leq c \leq q\} \qquad \gamma(\bot) = \emptyset \]
 Template polyhedra subsume, for example, interval and octagon domains.
-\rmcmt{can we rephrase this statement?}
+\rmcmt{can we rephrase this statement to say that -- In this paper, we used
+interval, octagon and equality ?}
 
 \begin{wrapfigure}{r}{4.5cm}
 \vspace*{-3ex}
@@ -233,15 +234,17 @@ inequality only contains a single variable.
 The octagon domain, however, is relational.  A fundamental difference
 between relational and non-relational domains is that relational
 domains require the computation of a \emph{closure} in order to obtain
-a normal form that is usually required for efficient domain operations.
-An example of a closure computation is shown below.
+a normal form that is usually required for efficient \rmcmt{or precise?} 
+domain operations.  An example of a closure computation for octagonal 
+inequalities is shown below.
 \[\mathit{closure}((x-y \leq 4) \wedge (y-z \leq 5))=((x-y \leq 4) \wedge (y-z \leq 5) \wedge (x-z \leq 9)) \]  
 The closure computes all implied domain constraints.  For octagons,
 the closure operation is very expensive (cubic complexity in the
 number of program variables).
 %
-We will see that our algorithm performs closure computations lazily,
-postponing them to the point where they are actually necessary.
+We will see that our model search algorithm performs closure computations lazily,
+postponing them to the point where they are actually necessary.\rmcmt{are we
+showing this ?}
 
 % \paragraph{Octagon Abstract Domain} \pscmt{TODO: simplify}
 % The {\em Octagon} abstract domain is a lattice 
@@ -301,7 +304,7 @@ postponing them to the point where they are actually necessary.
 %
 An abstract transformer transforms an abstract value $a$ through a
 statement $s$, i.e.\ it \emph{deduces} information from $a$ and $s$.
-The best abstract transformer is
+The best abstract transformer is \rmcmt{is this equation updated ?}
 \[\llbracket s
 \rrbracket^\sharp(a)=\bigsqcup \{a'\mid a'\sqsubseteq a, a'\models s\}\] where we write
 $a\models s$ if $\forall \vec{y}\in\gamma(a): (s[\vec{y}/\vec{x}]
@@ -314,7 +317,7 @@ In a forward analysis, we can deduce, for example, $\llbracket
 x=2(y+z)\rrbracket^\sharp(a)=(-2\leq x\leq 6) \sqcap a$ for $a=(0\leq y \leq 2
 \wedge 1 \leq y-z \leq 1)$.
 %
-We will give more details in Section~\ref{sec:abst}.
+A detailed description of abstract transformer is presented in Section~\ref{sec:abst}.
 
 %-------------------------------------------------------------------------------
 \subsection{Properties of Abstract Domains}
