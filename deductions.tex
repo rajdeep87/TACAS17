@@ -115,7 +115,7 @@ transformer in $S$ \pscmt{???}.
 %
 
 %-------------------------------------------------------------------------------
-\subsection{Abstract Transformers} \label{sec:abst}
+\subsection{Abstract Deduction Transformers} \label{sec:abst}
 %-------------------------------------------------------------------------------
 
 To make our algorithm efficient, we have to focus abstract
@@ -124,7 +124,7 @@ work.
 %
 We thus define a specialised variant of the transformer to compute
 deductions w.r.t.\ a given subdomain $L\subseteq A$; $\bot,\top \in L$.
-\[\llbracket s \rrbracket^\sharp(a,L)=\bigsqcup \{a'\mid a'\in L, a' \sqsubseteq a, a'\models s\}\]
+\[\llbracket s \rrbracket^\sharp(a,L)=\bigsqcap \{a'\mid a'\in L, a' \sqsubseteq a, a'\models s\}\]
 We have the property $\llbracket s \rrbracket^\sharp(a)\sqsubseteq \llbracket s \rrbracket^\sharp(a,L)$.
 %
 For example, for

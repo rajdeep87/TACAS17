@@ -46,7 +46,7 @@ $\mathit{result} \leftarrow \mathit{deduce}(S,\mathcal{T},\mathcal{R}, H)$ \;
   $d \leftarrow \mathit{decide}(\mathit{abs}(\mathcal{T}))$ \;
 %  $v \leftarrow v \meet d$ \; 
   $\mathcal{T} \leftarrow \mathcal{T} \cdot d$ \; 
-  $\mathcal{R}[|\mathcal{T}|] \leftarrow $\textsf{decision} \;
+  $\mathcal{R}[|\mathcal{T}|] \leftarrow \top$ \;
   $\mathit{result} \leftarrow \mathit{deduce}(\mathcal{S},\mathcal{T},\mathcal{R})$\;
   \Do{$\mathit{result} = \conflict$} {
 %    learn() \;
@@ -77,6 +77,7 @@ conjunction of the meet irreducibles on the trail:
 $\mathit{abs}(\mathcal{T})=\bigsqcap_{m \in \mathcal{T}}m$ with
 $\mathit{abs}(\mathcal{T})=\top$ if $\mathcal{T}$ is the empty
 sequence $\langle\rangle$.
+\pscmt{trail refinement}
 
 The procedure $deduce$ computes a greatest fixed point over the
 transformers in $\mathcal{S}$ that refines the abstract value,
@@ -131,25 +132,25 @@ a real counterexample \pscmt{is this a model?} is obtained or the
 algorithm backtracks to decision level 0 after a conflict in which
 case it returns \textsf{safe}.
 
-\paragraph{Solver State.}  \pscmt{This paragraph seems redundant. Doesn't this redefine $\mathcal{T}$?} The state of a ACDCL solver is a tuple 
-of the form $\langle \mathcal{E}, S \rangle$.  Here, $\mathcal{E}$ 
-is a sequence of labelled information of the form $(m,s)$ where 
-$m$ is a meet irreducible and $s = \mathsf{decision}$ if $m$ is a decision, 
-or $s = \mathsf{deduction}$ if $m$ is inferred by a deduction. And $S$ is 
-a set of abstract deduction transformer \pscmt{???}.  A trail in a SAT solver 
-stores variable assignments of the form $(p, t)$, where $p$ is 
-a propositional variable that appears at most once in the trail 
-and $t$ is a truth assignment (true or false).  Whereas, a trail 
-$\mathcal{T}$ in ACDCL contains a sequence of meet irreducibles 
-inferred by deduction or decision phase where a variable in trail 
-can be assigned \pscmt{constrained?} multiple times, each time with increasingly precise 
-bounds \pscmt{that's specific for a particular domain}.  
-\rmcmt{define trail refinement}
-\Omit {
-A current valuation $v$ is a meet of all elements of trail
-$\mathcal{T}$, such that $v = \top$ when $\mathcal{T}$ is 
-empty or $v=\underset{i \geq 0 \wedge i \leq |\mathcal{T}|}{\meet m_i}$, where 
-$m_i \in \mathcal{T}$.  A solver is in conflict if some clauses in
-$\mathcal{S}$ is not abstractly satisfied by $v$.
-}
+%\paragraph{Solver State.}  \pscmt{This paragraph seems redundant. Doesn't this redefine $\mathcal{T}$?} The state of a ACDCL solver is a tuple 
+%of the form $\langle \mathcal{E}, S \rangle$.  Here, $\mathcal{E}$ 
+%is a sequence of labelled information of the form $(m,s)$ where 
+%$m$ is a meet irreducible and $s = \mathsf{decision}$ if $m$ is a decision, 
+%or $s = \mathsf{deduction}$ if $m$ is inferred by a deduction. And $S$ is 
+%a set of abstract deduction transformer \pscmt{???}.  A trail in a SAT solver 
+%stores variable assignments of the form $(p, t)$, where $p$ is 
+%a propositional variable that appears at most once in the trail 
+%and $t$ is a truth assignment (true or false).  Whereas, a trail 
+%$\mathcal{T}$ in ACDCL contains a sequence of meet irreducibles 
+%inferred by deduction or decision phase where a variable in trail 
+%can be assigned \pscmt{constrained?} multiple times, each time with increasingly precise 
+%bounds \pscmt{that's specific for a particular domain}.  
+%\rmcmt{define trail refinement}
+%\Omit {
+%A current valuation $v$ is a meet of all elements of trail
+%$\mathcal{T}$, such that $v = \top$ when $\mathcal{T}$ is 
+%empty or $v=\underset{i \geq 0 \wedge i \leq |\mathcal{T}|}{\meet m_i}$, where 
+%$m_i \in \mathcal{T}$.  A solver is in conflict if some clauses in
+%$\mathcal{S}$ is not abstractly satisfied by $v$.
+%}
 %\pscmt{define ``consistent with trail''}
