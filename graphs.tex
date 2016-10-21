@@ -60,13 +60,14 @@ Comparison between SAT and ACDCL
       xmin=0.1,xmax=2500, ymin=0.1, ymax=2500, 
       xlabel=Forward Propagation, ylabel=Chaotic Propagation, 
       title={Performance of Propagation Heuristics},
-			legend style={at={(0.8,0.15)},
-			anchor=north,legend columns=-1 },
+			legend pos = north west,
+			%legend style={at={(0.8,0.15)},
+			%anchor=north,legend columns=-1 },
 			]
 \addplot [mark size=1pt,only marks,scatter,point meta=explicit symbolic,
-	scatter/classes={a={mark=square,draw=black}}] 
+	scatter/classes={s={mark=square},u={mark=triangle*,blue}},] 
 	table [meta=label] {plotdata/scatter-chaotic-forward.dat};
-	%\legend{Safe,Unsafe}
+	\legend{Safe,Unsafe}
   \addplot [domain=.1:2500] {x};
 \end{loglogaxis}
 \end{tikzpicture}
@@ -84,8 +85,10 @@ Comparison between SAT and ACDCL
  ]
  \addplot table[x=benchmark,y=time] {plotdata/berkmin.dat};
  \addplot table[x=benchmark,y=time] {plotdata/random.dat};
+ \addplot table[x=benchmark,y=time] {plotdata/ordered.dat};
  \addlegendentry{Berkmin}
  \addlegendentry{Random}
+ \addlegendentry{Ordered}
  %\addplot [domain=.1:2500] {};
  \end{axis}
 \end{tikzpicture} \\
