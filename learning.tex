@@ -86,9 +86,9 @@ satisfy $\varphi$, $\mathit{AUnit}_C: A \rightarrow A$ is formally defined as fo
 \]
 $\mathit{AUnit}$ returns $\bot$ if $C$ is conflicting following rule (1).  Rule (2) and
 (3) of $\mathit{AUnit}$ infers a valid meet irreducible, which implies that $C$ is unit. 
-However, rule (3) is domain-specific and only applies to numerical abstract
-domains \pscmt{???}.  For example, let $C = \langle x+z \geq 10,  w \geq 0 \rangle$ 
-be a conflicting element that does not satisfy $\varphi$ and let $a= \langle x+y \geq 2, y+z \geq 5,
+However, rule (3) is domain-specific and only applies to interval and octagon
+domain.  For example, let $C = \langle x+z \geq 10,  w \geq 0 \rangle$ be a 
+conflicting element that does not satisfy $\varphi$ and let $a= \langle x+y \geq 2, y+z \geq 5,
 x+z \leq 15, w \geq 1, w \leq 1 \rangle$.  Applying rule (3) of $\mathit{AUnit}_C$, we get a 
 decomposition of $a$ into $a'$ and $a''$ where 
 $a'= \langle x+y \geq 2, y+z \geq 5, x+z \leq 15 \rangle \not\sqsubseteq (x+z \geq 10)$, and 
@@ -103,11 +103,11 @@ returns $\top$.
  
 \paragraph {\textbf{Backjumping}}
 A backjumping procedure undoes all the assignments in the trail up to 
-a decision level \pscmt{explained?} that restores the solver to a consistent state 
-(non-conflicting).  The backjumping level is defined by the literal 
-of the conflict clause that is closest to the root (decision level 0) 
-where the conflict clause is still unit. If a conflict clause is 
-globally unit, then the backjumping level is the root of the search tree.
+a decision level that restores the solver to a non-conflicting state.  
+The backjumping level is defined by the literal of the conflict clause 
+that is closest to the root (decision level 0) where the conflict 
+clause is still unit.  If a conflict clause is globally unit, then the 
+backjumping level is the root of the search tree.
 
 The abstract clause learning and backjumping procedures in the abstract 
 conflict graph is stated in terms of the state of ACDCL solver as follows.
