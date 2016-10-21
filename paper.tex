@@ -75,19 +75,27 @@ non-relational domains, lifting them to relational domains is
 challenging because of relational properties of deductions.
 %
 In this paper, we present the non-trivial adaptations of the model search
-and conflict analysis algorithms in ACDCL in order to enable the use of
+and conflict analysis algorithms in order to enable the use of
 relational abstract domains.  We have implemented these algorithms inside
-the 2LS verification tool and instantiated our analysis over a template
-polyhedra domain.  We evaluate the performance of our analyzer in comparison
-with program verifiers that uses propositional-level solvers and a static
-analysis tool.
+the 2LS verification tool and instantiated our analyzer over a template 
+polyhedra domain to check safety properties of C programs.  We evaluate 
+the performance of our analyzer in comparison with program verifiers that 
+uses propositional-level solvers and a static analysis tool.
 %
-Experimental evidence on a set of benchmarks drawn from bit-vector
-regression in SV-COMP'16, bit-precise software models of hardware circuits
-auto-generated from v2c tool, and several bounds checking benchmarks shows
-significant reduction in the number of decisions and backjumping iterations
+Experimental evidence suggest 
+\Omit {
+on a set of benchmarks drawn from bit-vector regression 
+in SV-COMP'16, bit-precise software models of hardware 
+circuits auto-generated from v2c tool, and several 
+bounds checking benchmarks 
+}
+two orders of magnitude reduction in the number of 
+decisions and conflict analysis compared to a satisfiability 
+solver while being more precise compared to an abstract interpreter. 
+\Omit{
 along with stronger deductions and learnt clauses aided by the richer
 abstract domains.
+}
 %
 \end{abstract}
 
