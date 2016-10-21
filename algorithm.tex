@@ -59,24 +59,26 @@ $\mathit{result} \leftarrow \mathit{deduce}(S,\mathcal{T},\mathcal{R}, H)$ \;
 %
 %\subsection{Algorithm for Abstract Conflict Driven Clause Learning}
 Algorithm~\ref{Alg:acdcl} presents an overview of the ACDCL algorithm.
-The algorithm begins with a set $S$ of abstract deduction transformer 
-$\widehat{ded_{\varphi}}$ \pscmt{define in terms of P and A} for a formula $\varphi$ over an abstract 
-domain $A$, an abstract valuation $\langle v \leftarrow \top \rangle$, 
-and an empty propagation trail and reason trail, $\mathcal{T}$, $\mathcal{R}$, 
-respectively.  The propagation trail stores all meet irreducibles inferred 
-by the abstract model search phase (deductions and decisions), while the 
-reason trail maps elements of propagation trail to transformers that were 
-used to derive them. A propagation trail is mapped to an abstract value as 
-follows; $\mathit{abs}(\mathcal{T})=\bigsqcap_{m \in \mathcal{T}}m$ with 
-$\mathit{abs}(\mathcal{T})=\top$ if $\mathcal{T}$ is the empty sequence $\langle\rangle$.
+The algorithm takes a program $\mathcal{S}$ and propagation, decision,
+and conflict analysis heuristics as inputs.  As internal state, it
+maintains a propagation trail $\mathcal{T}$ and a reason trail
+\pscmt{map?} $\mathcal{R}$.  The propagation trail is an initially
+empty sequence of meet irreducibles inferred by the abstract model
+search phase (deductions and decisions). The reason trail maps
+\pscmt{certain?} elements of the propagation trail to transformers
+$s\in\mathcal{S}$ that were used to derive them. A propagation trail
+is converted into an abstract value as follows;
+$\mathit{abs}(\mathcal{T})=\bigsqcap_{m \in \mathcal{T}}m$ with
+$\mathit{abs}(\mathcal{T})=\top$ if $\mathcal{T}$ is the empty
+sequence $\langle\rangle$.
 
 The procedure $deduce(S,v,\mathcal{T},\mathcal{R})$ computes a greatest 
 fixed point over the transformers in $\varphi$ that refines the abstract valuation 
 $v$, similar to the BCP step in SAT solvers.  If the result of $deduce$ 
 returns \textsf{conflict} ($\bot$), the algorithm terminates with \textsf{safe}. 
 Else, the analysis enters into the while($true$) loop and makes a new decision 
-by a call to $decide(v)$ which returns a new meet irreducible $d$ that is
-consistent to the state of the solver. \pscmt{why do we have to store $v$ and $\mathcal{T}$?} If $d$ refines the current abstract 
+by a call to $\mathit{decide}$ which returns a new meet irreducible $d$ that is
+consistent with the state of the solver. \pscmt{what happens if we cannot make any decision any more? -- then we should either have deduced $\bot$ or $\mathit{abs}(\mathcal{T})$ must be $\gamma$-complete} If $d$ refines the current abstract 
 value $v$, the corresponding propagation and reason trail, $\mathcal{T}$ 
 and $\mathcal{R}$ are updated. 
 
