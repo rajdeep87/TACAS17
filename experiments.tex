@@ -18,11 +18,14 @@ checking and bounded loop analysis.  All bounded loops are completely
 unrolled before analysis.  We compare our tool with a state-of-the-art 
 SAT-based bounded model checker CBMC~\cite{cbmc} and a commercial 
 static analysis tool, Astr{\'e}e.  CBMC uses MiniSAT solver in the backend.  
-Astr{\'e}e was configured with range of abstract domains which includes 
+Astr{\'e}e is configured with range of abstract domains which includes 
 interval, bit-field, congruence, trace partitioning and relational 
 domains (octagons, polyhedra, zones, equalities, filter).  Whereas, 
-ACDCL was instantiated with a product domain of booleans and template 
-polyhedra.   
+ACDCL is instantiated with a product domain of booleans and template 
+polyhedra.  Additionally, the analysis using ACDCL is configured with 
+a heuristic choice of decision (ordered, random, berkmin), 
+propagation (forward and multi-way) and conflict-analysis (learning UIP,
+DPLL-style).  The timeout for our experiments is set to ~1 hour. 
 %
 \Omit {
 To enable precise analysis using Astr{\'e}e, all our benchmarks are 
@@ -64,24 +67,25 @@ Out of 66 benchmarks, CBMC with MiniSAT backend could only prove 16 benchmarks
 without any restarts.  The solver is restarted in 50 cases to avoid spending 
 too much time in branches that do not easily lead to a satisfying assignment or 
 stronger clause learning.  In contrast, the analysis using ACDCL solved all
-66 benchmarks without any restarts.  This is attributed to intelligent \pscmt{hm...} decision 
+66 benchmarks without any restarts.  This is attributed to decision 
 heuristics which exploits the high-level structure of the program combined 
 with the stronger deduction and clause learning mechanisms aided by the richer 
 abstract domains.  On the other hand, Ast{\'e}e is often faster than ACDCL, 
 but the analysis using Astr{\'e}e shows a high degree of imprecision.  
-Astr{\'e}e reported 15 false alarms out of 41 safe benchmarks. \pscmt{even with trace partitioning?} 
+Astr{\'e}e reported 15 false alarms out of 41 safe benchmarks.   
 
 \paragraph {\textbf{Propagation Strategy}}      
-Figure~\ref{prop-dec}(a) \pscmt{in Fig 5 you distinguish between safe and unsafe, why not here too?} presents a comparison between {\em forward} propagation 
+Figure~\ref{prop-dec}(a) presents a comparison between {\em forward} propagation 
 strategy and {\em multi-way} propagation strategy in ACDCL.  The choice of the
 propagation strategy influences the total number of decisions and clause 
 learning iterations.  Hence, the propagation strategy has a significant 
 influence on the run time which can be visualised in Figure~\ref{prop-dec}(a).  
-Unlike the forward propagation, the multi-way strategy may take several 
-iterations \pscmt{forward does not need several? - reformulate} to reach the fixed-point, but it significantly reduces the 
-total number of decisions and conflicts.  This is attributed to the higher 
+Compared to forward propagation, the multi-way strategy may take more iterations 
+to reach the fixed-point, but it significantly reduces the total number of 
+decisions and conflicts.  This is attributed to the higher 
 precision of the meet irreducibles inferred by the multi-way strategy which 
-subsequently aids the decision heuristics to make better decisions. \pscmt{maybe repeat that it is a simultaneous forward/backward iteration...}
+subsequently aids the decision heuristics to make better decisions. 
+
 \Omit {
 We observe that the deductions made during chaotic analysis helps the decision 
 heuristics to make better decisions compared to forward analysis.  This is 
@@ -96,7 +100,8 @@ with conditional branches since it prioritises decisions on meet
 irreducibles that appear in conditional branches over meet irreducibles 
 that involve numerical variables.  Whereas, the runtimes for berkmin 
 heuristic is slightly greater than the random and ordered heuristic 
-for our benchmarks. \pscmt{I don't see ordered in the graph. The differences between Berkmin and random are insignificant.}
+for our benchmarks. 
+
 \Omit{
 Whereas activity-based heuristics such as Berkmin heuristic which 
 works well in propositional cases performs best for benchmarks 
@@ -108,9 +113,9 @@ thus allowing the heuristics to choose the decison variable among the set of lea
 the runtime of ACDCL.  We compare the UIP-based learning technique with 
 an analysis that performs chronoligical backtracking without learning. 
 The effect of UIP computation allows ACDCL to backtrack non-chronologically 
-and guide the model search with a learnt transformer.  However, the analysis 
-without learning \pscmt{reformulate} exhibits case-enumeration behavior and thus immediately 
-runs out of capacity for most benchmarks. \pscmt{how many, what are the bounds on time and memory?}
+and guide the model search with a learnt transformer.  However, the DPLL-style 
+analysis exhibits case-enumeration behavior and could not finish within the time 
+bound for 20\% of our benchmarks. 
 
 %================  
 \input{graphs}
