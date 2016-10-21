@@ -65,7 +65,11 @@ Algorithm~\ref{Alg:acdcl} presents an overview of the ACDCL algorithm.
 The algorithm takes a program \pscmt{make this a set of transformers
   (parametrised by the propagation heuristics)}
 $\mathcal{S}$ and propagation, decision, and conflict analysis
-heuristics as inputs.  As internal state, it maintains a propagation
+heuristics as inputs.  
+\rmcmt{Approximation of the concrete transformers in 
+$\mathcal{S}$ are typically available in abstract domain in the 
+form of strongest-post condition or weakest pre-condition. } 
+As internal state, it maintains a propagation
 trail $\mathcal{T}$ and a reason trail \pscmt{map?} $\mathcal{R}$.
 The propagation trail is an initially empty sequence of meet
 irreducibles inferred by the abstract model search phase (deductions
