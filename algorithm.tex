@@ -29,7 +29,10 @@
 \Input{%An abstract domain $A$, 
 A program $\mathcal{S}$, a
   propagation heuristics $H$, a decision heuristics $\mathit{decide}$,
-and a conflict analysis heuristics $\mathit{conflict\_analysis}$.}
+and a conflict analysis heuristics $\mathit{conflict\_analysis}$.\rmcmt{calling
+them heuristics is not a good idea since these are key phases of the cdcl
+algorithm. Each phase may have a heuristics for some sub phase but the algorithm
+of each phase still remians a procedure and not a heuristic}}
 \Output{The status \safe or \unsafe, and a counterexample if \unsafe.}
 $\mathcal{T} \leftarrow \langle\rangle$ \;
 $\mathcal{R} \leftarrow \emptyset$ \;
@@ -140,10 +143,13 @@ and $t$ is a truth assignment (true or false).  Whereas, a trail
 $\mathcal{T}$ in ACDCL contains a sequence of meet irreducibles 
 inferred by deduction or decision phase where a variable in trail 
 can be assigned \pscmt{constrained?} multiple times, each time with increasingly precise 
-bounds \pscmt{that's specific for a particular domain}.  A current valuation $v$ is a meet of all elements of trail
+bounds \pscmt{that's specific for a particular domain}.  
+\rmcmt{define trail refinement}
+\Omit {
+A current valuation $v$ is a meet of all elements of trail
 $\mathcal{T}$, such that $v = \top$ when $\mathcal{T}$ is 
 empty or $v=\underset{i \geq 0 \wedge i \leq |\mathcal{T}|}{\meet m_i}$, where 
 $m_i \in \mathcal{T}$.  A solver is in conflict if some clauses in
 $\mathcal{S}$ is not abstractly satisfied by $v$.
-
+}
 %\pscmt{define ``consistent with trail''}
