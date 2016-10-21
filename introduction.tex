@@ -15,9 +15,9 @@ which is often very expensive since the analysis exhibit case enumeration
 behavior. 
 %%%%%%%%%%%%%%%%%%%%%%% ACDCL %%%%%%%%%%%%%%%%%%%%%
 On the other hand, the combination of precise conjunction in partial assignments 
-domain with learning allow Conflict Driven Clause Learning (CDCL)~\cite{cdcl} 
-solvers to reason about disjunction without enumerating cases.  
-Silva et. al.~\cite{tacas12, sas12, dhk2013-popl} presented 
+domain with learning allow Conflict Driven Clause Learning (CDCL)~\cite{cdcl}
+based satisfiability (SAT) solvers to reason about disjunction without 
+enumerating cases.  Silva et. al.~\cite{tacas12, sas12, dhk2013-popl} presented 
 a formal recipe for applying abstract interpretation~\cite{se2011} to solve the 
 satisfiability problem.  ~\cite{sas12} provide a mathematical generalization 
 of CDCL algorithm called, {\em Abstract Conflict Driven Clause Learning} (ACDCL), 
@@ -31,10 +31,10 @@ lifts learning techniques in SAT solver to operate on non-distributive
 lattice -- thus equipping the analysis with negation. This enables the 
 analyzer to refine the analysis and prevent enumeration behavior.
 
-The instantiation of ACDCL has so far been instantiated as floating-point
-decision procedure~\cite{DBLP:journals/fmsd/BrainDGHK14} and program analyzer 
+ACDCL has so far been instantiated as a floating-point
+decision procedure~\cite{DBLP:journals/fmsd/BrainDGHK14} and a program analyzer 
 that only uses interval constraints~\cite{tacas12}.  Hence, the analysis is 
-limited to bounds checking and numercial programs.  However, verification of 
+limited to bounds checking in simple numercial programs.  However, verification of 
 certain class of programs require more expressive domains like octagons or 
 equalities or polyhedra.  These domains capture interesting properties of
 programs which intervals can not specify.  In this paper, we identify specific 
