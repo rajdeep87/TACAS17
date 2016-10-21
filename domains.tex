@@ -1,6 +1,6 @@
 \section{Program Model and Abstract Domain}
 This section introduces the program model and identifies properties of abstract
-domains that are necesary for learning in abstract lattice structures.
+domains that are necessary for learning in abstract lattice structures.
 % \subsection{Programs:}
 % %
 % A {\em program} $\mathcal{P}$ is formally defined as follows.
@@ -55,11 +55,11 @@ SSA for the example in Figure~\ref{fig:example}
 \hline
 \begin{minipage}{4.50cm}
 $\begin{array}{rcl}
-\mathcal{P}:= (g_0 = (0 \leq v\leq N)) \\
+\mathcal{S}:= (g_0 = (0 \leq v\leq N)) \\
 (g_1 = (g_0 \wedge c)) \wedge (x_0 = v) \wedge \\
 (x_1 = -v) \wedge (x_2 = g_1?x_0:x_1) \wedge \\
 (g_2 = (g_1 \vee g_0\wedge \neg c)) \wedge \\
-(z  = x_2 * x_2) \wedge (z<0 \wedge g_2)
+(z  = x_2 * x_2) \wedge (g_2 \wedge z<0)
 \end{array}$
 \end{minipage}
 &
@@ -74,18 +74,19 @@ $\begin{array}{rcl}
 \label{ssa}
 \end{figure}
 %
-In this paper, we consider safety checking of loop-free programs, including
-bounded unwindings of programs with loops or recursion\rmcmt{why can't we simply 
-say we consider programs with bounded loops}.  We assume
-that safety properties are given as assertions $\mathcal{A}$ in the program.
+In this paper, we consider \emph{bounded programs} with safety
+properties given as assertions $\mathcal{A}$ in the program.
 %
-Such a program is represented as set
+A bounded program is obtained by a program transformation that unfolds
+loops and recursions a finite number of times. The result of this
+transformation is represented as set
 $\mathcal{S}=\mathcal{P}\cup\{\neg \bigwedge_{a\in\mathcal{A}} a\}$
-where $\mathcal{P}$ are the statements of the program in the form of
-constraints as typically obtained by translating the program into
-single static assignment (SSA) form via a data flow analysis.
+where $\mathcal{P}$ are the statements of the transformed program in the
+form of constraints as typically obtained by translating the program
+into single static assignment (SSA) form via a data flow analysis.
 %
-Figure~\ref{ssa} shows the SSA constraints for the program in Figure~\ref{fig:example}. 
+Figure~\ref{ssa} shows the SSA constraints for the program in
+Figure~\ref{fig:example}.
 %
 Assignments such as \texttt{x=v;} become equalities $x_1=v$ where the
 left-hand side variable gets a fresh name (subscript).
@@ -121,7 +122,7 @@ The assertions $\mathcal{A}$ are constraints of the form $g_3
 %-------------------------------------------------------------------------------
 %\paragraph{Safety problem}  
 %
-Based on the above program representation, we define a safety equation as, 
+Based on the above program representation, we define a safety equation \pscmt{why ``equation''?} as, 
 $\varphi:= \bigwedge_{s\in\mathcal{S}} s$. The formula $\varphi$ is 
 unsatisfiable if and only if the program is safe.
 
@@ -143,13 +144,13 @@ unsatisfiable if and only if the program is safe.
 %-------------------------------------------------------------------------------
 \subsection{Abstract Domain}
 %-------------------------------------------------------------------------------
-SAT solvers operates on the partial assignment domains~\cite{sas12,dhk2013-popl}.  
-We present an instantiation of ACDCL as program analyzer that uses relational
+SAT solvers operate on partial assignment domains~\cite{sas12,dhk2013-popl}.  
+We present an instantiation of ACDCL as program analyser that uses relational
 domains.  
 % 
 %In our prototype implementation and for illustrative purposes 
 In this paper we use a product domain $\mathcal{B}^b\times\mathcal{R}$ where
-$\mathcal{B}$ is the Boolean domain
+$\mathcal{B}$ is the boolean domain
 $\langle\{\true,\false,\bot,\top\},\Rightarrow,\wedge,\vee\rangle$, 
 $b$ is the number of boolean variables in the program, 
 and $\mathcal{R}$ is a \emph{relational} domain over the 
@@ -158,36 +159,40 @@ data types (currently, signed and unsigned integers are supported).
 %
 We instantiate $\mathcal{R}$ with the template polyhedra domain.
 
-\pscmt{In Figure~\ref{}}
 For notational convenience we will denote elements of
 $\mathcal{B}^b$ by their concretisations to propositional formulae,
-e.g.\ for the boolean variable vector $(g_1,c)$ \rmcmt{what is g1, what is c?} 
-with abstract value $(\false,\top)$ we will write $\neg g_1$.
+For example, the program in Figure~\ref{ssa} has four boolean variables
+written as the vector $(g_0,g_1,c,g_2)$; then we will denote an abstract value $(\top, \false, \true, \top) \in \mathcal{B}^4$ as $\neg g_1 \wedge c$.
 
 %-------------------------------------------------------------------------------
 \paragraph{Template Polyhedra Abstract Domain}
 %
-The template polyhedra domain~\cite{sriram} represents sets $X$ \pscmt{split this up into two sentences} of
-valuations of a vector of variables $\vec{x}$ \rmcmt{not clear what is a
-valuation?} such that
+An abstract value of the template polyhedra domain~\cite{sriram}
+represents a set $X$ of values of numerical variables $\vec{x}$. For
+example, in the program in Figure~\ref{ssa}, we have four numerical
+variables, written as the vector $\vec{x}:=(x_0,x_1,x_2,z)$.  We can
+represent sets of values for $\vec{x}$ such that
 $\mat{C}\vec{x}\leq\vec{d}$ for a fixed coefficient matrix $\mat{C}$
 and a constant vector $\vec{d}$. The domain of $\vec{d}$ is augmented
-by a special element to denote the minimal element $\bot$ of the lattice.
+by a special element $\bot$ to denote the minimal element of the
+lattice.
 %
 The abstraction function is defined as $\alpha(X) = \min \{\vec{d}\mid
-\mat{C}\vec{x}\leq\vec{d}, \vec{x}\in X\}$ where $\min$ is
-applied component-wise. There are several optimisation-based
-techniques for computing the domain
-operations, such as $\sqcap$, $\sqcup$, etc~\cite{sriram,GS07b,BJKS15}\rmcmt{like what operations?}. In our implementation we use
-the strategy iteration approach available in 2LS~\cite{BJKS15}.
+\mat{C}\vec{x}\leq\vec{d}, \vec{x}\in X\}$ where $\min$ is applied
+component-wise. There are several optimisation-based
+techniques~\cite{sriram,GS07b,BJKS15} for computing the domain
+operations, such as $\sqcap$, $\sqcup$, etc. In our implementation we
+use the strategy iteration approach available in 2LS~\cite{BJKS15}.
 %
 The concretisation $\gamma(\vec{d})$ is the set $\{\vec{x}\mid
-\mat{C}\vec{x}\leq\vec{d}\}$; $\gamma(\bot)=\emptyset$.
+\mat{C}\vec{x}\leq\vec{d}\}$; $\gamma(\bot)=\emptyset$, i.e.\ the empty polyhedron.
 %
 For notational convenience we will use conjunctions of linear
-inequalities, e.g.\ $x_1\geq 0 \wedge x_1-z\leq 30$ to denote elements
-of the template polyhedra domain. $\true$ is $\top$ and $\false$ is $\bot$.
-\pscmt{give $\mat{C}$ and $\vec{d}$ for this example}
+inequalities, e.g.\ $x_1\geq 0 \wedge x_1-z\leq 30$ to denote the
+abstract value $\vec{d}=\vecv{0}{30}$ of the template polyhedra domain
+with $\mat{C}=\qmat{-1}{0}{1}{-1}$ and $\vec{x}=\vecv{x_1}{z}$;
+$\true$ is $\top$ and $\false$ is $\bot$.  Template polyhedra can
+express other domains, such as interval and octagon domains.
 
 % \paragraph{Interval Abstract Domain} 
 % The {\em Interval} abstract domain is a lattice 
@@ -210,20 +215,17 @@ of the template polyhedra domain. $\true$ is $\top$ and $\false$ is $\bot$.
 % given as follows.
 % \[\alpha(x) = \{[inf(x), sup(x)] | x \in Var\} \qquad   \alpha(\emptyset) = \bot \]
 % \[\gamma[p,q] = \{c \in \mathbb{Z} | p \leq c \leq q\} \qquad \gamma(\bot) = \emptyset \]
-Template polyhedra subsume, for example, interval and octagon domains.
-\rmcmt{can we rephrase this statement to say that -- In this paper, we used
-interval, octagon and equality ?}
 
 \begin{wrapfigure}{r}{4.5cm}
 \vspace*{-3ex}
 \scalebox{.65}{\import{figures/}{octagons.pspdftex}}
-\caption{Example of an octagon}\label{octagon}
+\caption{Example of an octagon \pscmt{BUG: should be $x\geq -2$, $y\geq -1$; please rename x to $x_1$ and $y$ to $z$}}\label{octagon}
 \vspace*{-3ex}
 \end{wrapfigure} 
 
 For a program with $N$ variables, the matrix $\mat{C}$ for intervals
-generates at most $2N$ inequality constraints, one for the upper and lower
-bounds of each variable.
+has $2N$ rows; and hence it generates at most $2N$ inequalities, one
+for the upper and lower bounds of each variable.
 %
 For octagons, we have at most $2N^2$ inequalities, one for the upper
 and lower bounds of each variable and sums and differences for each
@@ -306,20 +308,21 @@ showing this ?}
 %
 An abstract transformer transforms an abstract value $a$ through a
 statement $s$, i.e.\ it \emph{deduces} information from $a$ and $s$.
-The best abstract transformer is \rmcmt{is this equation updated ?}
+The best abstract transformer is 
 \[\llbracket s
-\rrbracket^\sharp(a)=\bigsqcap \{a'\mid a'\sqsubseteq a, a'\models s\}\] where we write \pscmt{fix this}
-$a\models s$ if $\forall \vec{y}\in\gamma(a): (s[\vec{y}/\vec{x}]
-\equiv \true)$, i.e.\ the constraint $s$ is valid when evaluated over
-all values $\vec{y}$ of its variables $\vec{x}$ in the concretisation
-of $a$. Any abstract transformer that over-approximates the least
-upper bound is a sound transformer and can be used in our algorithm.
-
-In a forward analysis, we can deduce, for example, $\llbracket
-x=2(y+z)\rrbracket^\sharp(a)=(-2\leq x\leq 6) \sqcap a$ for $a=(0\leq y \leq 2
-\wedge 1 \leq y-z \leq 1)$.
+\rrbracket^\sharp(a)=a\sqcap \alpha(\{c\mid c\models s\})\] where we write 
+$c\models s$ if the concrete value $c$ satisfies the constraint $s$.
+%$\forall \vec{y}\in c: (s[\vec{y}/\vec{x}]
+%\equiv \true)$, i.e.\ the constraint $s$ is valid when evaluated over
+%all values $\vec{y}$ of its variables $\vec{x}$ in the concretisation
+%of $a$. 
+Any abstract transformer that over-approximates the best abstract
+transformer is a sound transformer and can be used in our algorithm.
 %
-A detailed description of abstract transformer is presented in Section~\ref{sec:abst}.
+For example, we can deduce $\llbracket
+x=2(y+z)\rrbracket^\sharp(a)=a\sqcap(-2\leq x\leq 6)$ for the abstract value $a=(0\leq y \leq 2 \wedge 1 \leq y-z \leq 1)$.
+%
+%A detailed description of abstract transformer is presented in Section~\ref{sec:abst}.
 
 %-------------------------------------------------------------------------------
 \subsection{Properties of Abstract Domains}
