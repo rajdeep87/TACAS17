@@ -15,10 +15,10 @@ $\{x \leq y)$.  A decision must always be consistent with respect to
 the trail $\trail$, i.e.\ $\abs(\trail\cdot \decisionvar)\neq \bot$.  
 A new decision increases the decision level by one. 
 
-\rmcmt{We call a \emph{singleton} a meet irreducible which does not represent a
-valid decision ??}.
-Similarly, in a SAT solver, we cannot make a decision on a 
-variable that is already assigned $\true$ or $\false$.
+We call a meet irreducible that does not represent a valid decision a
+\emph{singleton} meet irreducible.  This is similar to 
+a variable in a SAT solver that is already assigned $\true$ or $\false$,
+and thus we cannot make a decision.
 %
 For template polyhedra, singletons are the meet irreducibles
 corresponding to a pair of rows $\vec{c}_1,\vec{c}_2$ in matrix
