@@ -82,7 +82,7 @@ $\worklist \leftarrow \initworklist_{\propheur}(\abstransset)$ \;
     $\updateworklist_{\propheur}(\worklist, \newdeductions, \abstransel{\subdomain},  \abstransset)$ \; 
   }
 }
-\lIf{$\abs(\trail)$ is $\gamma$-complete} {
+\lIf{$\abstransset$ is $\gamma$-complete at $\abs(\trail)$} {
   \return \sat;
 }
  \return \unknown \;
@@ -266,19 +266,19 @@ If $\bot$ is deduced we return \textsf{conflict}.
 Otherwise, when eventually a fixed point has been reached, i.e.\ the worklist is empty, then the abstract value $\abs(\trail)$ is checked whether it is 
 $\gamma$-complete~\cite{dhk2013-popl}. 
 %
-\begin{definition} 
-\pscmt{reformulate} An abstract value $\absval$ is $\gamma$-complete if all concrete values in 
-$\gamma(\absval)$ satisfy $\formula$.  
-\end{definition}
-%
 It is $\gamma$-complete if all concrete values in $\gamma(\abs(\trail))$ satisfy $\formula$.
 Otherwise, the algorithm returns \textsf{unknown} and ACDCL makes a new decision.    
 }
 If $\abstransel{\subdomain}$ deduce $\bot$, then 
 the procedure $\mathit{deduce}$ returns \textsf{conflict}.
 Otherwise, when a fixed point is reached, i.e.\ 
-the worklist is empty, then the abstract value $\abs(\trail)$ is checked 
-for $\gamma$-completeness~\cite{dhk2013-popl}.  If it is indeed 
+the worklist is empty, then we check whether
+the abstract transformers $\abstransset$ are $\gamma$-complete~\cite{dhk2013-popl} for the current abstract value $\abs(\trail)$.
+%
+Intuitively, this means that all concrete values in 
+$\gamma(\absval)$ satisfy $\formula$.  
+%
+If it is indeed 
 $\gamma$-complete, then $\mathit{deduce}$ returns \textsf{sat}.  Otherwise, the 
 algorithm returns \textsf{unknown} and ACDCL makes a new decision.    
   
