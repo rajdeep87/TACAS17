@@ -235,7 +235,7 @@ functions $\initworklist$ and $\updateworklist$.
 The order of the elements in the worklist and the subdomain $\subdomain$ 
 associated with each abstract deduction transformer ($\abstransel{\subdomain}$) 
 determine the propagation strategy (forward, backward, multi-way).
-%
+
 The {\em forward} propagation strategy initialises the worklist with
 abstract deduction transformers that contains constants in the
 right-hand side and the subdomain is constructed via $\makesubdomain$
@@ -267,9 +267,9 @@ Otherwise, when eventually a fixed point has been reached, i.e.\ the worklist is
 $\gamma$-complete~\cite{dhk2013-popl}. 
 %
 It is $\gamma$-complete if all concrete values in $\gamma(\abs(\trail))$ satisfy $\formula$.
-Otherwise, the algorithm returns \textsf{unknown} and ACDCL makes a new decision.    
-}
-If $\abstransel{\subdomain}$ deduce $\bot$, then 
+Otherwise, the algorithm returns \textsf{unknown} and ACDCL makes a new decision.}
+
+If $\abstransel{\subdomain}$ deduces $\bot$, then 
 the procedure $\mathit{deduce}$ returns \textsf{conflict}.
 Otherwise, when a fixed point is reached, i.e.\ 
 the worklist is empty, then we check whether
