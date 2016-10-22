@@ -156,17 +156,18 @@ $\makesubdomain_\domain(\{y\})=\octagons[\{y\}]\cup\octagons[\{x,y\}]\cup\octago
 which will compute the one-step transitive relations of~$y$ with each
 of the other variables. 
 %
-\Omit{
-%TODO
-Hence, we do not compute the full closure in the full 
-domain $\octagons[\{x,y,z\}]$, but we compute only a single step of the closure when the abstract deduction transformer is applied.
+Hence, when the abstract deduction transformer is applied we do not
+compute the full closure in the full domain,
+but we compute only a single step of the closure in a restricted
+domain, which makes single deduction steps more efficient.
 %
-Only if $\abstrans^\subdomain$ deduces new information about $x$ or $z$
-then the next step of the closure will be 
-}
-If this indeed affects $x$ and~$z$ then their
-relations will be inferred in a later step of the propagation
-algorithm, thus gradually computing the closure. 
+If $\abstransel{\subdomain}$ deduces new information about $x$ or $z$
+then the next step of the closure will be computed by the worklist
+mechanism of Algorithm~\ref{Alg:ms} that we describe next.
+
+%If this indeed affects $x$ and~$z$ then their
+%relations will be inferred in a later step of the propagation
+%algorithm, thus gradually computing the closure. 
 
 %Note that this might
 %increase the number of propagation steps, but it reduces the size of
