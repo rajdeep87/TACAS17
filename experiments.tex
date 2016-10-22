@@ -3,34 +3,35 @@
 %================  
 
 \section{Experimental Results}
-We have implemented the instantiation of ACDCL on relational domains
-in 2LS verification tool~\cite{2ls}.  We have used the abstract domains
-provided by 2LS (intervals, octagons, polyhedra and equalities) for our
-experiments. Although the performance of the abstract domain implementations 
-in 2LS is not competitive with that of APRON~\cite{apron} library, but 
-the domain implementation in 2LS can handle all C operators 
-(including bitwise operations) out of the box and support precise
-complementation of meet irreducibles, which are necessary for conflict-driven 
-learning. Our tool and benchmarks are available online\footnote{http://www.cprover.org/acdcl/}.
 
-We verified a total of 66 benchmarks in ANSI-C, which are derived from 
-(a) bit-vector regression category in SV-COMP'16, (c) bit-precise and 
-cycle accurate software models of hardware circuits automatically 
-generated using v2c~\cite{mtk2016}, (c) controller code generated 
-from Simulink (d) several hand-crafted benchmarks for equivalence 
-checking and bounded loop analysis.  All bounded loops are completely 
-unrolled before analysis.  We compare our tool with a state-of-the-art 
-SAT-based bounded model checker CBMC~\cite{cbmc} and a commercial 
-static analysis tool, Astr{\'e}e.  CBMC uses MiniSAT solver in the backend.  
-Astr{\'e}e is configured with range of abstract domains which includes 
-interval, bit-field, congruence, trace partitioning and relational 
-domains (octagons, polyhedra, zones, equalities, filter).  Whereas, 
-ACDCL is instantiated with a product domain of booleans and template 
-polyhedra.  We use an interval and octagon templates for our
-experiments.  Additionally, the analysis using ACDCL is configured with 
-a heuristic choice of decision (ordered, random, berkmin), 
-propagation (forward and multi-way) and conflict-analysis (learning UIP,
-DPLL-style).  The timeout for our experiments is set to ~1 hour. 
+We have implemented the instantiation of ACDCL on relational domains in the
+2LS verification tool~\cite{2ls}.  We have used the abstract domains
+provided by 2LS (intervals, octagons, polyhedra and equalities) for our
+experiments.  The performance of the abstract domain implementations in 2LS
+is not competitive with that of the APRON~\cite{apron} library; however, the
+domain implementation in 2LS handles all C operators (including bitwise
+operations) and supports precise complementation of meet irreducibles, which
+is necessary for conflict-driven learning.  Our tool and benchmarks are
+available online\footnote{http://www.cprover.org/acdcl/} to enable other
+researchers to reproduce our results.
+
+We verified a total of 66 ANSI-C benchmarks, which are derived from (a)~the
+bit-vector regression category in SV-COMP'16, (b)~bit-precise and
+cycle-accurate software models of hardware circuits automatically generated
+using v2c~\cite{mtk2016}, (c)~controller code generated from Simulink
+(d)~several hand-crafted benchmarks for equivalence checking and bounded
+loop analysis.  All bounded loops are completely unrolled before analysis. 
+We compare our tool with a state-of-the-art SAT-based bounded model checker
+CBMC~\cite{cbmc} and a commercial static analysis tool, Astr{\'e}e. 
+\dkcmt{INSERT VERSION NUMBERS OF CBMC AND ASTREE.} CBMC uses MiniSAT in the
+backend.  Astr{\'e}e uses a range of abstract domains, which includes
+interval, bit-field, congruence, trace partitioning and relational domains
+(octagons, polyhedra, zones, equalities, filter).  ACDCL is instantiated
+with a product domain of booleans and template polyhedra.  We use the
+interval and octagon templates for our experiments.  ACDCL is configured
+with a heuristic choice of decision (ordered, random, berkmin), propagation
+(forward and multi-way) and conflict-analysis (learning UIP, DPLL-style). 
+The timeout for our experiments is set to one hour.
 %
 \Omit {
 To enable precise analysis using Astr{\'e}e, all our benchmarks are 
@@ -40,19 +41,20 @@ such high-precision is not needed for static analysis, since it makes
 the analysis very expensive.  Without trace partitioning, the 
 analysis using Astr{\'e}e shows high degree of imprecision. 
 }
+
 \paragraph {\textbf{Precision and Efficiency of Analysis}}
-Figure~\ref{fig:results} presents a comparison of the analysis 
-using CBMC and ACDCL.  Figure~\ref{fig:results}(a) clearly shows that 
-the SAT solver made significantly more decisions compared to ACDCL 
-for all the benchmarks.  Whereas, the extreme right points below the 
-diagonal in Figure~\ref{fig:results}(b) shows the propagations in SAT solver  
-is maximum for the benchmarks that exhibit relational behavior.  The 
-cumulative statistics corresponding to each phase of the algorithm 
-for all 66 benchmarks is presented in Table~\ref{result}.  
-Experimental result shows a reduction of at least two orders of 
-magnitude in the number of decisions, propagations and conflicts 
-compared to analyis using CBMC.    
 %
+Figure~\ref{fig:results} presents a comparison of the analyses using CBMC
+and ACDCL.  Figure~\ref{fig:results}(a) clearly shows that the SAT solver
+made significantly more decisions compared to ACDCL for all the benchmarks. 
+The points on the extreme right below the diagonal in
+Figure~\ref{fig:results}(b) show that the number of propagations in the SAT
+solver is maximal for the benchmarks that exhibit relational behavior. 
+Cumulative statistics corresponding to each phase of the algorithm for all
+66 benchmarks is given in Table~\ref{result}.  We observe a reduction of at
+least two orders of magnitude in the number of decisions, propagations and
+conflicts compared to analyis using CBMC.
+
 \begin{table}[t]
 \begin{center}
 {
@@ -67,43 +69,46 @@ ACDCL (Product Domain) & 161 & 3130 & 10 & 5 & 0 \\ \hline
 \caption{Solver statistics}
 \label{result}
 \end{table}
+
+Out of 66 benchmarks, CBMC with MiniSAT backend could only prove 16
+benchmarks without any restarts.  The solver is restarted in 50 cases to
+avoid spending too much time in ``hopeless'' branches.  By contrast, the
+analysis using ACDCL solved all 66 benchmarks without any restarts.  This is
+attributed to our decision heuristics, which exploit the high-level
+structure of the program combined with the stronger deduction and clause
+learning mechanisms aided by the richer abstract domains.  On the other
+hand, Ast{\'e}e is often faster than ACDCL, but the analysis using
+Astr{\'e}e shows a high degree of imprecision.  Astr{\'e}e reported 15 false
+alarms for the 41 safe benchmarks.
+
+\paragraph {\textbf{Propagation Strategy}}
 %
-Out of 66 benchmarks, CBMC with MiniSAT backend could only prove 16 benchmarks 
-without any restarts.  The solver is restarted in 50 cases to avoid spending 
-too much time in branches that do not easily lead to a satisfying assignment or 
-stronger clause learning.  In contrast, the analysis using ACDCL solved all
-66 benchmarks without any restarts.  This is attributed to decision 
-heuristics which exploits the high-level structure of the program combined 
-with the stronger deduction and clause learning mechanisms aided by the richer 
-abstract domains.  On the other hand, Ast{\'e}e is often faster than ACDCL, 
-but the analysis using Astr{\'e}e shows a high degree of imprecision.  
-Astr{\'e}e reported 15 false alarms out of 41 safe benchmarks.   
-
-\paragraph {\textbf{Propagation Strategy}}      
 Figure~\ref{prop-dec}(a) presents a comparison between {\em forward}
-propagation strategy and {\em multi-way} propagation strategy in
-ACDCL.  The choice of the propagation strategy influences the total
-number of decisions and clause learning iterations.  Hence, the
-propagation strategy has a significant influence on the run time which
-can be visualised in Figure~\ref{prop-dec}(a).  Compared to forward
-propagation, the multi-way strategy may take more iterations to reach
-the fixed-point, but it significantly reduces the total number of
-decisions and conflicts, in particular for the unsafe benchmarks.
-This is attributed to the higher precision of the meet irreducibles
-inferred by the multi-way strategy which subsequently aids the
-decision heuristics to make better decisions.
+propagation strategy and {\em multi-way} propagation strategy in ACDCL.  The
+choice of the propagation strategy influences the total number of decisions
+and clause learning iterations.  Hence, the propagation strategy has a
+significant influence on the run time which can be visualised in
+Figure~\ref{prop-dec}(a).  Compared to forward propagation, the multi-way
+strategy may take more iterations to reach the fixed-point, but it
+significantly reduces the total number of decisions and conflicts, in
+particular for the unsafe benchmarks.  This is attributed to the higher
+precision of the meet irreducibles inferred by the multi-way strategy which
+subsequently aids the decision heuristics to make better decisions.
 
-\paragraph {\textbf{Decision Heuristics}} Figure~\ref{prop-dec}(b) presents a 
-visualization of the performance of different decision heuristics in ACDCL.  
-Note that the runtimes for all decision heuristics are obtained with multi-way 
-propagtion strategy.  The runtimes are very close, but we observe some key
-characteristics of these heuristics.  Berkmin heuristic performs consistently 
-well for most safe benchmarks and all bit-vector category benchmarks.  Whereas, 
-the ordered heuristic performs better for programs with conditional branches 
-since it prioritises decisions on meet irreducibles that appear in conditional 
-branches over meet irreducibles that involve numerical variables.  Whereas, 
-the runtimes for random heuristic is marginally higher than the other two.  This 
-suggest that domain-specific decision heuristics are important for ACDCL.  
+\paragraph {\textbf{Decision Heuristics}}
+%
+Figure~\ref{prop-dec}(b) presents a visualization of the performance of
+different decision heuristics in ACDCL.  Note that the runtimes for all
+decision heuristics are obtained with multi-way propagtion strategy.  The
+runtimes are very close, but we observe some key characteristics of these
+heuristics.  Berkmin heuristic performs consistently well for most safe
+benchmarks and all bit-vector category benchmarks.  Whereas, the ordered
+heuristic performs better for programs with conditional branches since it
+prioritises decisions on meet irreducibles that appear in conditional
+branches over meet irreducibles that involve numerical variables.  Whereas,
+the runtimes for random heuristic is marginally higher than the other two. 
+This suggest that domain-specific decision heuristics are important for
+ACDCL.
 
 \Omit{
 Whereas activity-based heuristics such as Berkmin heuristic which 
@@ -112,11 +117,13 @@ that encountered the maximum number of conflicts to prove safety,
 thus allowing the heuristics to choose the decison variable among the set of learnt clauses.   
 }
 
-\paragraph {\textbf{Learning}} Learning has a significant influence on
-the runtime of ACDCL.  We compare the UIP-based learning technique with 
-an analysis that performs chronoligical backtracking without learning. 
-The effect of UIP computation allows ACDCL to backtrack non-chronologically 
-and guide the model search with a learnt transformer.  However, the DPLL-style 
-analysis exhibits case-enumeration behavior and could not finish within the time 
-bound for 20\% of our benchmarks. 
+\paragraph {\textbf{Learning}}
+%
+Learning has a significant influence on the runtime of ACDCL.  We compare
+the UIP-based learning technique with an analysis that performs
+chronoligical backtracking without learning.  The effect of UIP computation
+allows ACDCL to backtrack non-chronologically and guide the model search
+with a learnt transformer.  However, the DPLL-style analysis exhibits
+case-enumeration behavior and could not finish within the time bound for
+20\% of our benchmarks.
 
