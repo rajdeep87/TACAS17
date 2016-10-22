@@ -60,26 +60,26 @@ Daniel Kroening\inst{1}\hskip 1em Tom Melham\inst{1}}
 \begin{abstract}
 %===============================================================================
 %
-\emph{Abstract Conflict-Driven Clause Learning} (ACDCL) is a generalization
+\emph{Abstract Conflict-Driven Clause Learning} (ACDCL) is a generalisation
 of the well-known Conflict-Driven Clause Learning (CDCL) algorithm that is
 used in SAT solvers.  ACDCL alternates between a model search, which
-performs overapproximate deduction with constraint propagation, and a
+performs over-approximate deduction with constraint propagation, and a
 conflict analysis, which performs under-approximate abduction with heuristic
 choice.
 %
 ACDCL has been successfully used with non-relational abstract domains such
 as intervals to improve the performance of a floating-point decision
 procedure.  Whereas the propositional reasoning used in satisfiability 
-solvers can be rather easily lifted from the boolean lattice to other 
+solvers can be rather easily lifted from the Boolean lattice to other 
 non-relational domains, lifting them to relational domains is 
 challenging because of relational properties of deductions.
 %
 In this paper, we present the non-trivial adaptations of the model search
 and conflict analysis algorithms in order to enable the use of
 relational abstract domains.  We have implemented these algorithms inside
-the 2LS verification tool and instantiated our analyzer over a template 
+the 2LS verification tool and instantiated our analyser over a template 
 polyhedra domain to check safety properties of C programs.  We evaluate 
-the performance of our analyzer in comparison with program verifiers that 
+the performance of our analyser in comparison with program verifiers that 
 uses propositional-level solvers and a static analysis tool.
 %
 Experimental evidence suggest 
@@ -136,11 +136,11 @@ abstract domains.
 %===============================================================================
 
 %===============================================================================
-\input{background}
+\input{conclusion}
 %===============================================================================
 
 %===============================================================================
-\input{conclusion}
+\input{background}
 %===============================================================================
 
 \bibliographystyle{splncs03}

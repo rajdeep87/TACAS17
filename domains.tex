@@ -99,6 +99,7 @@ The assertions $\assertions$ are constraints of the form $g_3
 \Rightarrow z\geq 0$, for instance, meaning that if $g_3$ holds
 (i.e.\ the assertion is reachable) then the assertion must hold.
 %
+We denote $\vars$ the set of variables occurring in the $\constraints$.
 %
 %
 %For example, figure~\ref{swssa} presents the program analysis constraints for 
@@ -122,7 +123,7 @@ The assertions $\assertions$ are constraints of the form $g_3
 %-------------------------------------------------------------------------------
 %\paragraph{Safety problem}  
 %
-Based on the above program representation, we define a safety equation \pscmt{why ``equation''?} as, 
+Based on the above program representation, we define a safety equation as, 
 $\formula:= \bigwedge_{\constraint\in\constraints} \constraint$. The formula $\formula$ is 
 unsatisfiable if and only if the program is safe.
 
@@ -149,26 +150,26 @@ We present an instantiation of ACDCL as program analyser that uses relational
 domains.  
 % 
 %In our prototype implementation and for illustrative purposes 
-In this paper we use a product domain $\domain=\booldomain^\booldim\times\reldomain$ where
-$\booldomain$ is the boolean domain
+In this paper we use a product domain $\domain[\vars]=\booldomain^{|\boolvars|}\times\reldomain[\numvars]$ where
+$\booldomain$ is the Boolean domain
 $\langle\{\true,\false,\bot,\top\},\Rightarrow,\wedge,\vee\rangle$, 
-$\booldim$ is the number of boolean variables in the program, 
+$\boolvars$ are the Boolean variables in the program, 
 and $\reldomain$ is a \emph{relational} domain over the 
-numerical (bitvector) variables of respective
+numerical (bitvector) variables $\numvars$ of their respective
 data types (currently, signed and unsigned integers are supported).
 %
 We instantiate $\reldomain$ with the template polyhedra domain.
 
 For notational convenience we will denote elements of
-$\booldomain^\booldim$ by their concretisations to propositional formulae,
-For example, the program in Figure~\ref{ssa} has four boolean variables
+$\booldomain^{|\boolvars|}$ by their concretisations to propositional formulae,
+For example, the program in Figure~\ref{ssa} has four Boolean variables
 written as the vector $(g_0,g_1,c,g_2)$; then we will denote an abstract value $(\top, \false, \true, \top) \in \booldomain^4$ as $\neg g_1 \wedge c$.
 
 %-------------------------------------------------------------------------------
 \paragraph{Template Polyhedra Abstract Domain}
 %
 An abstract value of the template polyhedra domain~\cite{sriram}
-represents a set $\numconcval$ of values of numerical variables $\vec{\numvar}$. For
+represents a set $\numconcval$ of values of the vector $\vec{\numvar}$ of numerical variables $\numvars$. For
 example, in the program in Figure~\ref{ssa}, we have four numerical
 variables, written as the vector $\vec{\numvar}:=(x_0,x_1,x_2,z)$.  We can
 represent sets of values for $\vec{\numvar}$ such that
@@ -215,22 +216,23 @@ express other domains, such as interval and octagon domains.
 % given as follows.
 % \[\alpha(x) = \{[inf(x), sup(x)] | x \in Var\} \qquad   \alpha(\emptyset) = \bot \]
 % \[\gamma[p,q] = \{c \in \mathbb{Z} | p \leq c \leq q\} \qquad \gamma(\bot) = \emptyset \]
-
+%
 \begin{wrapfigure}{r}{4.5cm}
 \vspace*{-3ex}
 \scalebox{.65}{\import{figures/}{octagons.pspdftex}}
-\caption{Example of an octagon \pscmt{BUG: should be $x\geq -2$, $y\geq -1$; please rename x to $x_1$ and $y$ to $z$}}\label{octagon}
+\caption{Example of an octagon}\label{octagon}
 \vspace*{-3ex}
 \end{wrapfigure} 
-
-For a program with $N$ variables, the matrix $\mat{C}$ for intervals
+%
+In the interval domain $\intervals[\numvars]$,
+for a program with $N=|\numvars|$ variables, the matrix $\mat{C}$ 
 has $2N$ rows; and hence it generates at most $2N$ inequalities, one
 for the upper and lower bounds of each variable.
 %
-For octagons, we have at most $2N^2$ inequalities, one for the upper
-and lower bounds of each variable and sums and differences for each
-pair of variables. Figure~\ref{octagon} shows an 
-example octagon and its associated inequalities.   
+For octagons $\octagons[\numvars]$, we have at most $2N^2$
+inequalities, one for the upper and lower bounds of each variable and
+sums and differences for each pair of variables. Figure~\ref{octagon}
+shows an example octagon and its associated inequalities.
 
 The interval domain is a non-relational domain because a single
 inequality only contains a single variable.
@@ -246,9 +248,9 @@ The closure computes all implied domain constraints.  For octagons,
 the closure operation is very expensive (cubic complexity in the
 number of program variables).
 %
-We will see that our model search algorithm performs closure computations lazily,
-postponing them to the point where they are actually necessary.\rmcmt{are we
-showing this ?}
+%We will see that our model search algorithm performs closure computations lazily,
+%postponing them to the point where they are actually necessary.\rmcmt{are we
+%showing this ?}
 
 % \paragraph{Octagon Abstract Domain} \pscmt{TODO: simplify}
 % The {\em Octagon} abstract domain is a lattice 
@@ -309,7 +311,10 @@ showing this ?}
 An abstract transformer $\abstrans{\domain}{\constraint}$ transforms an abstract value $\absval$ through a
 constraint $\constraint$, i.e.\ it \emph{deduces} information from $\absval$ and $\constraint$.
 The best abstract transformer is 
-\[\abstrans{\domain}{\constraint}(\absval)=\absval\meet \alpha(\{\val\mid \val\models \constraint\})\] where we write 
+\begin{equation}
+\abstrans{\domain}{\constraint}(\absval)=\absval\meet\alpha(\{\val\mid \val\in\gamma(\absval), \val\models \constraint\})
+\end{equation}
+ where we write 
 $\val\models \constraint$ if the concrete value $\val$ satisfies the constraint $\constraint$.
 %$\forall \vec{y}\in c: (s[\vec{y}/\vec{\numvar}]
 %\equiv \true)$, i.e.\ the constraint $s$ is valid when evaluated over
@@ -321,6 +326,10 @@ transformer is a sound transformer and can be used in our algorithm.
 For example, we can deduce $\abstrans{\domain}{x=2(y+z)}(\absval)=\absval\meet(-2\leq x\leq 6)$ for the abstract value $\absval=(0\leq y \leq 2 \wedge 1 \leq y-z \leq 1)$.
 %
 %A detailed description of abstract transformer is presented in Section~\ref{sec:abst}.
+We denote the set of abstract transformers for a safety equation
+$\formula$ using abstract domain $\domain$ as
+$\abstransset=\{\abstrans{\domain}{\constraint}\mid
+\constraint\in\constraints\}$.
 
 %-------------------------------------------------------------------------------
 \subsection{Properties of Abstract Domains}

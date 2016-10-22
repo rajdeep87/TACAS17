@@ -22,8 +22,8 @@ Astr{\'e}e is configured with range of abstract domains which includes
 interval, bit-field, congruence, trace partitioning and relational 
 domains (octagons, polyhedra, zones, equalities, filter).  Whereas, 
 ACDCL is instantiated with a product domain of booleans and template 
-polyhedra.  \rmcmt{We use an interval and octagon templates for our
-experiments.} Additionally, the analysis using ACDCL is configured with 
+polyhedra.  We use an interval and octagon templates for our
+experiments.  Additionally, the analysis using ACDCL is configured with 
 a heuristic choice of decision (ordered, random, berkmin), 
 propagation (forward and multi-way) and conflict-analysis (learning UIP,
 DPLL-style).  The timeout for our experiments is set to ~1 hour. 
@@ -76,22 +76,19 @@ but the analysis using Astr{\'e}e shows a high degree of imprecision.
 Astr{\'e}e reported 15 false alarms out of 41 safe benchmarks.   
 
 \paragraph {\textbf{Propagation Strategy}}      
-Figure~\ref{prop-dec}(a) presents a comparison between {\em forward} propagation 
-strategy and {\em multi-way} propagation strategy in ACDCL.  The choice of the
-propagation strategy influences the total number of decisions and clause 
-learning iterations.  Hence, the propagation strategy has a significant 
-influence on the run time which can be visualised in Figure~\ref{prop-dec}(a).  
-Compared to forward propagation, the multi-way strategy may take more iterations 
-to reach the fixed-point, but it significantly reduces the total number of 
-decisions and conflicts.  This is attributed to the higher 
-precision of the meet irreducibles inferred by the multi-way strategy which 
-subsequently aids the decision heuristics to make better decisions. 
-
-\Omit {
-We observe that the deductions made during chaotic analysis helps the decision 
-heuristics to make better decisions compared to forward analysis.  This is 
-attributed to the precision of deductions inferred by the chaotic analysis.         
-} 
+Figure~\ref{prop-dec}(a) presents a comparison between {\em forward}
+propagation strategy and {\em multi-way} propagation strategy in
+ACDCL.  The choice of the propagation strategy influences the total
+number of decisions and clause learning iterations.  Hence, the
+propagation strategy has a significant influence on the run time which
+can be visualised in Figure~\ref{prop-dec}(a).  Compared to forward
+propagation, the multi-way strategy may take more iterations to reach
+the fixed-point, but it significantly reduces the total number of
+decisions and conflicts, in particular for the unsafe benchmarks.
+This is attributed to the higher precision of the meet irreducibles
+inferred by the multi-way strategy which subsequently aids the
+decision heuristics to make better decisions.
+\pscmt{Chaotic $\rightarrow$ multi-way in Fig.6 }
 
 \paragraph {\textbf{Decision Heuristics}} Figure~\ref{prop-dec}(b) presents a 
 visualization of the performance of different decision heuristics in ACDCL.  

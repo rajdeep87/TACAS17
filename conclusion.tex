@@ -1,24 +1,28 @@
 \section{Conclusions}
 In this paper, we present a procedure for lifting the model search 
-in satisfiability solvers to relational abstract domains.  We explain 
-specific properties of abstract domain elements that are necessary to infer 
-domain-specific deductions.  We present decision heuristics that takes 
-into account the high-level structure of programs and the underlying 
-expressivity of the abstract domains.  Our conflict analysis procedure 
-learns abstract transformer following UIP computation over relational 
-elements.  We instantiate our algorithms as a program analyzer to determine
-safety of C programs.  Experimental evaluation shows that ACDCL is able 
-to suitably exploit the expressivity of richer abstract domains as well 
-as precision of CDCL architecture.
+in satisfiability solvers to relational abstract domains.  
+%We explain specific properties of abstract domain elements that are necessary to infer domain-specific deductions.  
+We present a parameterised abstract transformer that allows us to
+flexibly implement various propagation heuristics while taking care of
+the closure operation required in relational abstract domains.
+%
+Our decision heuristics takes into account the high-level structure of
+programs and the underlying expressivity of the abstract domains.  Our
+conflict analysis procedure learns abstract transformers following a
+UIP computation over relational domain elements.  We instantiate our
+algorithms as a program analyser to determine safety of C programs.
+%
+Experimental evaluation shows that ACDCL is able to suitably exploit
+the expressivity of richer abstract domains as well as precision of
+CDCL architecture.
 
-Generalizations of conflict reasons for relational domains 
+\Omit{
+Generalisations of conflict reasons for relational domains 
 and non-relational domain such as trace-based abstract domains is a 
 possible direction of future work.  We believe that domain refinement 
 in ACDCL will also help to dynamically adjust the precision of the 
 deduction in an effective manner. 
 
-
-\Omit{
 Experimental evaluation on different benchmark sets shows that
 ACDCL is able to suitably exploit the expressivity of richer
 abstract domains as well as precision of CDCL architecture.

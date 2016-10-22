@@ -12,25 +12,31 @@ set of structures that do not satisfy a formula
 Since relational abstract domains have more complex structure than the partial 
 assignments domain or interval domain, so finding a generalized reason for 
 conflict through UIP computation~\cite{uip} is non-trivial.  We formally 
-describe the adaptations of conflict analysis procedure for relational domains.  
+describe the adaptations of conflict analysis procedure for relational domains. %
+\begin{figure}[t]
+%\caption{An example of Octagon}\label{octagon}
+\scalebox{.65}{\import{figures/}{conflict_graph.pspdftex}}
+\caption{\label{conflict} Abstract Conflict Graph \pscmt{constants to rhs, please!}}
+\end{figure}  
 
 \paragraph {\textbf{Abstract Conflict Graph}}
-The first-UIP algorithm in SAT solvers works on a data structure called 
-{\em implication graph} and computes a cut that suffices to produce a 
-conflict.  The trail in ACDCL implicitly encodes a graph structure called 
-{\em abstract conflict graph}, which records the dependencies between 
-deductions made during the abstract model search phase.  Nodes in the graph 
-represent elements of the trail $\mathcal{T}$.  A node can be either a
-{\em decision} node or a {\em deduction} node. Edges can be extracted from
-the transformers in the reason trail.  Incoming arrows to node $n$ 
-indicate that the predecessors of $n$ are sufficient to deduce $n$.  
-A decision node has no incoming edges.  
-For example, consider a formula 
-$\varphi:= (y=x \; \wedge \; y=y+x \; \wedge \; y \leq 0)$ with current 
-abstract valuation $v:= (x-5 \geq 0 \wedge -x+5 \geq 0)$.  
-Figure~\ref{conflict} shows a snapshot of an abstract conflict graph that 
-stores the deductions obtained from abstract model search using the octagon domain.  
-The last deduction conflicts with the constraint $(y \leq 0)$.  
+The first-UIP algorithm in SAT solvers works on a data structure
+called {\em implication graph} and computes a cut that suffices to
+produce a conflict.  The propagation and reason trails in ACDCL
+implicitly encode a graph structure called {\em abstract conflict
+  graph}, which records the dependencies between deductions made
+during the abstract model search phase.  Nodes in the graph represent
+elements of the trail $\trail$.  A node can be either a {\em decision}
+node or a {\em deduction} node. Edges can be extracted from the
+transformers in the reason trail $\reasons$.  Incoming arrows to node
+$n$ indicate that the predecessors of $n$ are sufficient to deduce
+$n$.  A decision node has no incoming edges.  For example, consider a
+formula $\formula:= (y{=}x \wedge y{=}y{+}x \wedge y {\leq} 0)$ with
+current abstract valuation $\absval:= (x{-}5 {\geq} 0 \wedge {-}x{+}5 {\geq}
+0)$.  Figure~\ref{conflict} shows a snapshot of an abstract conflict
+graph that stores the deductions obtained from abstract model search
+using the octagon domain.  The last deduction conflicts with the
+meet irreducible $(y \leq 0)$.
 
 \paragraph {\textbf{Lifting UIP to relational domains}}
 An UIP is a special node in the abstract conflict graph such that 
@@ -43,80 +49,88 @@ cuts~\cite{cdcl,DBLP:journals/fmsd/BrainDGHK14}, that is, it
 yields clauses that generate new deductions after backtracking.  
 Every cut in the graph is a reason for conflict that can be 
 used in learning.  An abstract first-UIP algorithm~\cite{DBLP:journals/fmsd/BrainDGHK14} 
-traverses the trail $\mathcal{T}$ starting from the conflict node and 
+traverses the trail $\trail$ starting from the conflict node and 
 computes a cut that suffices to produce a conflict. 
 \Omit {
-contradict with the transformer stored in $\mathcal{R}[\bot]$.  
+contradict with the transformer stored in $\reasons[\bot]$.  
 }
 For our example, there exist multiple incomaparable reasons for conflict,
 marked as {\em cut0, cut1}, in Figure~\ref{conflict}.  Here, cut0 is the first UIP.  
 Choosing cut0 yields a learnt clause 
 $(x+y<15 \vee -x-y<-15 \vee -x+y<5 \vee x-y<-5 \vee y-10<0 \vee -y+10<0)$, 
 which is obtained by negating the reason for conflict.  
-%
-\begin{figure}[t]
-%\caption{An example of Octagon}\label{octagon}
-\scalebox{.65}{\import{figures/}{conflict_graph.pspdftex}}
-\caption{\label{conflict} Abstract Conflict Graph}
-\end{figure} 
 %    
 \paragraph{\textbf{Learning in relational domains}}
-Learning in a propositional solver yields an asserting clause~\cite{cdcl} 
-that expresses the negation of the conflict reasons.  However, we model 
-learning in relational domains as learning a transformer which infers 
-new meet irreducibles using the abstract unit rule called 
-{\em abstract unit transformer (AUnit)}.  We add $\mathit{AUnit}$ to the set of 
-transformers \rmcmt{give symbol} used during model search. $AUnit$ is 
-a generalization of propositional unit rule for numerical domains.  For 
-an abstract lattice $A$ with complementable meet irreducibles and a set 
-of meet irreducibles $C \subseteq A$ such that $\bigsqcap C$ does not 
-satisfy $\varphi$, $\mathit{AUnit}_C: A \rightarrow A$ is formally defined as follows. 
-\[ AUnit(a) =
+Learning in a propositional solver yields an asserting
+clause~\cite{cdcl} that expresses the negation of the conflict
+reasons.  However, we model learning in relational domains as learning
+a transformer which infers new meet irreducibles using the abstract
+unit rule called {\em abstract unit transformer}.  We add $\aunit$ to
+the set of abstract transformers $\abstransset$ used during model
+search. $\aunit$ is a generalization of propositional unit rule for
+numerical domains.  For an abstract lattice $\domain$ with
+complementable meet irreducibles and a set of meet irreducibles $\conflictset
+\subseteq \domain$ such that $\bigsqcap
+\conflictset$ does not satisfy $\formula$, $\aunit_\conflictset: \domain \rightarrow
+\domain$ is formally defined as follows.
+\[ \aunit(\absval) =
  \begin{cases}
-  \bot       & \quad \text{if } a \sqsubseteq \meet{C} \qquad \qquad \qquad
+  \bot       & \quad \text{if } \absval \sqsubseteq \bigsqcap \conflictset \qquad \qquad \qquad
   \qquad \qquad \qquad \quad (1)\\
-  \bar{t}    & \quad \text{if } t \in C \; \text{and} \; \forall t' \in C
-  \setminus \{t\}. a  \sqsubseteq t' \qquad \quad \; \; (2) \\
-  \bar{t}    & \quad \text{if } t \in C \; \text{and} \; \forall t' \in C \setminus \{t\}. a
+  \bar{t}    & \quad \text{if } t \in \conflictset \; \text{and} \; \forall t' \in \conflictset
+  \setminus \{t\}. \absval  \sqsubseteq t' \qquad \quad \; \; (2) \\
+  \bar{t}    & \quad \text{if } t \in \conflictset \; \text{and} \; \forall t' \in \conflictset \setminus \{t\}. \absval
   \not\sqsubseteq t', \; \text{then} \\ 
-             & \quad \forall a' \subseteq decomp(a) \;  \text{and} \; \forall a'' \in a \setminus \{a'\}, \\ 
-             & \quad \meet{a''} \sqsubseteq r' \; \text{and} \; a'
-             \not\sqsubseteq t   \qquad \qquad \qquad \qquad \; \; (3) \\
+             & \quad \forall \absval' \sqsubseteq \absval: \absval'
+             \not\sqsubseteq t \text{ and}\\ 
+             & \quad \absval''=\exclude(\absval,\absval') \text{ and }\absval''\sqsubseteq r' \pscmt{\text{what is r'???}} \qquad  \; \; (3) \\
   \top & \quad \text{otherwise} \qquad \qquad \qquad \qquad \qquad \qquad \quad (4) \\
  \end{cases}
 \]
-$\mathit{AUnit}$ returns $\bot$ if $C$ is conflicting following rule (1).  Rule (2) and
-(3) of $\mathit{AUnit}$ infers a valid meet irreducible, which implies that $C$ is unit. 
-However, rule (3) is domain-specific and only applies to interval and octagon
-domain.  For example, let $C = \langle x+z \geq 10,  w \geq 0 \rangle$ be a 
-conflicting element that does not satisfy $\varphi$ and let $a= \langle x+y \geq 2, y+z \geq 5,
-x+z \leq 15, w \geq 1, w \leq 1 \rangle$.  Applying rule (3) of $\mathit{AUnit}_C$, we get a 
-decomposition of $a$ into $a'$ and $a''$ where 
-$a'= \langle x+y \geq 2, y+z \geq 5, x+z \leq 15 \rangle \not\sqsubseteq (x+z \geq 10)$, and 
-$a''= \langle w \geq 1, w \leq 1 \rangle \sqsubseteq (w \geq 0)$.  Then, $\mathit{AUnit}_C(a) = (x+z < 10)$, 
-which constrains the bound of the octagonal constraint.  
-Let us consider another example, where $C = \langle x \geq 2, x \leq 5, y \leq 7 \rangle$
-and let $a = \langle x \geq 3, x \leq 4, y \geq 5, y \leq 6 \rangle$, then $\mathit{AUnit}_C(a) = \bot$ using
-the rule (1), since $a \sqsubseteq C$.  Now, let $a' = \langle x \geq 3, x \leq 4 \rangle$, 
-then $\mathit{AUnit}_C(a') = (y > 7)$ using rule (2), since $a' \sqsubseteq (x \geq 2)$
-and $a' \sqsubseteq (x \leq 5)$.  However, if none of the above rule holds true, $\mathit{AUnit}$ 
-returns $\top$.   
+with $\exclude(\absval,\absval')=\bigsqcap(\decomp(\absval) \setminus
+\decomp(\absval'\}))$.  $\aunit$ returns $\bot$ if $\conflictset$ is
+conflicting following rule (1).  Rule (2) and (3) of $\aunit$ infer a
+valid meet irreducible, which implies that $\conflictset$ is unit.
+
+However, rule (3) is domain-specific \pscmt{I don't see anyting
+  specific here...} and only applies to interval and
+octagon\pscmt{relational?}  domain.  For example, let $\conflictset =
+\{ x+z \geq 10, w \geq 0 \}$ be a conflicting element \pscmt{better
+  name???} that does not satisfy $\formula$ and let $\absval= (x+y
+\geq 2\wedge y+z \geq 5\wedge x+z \leq 15\wedge w \geq 1\wedge w \leq
+1)$.  Applying rule (3) of $\aunit_\conflictset$, we get a
+decomposition of $\absval$ into $\absval'$ and $\absval''$ where
+$\wedge'= (x+y \geq 2\wedge y+z \geq 5\wedge x+z \leq 15)
+\not\sqsubseteq (x+z \geq 10)$, and $\absval''= (w \geq 1\wedge w \leq
+1) \sqsubseteq (w \geq 0)$.  Then, $\aunit_C(a) = (x+z < 10)$, which
+constrains the bound of the octagonal constraint.
+
+Let us consider another example, where $\conflictset = \{x \geq 2, x
+\leq 5, y \leq 7 \}$ and let $\absval = (x \geq 3\wedge x \leq 4\wedge
+y \geq 5\wedge y \leq 6)$, then $\aunit_\conflictset(\absval) = \bot$
+using the rule (1), since $\absval \sqsubseteq \bigsqcap\conflictset$.  Now,
+let $\absval' = (x \geq 3\wedge x \leq 4)$, then
+$\aunit_\conflictset(\absval') = (y \geq 8)$ using rule (2), since
+$\absval' \sqsubseteq (x \geq 2)$ and $\absval' \sqsubseteq (x \leq
+5)$.  However, if none of the above rule holds true, $\aunit$ returns~$\top$.
  
 \paragraph {\textbf{Backjumping}}
-A backjumping procedure undoes all the assignments in the trail up to 
-a decision level that restores the solver to a non-conflicting state.  
-The backjumping level is defined by the literal of the conflict clause 
-that is closest to the root (decision level 0) where the conflict 
-clause is still unit.  If a conflict clause is globally unit, then the 
-backjumping level is the root of the search tree.
+After adding $\aunit$ to $\abstransset$, we remove all the meet irreducibles from the trail back to a decision level that restores the solver to a
+non-conflicting state.  The backjumping level is defined by the
+meet irreducible of the conflict clause \pscmt{is this $\conflictset$???}
+that is closest to the root (decision level~0) where the conflict
+clause is still unit.  If a conflict clause is globally unit, then the
+backjumping level is the root of the search tree and
+$\analyzeconflict$ returns $\false$, otherwise $\true$.
 
-The abstract clause learning and backjumping procedures in the abstract 
-conflict graph is stated in terms of the state of ACDCL solver as follows.
-\[AbsLearn: \quad  (\mathcal{E},S) \rightarrow (\mathcal{E},S \wedge
-\mathcal{L}) \quad \text{if} \; \mathcal{L} \notin S \; \textrm{and}
-\; (S \wedge \mathcal{L}) \; \text{is not UNSAT} \]
-\[AbsBackjump: \quad (\mathcal{E}_1(m,s)\mathcal{E}_2,S) \rightarrow
-(\mathcal{E}_1,S) \quad \text{if} \; (\mathcal{E}_1,S) \; \text{is not in conflict} \]   
+%The abstract clause learning and backjumping procedures in the abstract 
+%conflict graph is stated in terms of the state of ACDCL solver as follows.
+%THIS is already explained above
+%\[AbsLearn: \quad  (\mathcal{E},S) \rightarrow (\mathcal{E},S \wedge
+%\mathcal{L}) \quad \text{if} \; \mathcal{L} \notin S \; \textrm{and}
+%\; (S \wedge \mathcal{L}) \; \text{is not UNSAT} \]
+%\[AbsBackjump: \quad (\mathcal{E}_1(m,s)\mathcal{E}_2,S) \rightarrow
+%(\mathcal{E}_1,S) \quad \text{if} \; (\mathcal{E}_1,S) \; \text{is not in conflict} \]   
 
 \Omit {
 \subsection{Clause Learning in Abstract Lattice}
