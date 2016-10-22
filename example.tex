@@ -109,10 +109,10 @@ is, the decision $c:=[1,1]$ leads to a {\em conflict}.  Thus, the program is
 
 At this point, a clause learning propositional SAT solver learns a reason
 for the conflict and then backtracks to a level such that the learnt clause
-is \emph{unit}.  Similarly, ACDCL learns that \(n0: c:=[0,0]\), that is, all
-error traces must satisfy $(c \neq 1)$ at node~$n0$.  The analysis discards
-all interval constraints that lead to the conflict and backtracks to
-decision level~0.  ACDCL then performs interval analysis with the learnt
+is \emph{unit}.  Similarly, ACDCL learns that $c:=[0,0]$ at node $n0$, that
+is, all error traces must satisfy $c \neq 1$ at node~$n0$.  The analysis
+discards all interval constraints that lead to the conflict and backtracks
+to decision level~0.  ACDCL then performs interval analysis with the learnt
 constraint $(c \neq 1)$, which also leads to a conflict, as shown in
 right-hand side of Figure~\ref{ssa}.  The analysis cannot backtrack further
 and therefore it terminates, proving that the program is safe.  Thus,
