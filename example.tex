@@ -46,10 +46,10 @@ multiplication is always positive for an integer input $v$.  To avoid
 overflow error, we assume $v$ has an upper bound $N$.  The control 
 flow graph is shown in the middle column of Figure~\ref{fig:example}.  
 
-We analyze the program using three different analyzers -- {\em bounded 
+We analyse the program using three different analysers -- {\em bounded 
 model checking (BMC)}, {\em abstract interpretation} and {\em ACDCL}.    
 \Omit {
-The SAT solver makes 36 decisions, 1365 boolean constraint propagations 
+The SAT solver makes 36 decisions, 1365 Boolean constraint propagations 
 and performs 5 conflict analysis with 65 conflict literals.  Moreover, 
 the solver performs a restart, presumably to recover from bad decisions.  
 }
@@ -57,9 +57,9 @@ Standard BMC tools convert the program to a bit-vector equation and pass
 them to a SAT solver.  However, standard forward interval analysis is 
 too imprecise to verify the safety of the above program.  The 
 imprecision is due to control-flow join at node $n4$.  State-of-the-art 
-abstract interpretation tool, Astr{\'e}e, requires external hints, provided 
+abstract interpretation tool, Astr{\'e}e \cite{se2011}, requires external hints, provided 
 by manually annotating the code with partition directives at $n1$, 
-to prove safety.  The partition directive helps the tool to analyze 
+to prove safety.  The partition directive helps the tool to analyse 
 each program execution paths separately.  To do so, Astr{\'e}e 
 requires a product of trace partitioning domain and an interval domain 
 to determine safety.  However, a relational domain such as octagons is 
@@ -76,7 +76,7 @@ of the application under analysis.
 {
 \begin{tabular}{l|l|l|l|l|l}
 \hline
-Solver & Decisions & propagations & conflict & conflict literals \pscmt{XXXX} & restarts \\ \hline
+Solver & Decisions & propagations & conflict & conflict literals & restarts \\ \hline
 SAT & 233 & 36436 & 162 & 2604 & 2 \\ \hline
 ACDCL (Interval) & 1 & 17 & 1 & 1 & 0 \\ \hline
 ACDCL (Octagons) & 0 & 7 & 0 & 0 & 0 \\ 
@@ -88,10 +88,10 @@ ACDCL (Octagons) & 0 & 7 & 0 & 0 & 0 \\
 \label{solver}
 \end{table}
 %
-The right-side of Figure~\ref{fig:example} shows an analysis using ACDCL with 
+The right-hand side of Figure~\ref{fig:example} shows an analysis using ACDCL with 
 octagon domain (top) and an interval domain (bottom).  The analysis 
 associates an abstract element for each control location and variable, 
-as shown in the abstract conflict graph in Firgure~\ref{fig:example}.  
+as shown in the abstract conflict graph in Figure~\ref{fig:example}.  
 Octagonal constraints deduced by ACDCL solver are sufficient to prove 
 safety without any decision or clause learning.  However, unlike Ast{\'e}e, 
 an automatic interval analysis is also sufficient to prove safety with 
@@ -100,37 +100,38 @@ analysis in the initial deduction phase infers that
 $\langle x:[-5,5], z:[-25,25] \rangle$.  Clearly, ACDCL cannot prove safety.  
 
 Hence, ACDCL makes a decision $c:=[1,1]$ to refine the analysis.  
-ACDCL implements several decision heuritics.  In this case, the 
+ACDCL implements several decision heuristics.  In this case, the 
 branching variable $c$ is chosen by an {\em ordered} decision 
 heuristics that select variables appearing in conditional branches 
 first before choosing other program variables. 
 The decision constrains the interval of $x:=[0,5]$.  The deductions made 
 during fixed point iteration are represented by abstract conflict 
-graph in right-side of Figure~\ref{fig:example}.  Nodes in the abstract 
+graph in right-hand side of Figure~\ref{fig:example}.  Nodes in the abstract 
 conflict graph denotes the corresponding updates to the program 
 variables in the CFG.  Interval analysis concludes that $(\text{Error}:\bot)$, that 
 is the decision $c:=[1,1]$ leads to a {\em conflict}.  Thus, 
 the program is {\em safe} for $c:=[1,1]$.  
 
-A clause learning SAT solver would learn the reason for conflict at this 
-point and then backtrack to a level such that the learnt clause is UNIT.  
-Similar to conflict analysis phase in SAT solvers, ACDCL learns that 
-(\(n0: c:=[0,0]\)), that is all error traces must satisfy $(c \neq 1)$ 
-at node $n0$.  The analysis discards all interval constraints that
-lead to the conflict and backtrack to decision level 0.  ACDCL then 
-performs interval analysis with the learnt constraint $(c \neq 1)$ which also 
-leads to a conflict, as shown in right side of Figure~\ref{ssa}.  The 
-analysis cannot backtrack further and therefore it terminates proving 
-that the program is safe.  A DPLL-style solver would perform proof by 
-cases.  However, decision and clause learning are used to avoid case 
-based reasoning and prevents enumeration behavior.     
+A clause learning SAT solver would learn the reason for conflict at
+this point and then backtrack to a level such that the learnt clause
+is \emph{unit}.  Similar to conflict analysis phase in SAT solvers,
+ACDCL learns that (\(n0: c:=[0,0]\)), that is all error traces must
+satisfy $(c \neq 1)$ at node $n0$.  The analysis discards all interval
+constraints that lead to the conflict and backtrack to decision level
+0.  ACDCL then performs interval analysis with the learnt constraint
+$(c \neq 1)$ which also leads to a conflict, as shown in right-hand side of
+Figure~\ref{ssa}.  The analysis cannot backtrack further and therefore
+it terminates proving that the program is safe.  A DPLL-style solver
+would perform proof by cases.  However, decision and clause learning
+are used to avoid case-based reasoning and prevents enumeration
+behaviour.
    
 For $N=46000$, table~\ref{solver} shows the statistics from 
 MiniSAT~\cite{minisat} solver for analysis using BMC, and 
 analysis using ACDCL with interval and octagon domains.  
 Compared to a SAT solver, there is a significant reduction 
 in the number of decisions, propagations, learnt clauses and 
-restrarts.  Compared to abstract interpretation, ACDCL does 
+restarts.  Compared to abstract interpretation, ACDCL does 
 not require external hints to proof the program, thus 
 automatically performing program and property driven trace 
 partitioning to generate proofs using decision and clause learning.  
