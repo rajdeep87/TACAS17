@@ -26,18 +26,19 @@ algorithms are referred to as \emph{Conflict Driven Clause Learning}
 (CDCL)~\cite{cdcl}. The idea to lift these algorithms from the Boolean
 domain to richer, arithmetic domains suggests itself.
 
-Abstract Conflict Driven Clause Learning} (ACDCL)~\cite{dhk2013-popl} is one
-such generalisation of CDCL.  The partial satisfying assignments in CDCL
-algorithm are generalized to be chosen from a given abstract domain.  The
-unit rule is the best abstract transformer, Boolean Constraint Propagation
-(BCP) computes a greatest fixed-point over the abstract domain, decision is
-dual widening and clause learning can be viewed as synthesising an abstract
-transformer for negation.  This enables an ACDCL-based analyser to refine an
-imprecise analysis and thus prevents enumeration behaviour.  ACDCL has so
-far been instantiated as a decision procedure for floating-point
-arithmetic~\cite{DBLP:journals/fmsd/BrainDGHK14} and a program analyser that
-reasons using interval~\cite{tacas12}.  Hence, the existing ACDCL instances
-are limited to bounds checking in numerical programs.
+\emph{Abstract Conflict Driven Clause Learning} (ACDCL)~\cite{dhk2013-popl}
+is one such generalisation of CDCL.  The partial satisfying assignments in
+CDCL algorithm are generalized to be chosen from a given abstract domain. 
+The unit rule is the best abstract transformer, Boolean Constraint
+Propagation (BCP) computes a greatest fixed-point over the abstract domain,
+decision is dual widening and clause learning can be viewed as synthesising
+an abstract transformer for negation.  This enables an ACDCL-based analyser
+to refine an imprecise analysis and thus prevents enumeration behaviour. 
+ACDCL has so far been instantiated as a decision procedure for
+floating-point arithmetic~\cite{DBLP:journals/fmsd/BrainDGHK14} and a
+program analyser that reasons using interval~\cite{tacas12}.  Hence, the
+existing ACDCL instances are limited to bounds checking in numerical
+programs.
 
 Evidently, the verification of many programs requires more expressive
 domains like octagons or equalities or polyhedra.  These domains capture
