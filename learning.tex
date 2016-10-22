@@ -74,19 +74,18 @@ complementable meet irreducibles and a set of meet irreducibles $\conflictset
 \conflictset$ does not satisfy $\formula$, $\aunit_\conflictset: \domain \rightarrow
 \domain$ is formally defined as follows.
 \[ \aunit(\absval) =
- \begin{cases}
-  \bot       & \quad \text{if } \absval \sqsubseteq \bigsqcap \conflictset \qquad \qquad \qquad
-  \qquad \qquad \qquad \quad (1)\\
-  \bar{t}    & \quad \text{if } t \in \conflictset \; \text{and} \; \forall t' \in \conflictset
-  \setminus \{t\}. \absval  \sqsubseteq t' \qquad \quad \; \; (2) \\
-  \bar{t}    & \quad \text{if } t \in \conflictset \; \text{and} \; \forall t' \in \conflictset \setminus \{t\}. \absval
+ \left\{\begin{array}{l@{\quad}l@{\qquad}l}
+  \bot       & \text{if } \absval \sqsubseteq \bigsqcap \conflictset & (1)\\
+  \bar{t}    & \text{if } t \in \conflictset \; \text{and} \; \forall t' \in \conflictset
+  \setminus \{t\}. \absval  \sqsubseteq t' & (2) \\
+  \bar{t}    & \text{if } t \in \conflictset \; \text{and} \; \forall t' \in \conflictset \setminus \{t\}. \absval
   \not\sqsubseteq t', \; \text{then} \\ 
              & \quad \forall \absval' \sqsubseteq \absval: \absval'
-             \not\sqsubseteq t \text{ and}\\ 
+             \not\sqsubseteq t \text{ and} & (3)\\ 
              & \quad \absval''=\exclude(\absval,\absval') \text{ and
-             }\absval''\sqsubseteq t' \qquad  \; \; (3) \\
-  \top & \quad \text{otherwise} \qquad \qquad \qquad \qquad \qquad \qquad \quad (4) \\
- \end{cases}
+             }\absval''\sqsubseteq t'  \\
+  \top & \text{otherwise} & (4) \\
+ \end{array}\right.
 \]
 with $\exclude(\absval,\absval')=\bigsqcap(\decomp(\absval) \setminus
 \decomp(\absval'\}))$.  $\aunit$ returns $\bot$ if $\conflictset$ is
