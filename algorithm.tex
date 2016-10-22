@@ -18,7 +18,7 @@
 \SetKw{KwNot}{not}
 \begin{small}
 \Input{A program in the form of a set of abstract transformers $\abstransset$.}
-\Output{The status \safe or \unsafe, \rmcmt{and a counterexample if \unsafe.}}
+\Output{The status \safe or \unsafe.}
 $\trail \leftarrow \langle\rangle$ \;
 $\reasons \leftarrow []$ \;
 $\mathit{result} \leftarrow \deduce_{\propheur}(\abstransset,\trail,\reasons)$ \;
@@ -84,7 +84,7 @@ meet irreducible $\decisionvar$.
 We concatenate $\decisionvar$ to the
 trail $\trail$.  The decision $\decisionvar$ therefore refines \rmcmt{not
 defined} the current abstract value $\abs(\trail)$ represented by the trail. 
-\rmcmt{a decision is added to the trail only if it refines the trail.}
+%\rmcmt{a decision is added to the trail only if it refines the trail.}
 % WE ExPLAIN THAT LATER
 %However, $\decisionvar$ must be consistent with the state of the
 %solver, i.e. $\abs(\trail\cdot \decisionvar)\neq \bot$.
@@ -92,8 +92,8 @@ defined} the current abstract value $\abs(\trail)$ represented by the trail.
 For example, a decision in the interval domain restricts the range of 
 intervals for variables.
 %
-We set the corresponding entry in the reason trail $\reasons$ to $\top$
-\rmcmt{to mark it as a decision.}
+We set the corresponding entry in the reason trail $\reasons$ to $\top$ 
+to mark it as a decision.
 % so the analysis jumps under a 
 %greatest fixed-point \pscmt{???}. Note that the widening operation in abstract interpretation 
 %jumps above a least fixed-point, so decisions can be viewed as 
@@ -104,7 +104,7 @@ taking into account the current decision.  The model search phase
 alternates between the decision and deduction until $\deduce$ returns
 either \textsf{sat} or \textsf{conflict}.  In the former case, we have
 found an abstract value that represents models of $\formula$, which
-are counterexamples to the safety problem, and thus \rmcmt{we or ACDCL} return
+are counterexamples to the safety problem, and thus ACDCL return
 \textsf{unsafe}.
 %
 % has found an abstract value that represents a set of models of $\formula$ or the
@@ -128,7 +128,7 @@ backtracks by removing the content of $\trail$ up to a point where it does not
 conflict with $\conflictset$.  ACDCL then performs deductions with the learnt 
 transformer.  If $\analyzeconflict$ returns $\false$ then no further
 backtracking is possible.  Thus, the $\formula$ is unsatisfiable
-and \rmcmt{we or ACDCL} return \textsf{safe}.
+and ACDCL return \textsf{safe}.
 
 % A learnt clause must include asserting cuts which guarantees
 % derivation of new meet irreducibles after backtracking. The clause
