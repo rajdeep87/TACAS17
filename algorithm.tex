@@ -69,6 +69,13 @@ $\abs(\trail)=\bigsqcap_{m \in \trail}m$ with
 $\abs(\trail)=\top$ if $\trail$ is the empty sequence $\langle\rangle$.
 \end{definition}
 %
+\rmcmt{
+\begin{definition} 
+An abstract value $v$ is $\gamma$-complete if all concrete values in 
+$\gamma(v)$ satisfy $\formula$.  
+\end{definition}
+}
+%
 The procedure $\deduce$ computes a greatest fixed point over the
 transformers in $\abstransset$ that refines the abstract value,
 similar to the BCP step in SAT solvers.  If the result of $\deduce$
