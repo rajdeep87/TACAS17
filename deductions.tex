@@ -104,21 +104,28 @@ literal.
 %-------------------------------------------------------------------------------
 \subsection{Abstract Deduction Transformers} \label{sec:abst}
 %-------------------------------------------------------------------------------
-
+\Omit{
 To make our algorithm efficient, we have to focus the abstract
 transformers on performing only the minimally necessary
 work. 
+}
+\rmcmt{The key considerations for building an abstract transformer are 
+precision and efficiency.  An efficient transformer is less precise, 
+and vice-versa.  Our propagation strategy provides a domain-dependant 
+heuristic choice to control these variants.}
 %
 We thus define a specialised variant of the abstract transformer to compute
 deductions w.r.t.\ a given subdomain $\subdomain\subseteq \domain$,
 which we call \emph{abstract deduction transformer}.
 %
-A subdomain contains a chosen subset of the elements in $\domain$ including $\bot$ and $\top$
+A subdomain contains a chosen subset of the elements in $\domain$ including
+$\bot$ and $\top$, \rmcmt{which forms a lattice structure}.  An abstract 
+deduction transformer is formally defined as follows. 
 \begin{equation}\label{eq:at2}
 \abstrans{\domain}{\constraint}^\subdomain(\absval)=\absval\meet_\domain \alpha_\subdomain(\{\val\mid \val\in\gamma_\domain(\absval), \val\models \constraint\})
 \end{equation}
-For $\subdomain=\domain$, the abstract deduction transformer behaves 
-in the same way as the abstract transformer defined in Eq.~\ref{eq:abstrans} 
+For $\subdomain=\domain$, the abstract deduction transformer is identical 
+to the abstract transformer defined in Eq.~\ref{eq:abstrans} 
 in Section~\ref{sec:domains}.
 
 %We construct the subdomain from a set of variables $\vars$ such that $\subdomain_\domain(\vars)$ is the set of meet irreducibles $\in \domain$ that contain at last one variable in $\vars$ and most one variable that is not in $\vars$. \pscmt{split into two parts}
@@ -126,9 +133,11 @@ in Section~\ref{sec:domains}.
 %For example, $\subdomain=\domain[\{y\}]$ being the octagons domain over variables $\{x,y,z\}$ contains all octagonal meet irreducibles involving $\{y\}$, and the pairs $\{x,y\}$ and $\{y,z\}$, but not the meet irreducibles\pscmt{wrong} over $\{x\}$, $\{z\}$ and~$\{x,z\}$.
 
 %The first advantage of this definition is that 
-\rmcmt{This parameterisation of the abstract deduction transformer with a $\subdomain$ 
-allow us to guide the propagation in {\em forward}, {\em backward} or {\em
-multi-way} direction.}
+\rmcmt{
+This parameterisation of the abstract deduction transformer with a subdomain 
+$\subdomain$ allow us to guide the propagation in {\em forward}, {\em backward} 
+or {\em multi-way} direction.
+}
 %using our abstract transformers.
 %we can control how we perform 
 %
@@ -143,11 +152,18 @@ We call the propagation with arbitrary subdomains,
 e.g. $\subdomain=\domain$, \emph{multi-way propagation}, which is able
 to simultaneously perform forward and backward propagation.
 %
-Note that the restriction to a subdomain makes the transformer less
-precise. Therefore, we have the property
+\Omit{
+Note that a restriction to a subdomain makes a transformer less
+precise.
+}
+Note that a restricted subdomain makes a transformer less precise, but more
+efficient.  On the contrary, an unrestricted subdomain make a transformer more 
+precise, but less efficient. Therefore, we have the property
 $\abstrans{\domain}{\constraint}^\domain(\absval)\sqsubseteq
 \abstrans{\domain}{\constraint}^\subdomain(\absval)$.
-However, the choice of a subdomain makes the deductions more efficient.
+%However, the choice of a subdomain makes the deductions more efficient.
+\rmcmt{Thus, a choice of subdomain helps to fine-tune the deduction inferred from a 
+propagation phase.}
 
 \paragraph {\textbf{Lazy closure computation}} 
 Computing closure for relational domains, such as octagons is extremely

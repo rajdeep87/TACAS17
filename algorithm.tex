@@ -18,7 +18,7 @@
 \SetKw{KwNot}{not}
 \begin{small}
 \Input{A program in the form of a set of abstract transformers $\abstransset$.}
-\Output{The status \safe or \unsafe, and a counterexample if \unsafe.}
+\Output{The status \safe or \unsafe, \rmcmt{and a counterexample if \unsafe.}}
 $\trail \leftarrow \langle\rangle$ \;
 $\reasons \leftarrow []$ \;
 $\mathit{result} \leftarrow \deduce_{\propheur}(\abstransset,\trail,\reasons)$ \;
@@ -45,24 +45,30 @@ $\mathit{result} \leftarrow \deduce_{\propheur}(\abstransset,\trail,\reasons)$ \
 %
 %\subsection{Algorithm for Abstract Conflict Driven Clause Learning}
 Algorithm~\ref{Alg:acdcl} presents an overview of the ACDCL algorithm.
-The input to the algorithm is a program in the form of the set of its abstract transformers $\abstransset$ w.r.t.\ an abstract domain~$\domain$. The algorithm is parametrised by propagation, decision, and conflict analysis
-heuristics.  
+The input to the algorithm is a program in the form of the set of its 
+abstract transformers $\abstransset$ w.r.t.\ an abstract domain~$\domain$.  
+The algorithm is parametrised by propagation \rmcmt{$(\propheur)$}, decision
+$(\decheur)$, and conflict analysis heuristics $(\confheur)$.  
 %\rmcmt{Approximation of the concrete transformers in 
 %$\abstransset$ are typically available in abstract domain in the 
 %form of strongest-post condition or weakest pre-condition. } 
-It maintains a propagation
-trail $\trail$ and a reason trail $\reasons$.
-The propagation trail is an initially empty sequence of meet
-irreducibles inferred by the abstract model search phase (deductions
-and decisions). The reason trail maps the elements of the
-propagation trail to transformers $\abstrans\in\abstransset$ that were used to
-derive them. The \emph{abstract value} $\abs(\trail)$
-corresponding to the propagation trail $\trail$ is the
-conjunction of the meet irreducibles on the trail:
+The algorithm begins with an empty propagation trail $\trail$ and 
+a reason trail $\reasons$.
+%The propagation trail is initialized with an empty sequence.  
+The propagation trail stores all meet irreducibles inferred by 
+the abstract model search phase (deductions and decisions).  
+The reason trail maps the elements of the propagation trail to 
+transformers $\abstrans\in\abstransset$ that were used to
+derive them. 
+%
+\begin{definition} 
+The \emph{abstract value} $\abs(\trail)$ corresponding to 
+the propagation trail $\trail$ is the conjunction of the 
+meet irreducibles on the trail:
 $\abs(\trail)=\bigsqcap_{m \in \trail}m$ with
-$\abs(\trail)=\top$ if $\trail$ is the empty
-sequence $\langle\rangle$.
-
+$\abs(\trail)=\top$ if $\trail$ is the empty sequence $\langle\rangle$.
+\end{definition}
+%
 The procedure $\deduce$ computes a greatest fixed point over the
 transformers in $\abstransset$ that refines the abstract value,
 similar to the BCP step in SAT solvers.  If the result of $\deduce$
@@ -76,8 +82,9 @@ meet irreducible $\decisionvar$.
 %  be $\gamma$-complete} 
 %
 We concatenate $\decisionvar$ to the
-trail $\trail$.  The decision $\decisionvar$ therefore refines the current
-abstract value $\abs(\trail)$ represented by the trail.
+trail $\trail$.  The decision $\decisionvar$ therefore refines \rmcmt{not
+defined} the current abstract value $\abs(\trail)$ represented by the trail. 
+\rmcmt{a decision is added to the trail only if it refines the trail.}
 % WE ExPLAIN THAT LATER
 %However, $\decisionvar$ must be consistent with the state of the
 %solver, i.e. $\abs(\trail\cdot \decisionvar)\neq \bot$.
@@ -86,7 +93,7 @@ For example, a decision in the interval domain restricts the range of
 intervals for variables.
 %
 We set the corresponding entry in the reason trail $\reasons$ to $\top$
-to mark it as a decision.
+\rmcmt{to mark it as a decision.}
 % so the analysis jumps under a 
 %greatest fixed-point \pscmt{???}. Note that the widening operation in abstract interpretation 
 %jumps above a least fixed-point, so decisions can be viewed as 
@@ -97,7 +104,7 @@ taking into account the current decision.  The model search phase
 alternates between the decision and deduction until $\deduce$ returns
 either \textsf{sat} or \textsf{conflict}.  In the former case, we have
 found an abstract value that represents models of $\formula$, which
-are counterexamples to the safety problem, and thus we return
+are counterexamples to the safety problem, and thus \rmcmt{we or ACDCL} return
 \textsf{unsafe}.
 %
 % has found an abstract value that represents a set of models of $\formula$ or the
@@ -115,12 +122,13 @@ phase to learn the reason for the conflict.   There can be multiple
 incomparable reasons for conflict.
 % \pscmt{do you have to explain this here?} -- based on the choice of Unique
 %Implication Point (UIP)~\cite{cdcl}.  
-ACDCL heuristically chooses one reason and learns it by adding at as
-an abstract transformer to $\abstransset$. Then it backtracks by
-removing the tail of the $\trail$ up to a point where it becomes
-consistent, and continues making deductions from there.
-If $\analyzeconflict$ returns $\false$ then $\formula$ is unsatisfiable
-and we return  \textsf{safe}.
+ACDCL heuristically chooses one reason $\conflictset$ and learns it 
+by adding it as an abstract transformer to $\abstransset$. The algorithm 
+backtracks by removing the content of $\trail$ up to a point where it does not 
+conflict with $\conflictset$.  ACDCL then performs deductions with the learnt 
+transformer.  If $\analyzeconflict$ returns $\false$ then no further
+backtracking is possible.  Thus, the $\formula$ is unsatisfiable
+and \rmcmt{we or ACDCL} return \textsf{safe}.
 
 % A learnt clause must include asserting cuts which guarantees
 % derivation of new meet irreducibles after backtracking. The clause
