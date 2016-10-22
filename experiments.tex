@@ -22,10 +22,11 @@ using v2c~\cite{mtk2016}, (c)~controller code generated from Simulink
 (d)~several hand-crafted benchmarks for equivalence checking and bounded
 loop analysis.  All bounded loops are completely unrolled before analysis. 
 We compare our tool with a state-of-the-art SAT-based bounded model checker
-CBMC~\cite{cbmc} and a commercial static analysis tool, Astr{\'e}e. 
-\dkcmt{INSERT VERSION NUMBERS OF CBMC AND ASTREE.} CBMC uses MiniSAT in the
-backend.  Astr{\'e}e uses a range of abstract domains, which includes
-interval, bit-field, congruence, trace partitioning and relational domains
+CBMC (version 5.5)~\cite{cbmc} and a commercial static analysis tool, 
+Astr{\'e}e (version 14.10). 
+CBMC uses MiniSAT~2.2.1 in the backend.  Astr{\'e}e uses a 
+range of abstract domains, which includes interval, 
+bit-field, congruence, trace partitioning and relational domains
 (octagons, polyhedra, zones, equalities, filter).  ACDCL is instantiated
 with a product domain of booleans and template polyhedra.  We use the
 interval and octagon templates for our experiments.  ACDCL is configured
