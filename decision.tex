@@ -15,8 +15,10 @@ $\{x \leq y)$.  A decision must always be consistent with respect to
 the trail $\trail$, i.e.\ $\abs(\trail\cdot \decisionvar)\neq \bot$.  
 A new decision always increases the decision level by one. 
 
-\rmcmt{We call a \emph{singleton} a meet irreducible which does represent a
+\rmcmt{We call a \emph{singleton} a meet irreducible which does not represent a
 valid decision ??}.
+Similarly, in a SAT solver, we cannot make a decision on a 
+variable that is already assigned $\true$ or $\false$.
 %
 For template polyhedra, singletons are the meet irreducibles
 corresponding to a pair of rows $\vec{c}_1,\vec{c}_2$ in matrix
@@ -28,9 +30,8 @@ A singleton in the interval domain corresponds to a singleton interval
 such as $x\leq 1 \wedge -x\leq -1$ For the octagon domain, $1 \leq x-y
 \leq 1$ is a singleton.
 %
-We cannot make decisions for template rows of singletons because there
-is no choice left. Similarly, in a SAT solver, we cannot make a
-decision on a variable that is already assigned $\true$ or $\false$.
+%We cannot make decisions for template rows of singletons because there
+%is no choice left. 
 %
 Note that for relational domains singletons do not necessarily
 concretise to singleton sets of concrete values for the variables
