@@ -311,7 +311,7 @@ number of program variables).
 An abstract transformer $\abstrans{\domain}{\constraint}$ transforms an abstract value $\absval$ through a
 constraint $\constraint$, i.e.\ it \emph{deduces} information from $\absval$ and $\constraint$.
 The best abstract transformer is 
-\begin{equation}
+\begin{equation}\label{eq:abstrans}
 \abstrans{\domain}{\constraint}(\absval)=\absval\meet\alpha(\{\val\mid \val\in\gamma(\absval), \val\models \constraint\})
 \end{equation}
  where we write 
