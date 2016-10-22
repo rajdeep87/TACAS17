@@ -111,12 +111,14 @@ transformers on performing only the minimally necessary
 work. 
 %
 We thus define a specialised variant of the abstract transformer to compute
-deductions w.r.t.\ a given subdomain $\subdomain\subseteq \domain$.
+deductions w.r.t.\ a given subdomain $\subdomain\subseteq \domain$,
+which we call \emph{abstract deduction transformer}.
+%
 A subdomain contains a chosen subset of the elements in $\domain$ including $\bot$ and $\top$
 \begin{equation}\label{eq:at2}
 \abstrans{\domain}{\constraint}^\subdomain(\absval)=\absval\meet_\domain \alpha_\subdomain(\{\val\mid \val\in\gamma_\domain(\absval), \val\models \constraint\})
 \end{equation}
-For $\subdomain=\domain$, the abstract transformer behaves in the same way as the one defined in Section~\ref{sec:domains}.
+For $\subdomain=\domain$, the abstract deduction transformer behaves in the same way as the abstract transformer defined in Eq.~\ref{eq:abstrans} in Section~\ref{sec:domains}.
 
 %We construct the subdomain from a set of variables $\vars$ such that $\subdomain_\domain(\vars)$ is the set of meet irreducibles $\in \domain$ that contain at last one variable in $\vars$ and most one variable that is not in $\vars$. \pscmt{split into two parts}
 %
@@ -149,15 +151,27 @@ which is sufficient to perform one step of the closure operation each
 time the abstract transformer is applied.
 %
 For example, let us consider $\domain=\octagons[\{x,y,z\}]$ and
-$\vars=\{y\}$. \rmcmt{A binary} octagon \rmcmt{element} relate at 
+$\vars=\{y\}$. An octagonal inequality relates at 
 most two variables. Thus it is sufficient to consider the subdomain
 $\makesubdomain_\domain(\{y\})=\octagons[\{y\}]\cup\octagons[\{x,y\}]\cup\octagons[\{y,z\}]$,
-which will compute the one-step transitive relations of $y$ with each
-of the other variables. If this indeed affects $x$ and $z$ then their
+which will compute the one-step transitive relations of~$y$ with each
+of the other variables. 
+%
+\Omit{
+%TODO
+Hence, we do not compute the full closure in the full 
+domain $\octagons[\{x,y,z\}]$, but we compute only a single step of the closure when the abstract deduction transformer is applied.
+%
+Only if $\abstrans^\subdomain$ deduces new information about $x$ or $z$
+then the next step of the closure will be 
+}
+If this indeed affects $x$ and~$z$ then their
 relations will be inferred in a later step of the propagation
-algorithm, thus gradually computing the closure. Note that this might
-increase the number of propagation steps, but it reduces the size of
-the domain used in the abstract transformer.
+algorithm, thus gradually computing the closure. 
+
+%Note that this might
+%increase the number of propagation steps, but it reduces the size of
+%the subdomain used in the abstract deduction transformer.
 
 %Moreover, we want to know what the reasons for a specific deduction are.
 %\[ded(s,a,L)=\{R\rightarrow d\mid R=reasons(s,a,L,d), d \in decomp(\llbracket s \rrbracket^\sharp(a,L))\}\]
@@ -173,34 +187,37 @@ Algorithm~\ref{Alg:ms} presents the deduction phase $\deduce$ in
 abstract model search procedure.  The input to the algorithm is 
 the set of abstract transformers, a propagation trail and a reason 
 trail.  Additionally, the procedure $\deduce$ is parameterised with 
-a propagation heuristic.  The propagation heuristics provides two 
-functions $\initworklist$ and $\updateworklist$.  Given a set of 
-variables in the \rmcmt{constraint system}, a subdomain is essentially a 
-subset of variables \rmcmt{how we are defining subdomain?} that guides the propagations in forward, 
-backward or multi-way.  For example, the subdomain consist of variables 
-in lhs in forward propagation heuristic.  For backward, the subdomain 
-consist of variables in rhs, whereas the subdomain contains all variables 
-for multi-way propagation.  A {\em worklist} is a queue which contains 
-a set of abstract deduction transformers.  
-The initWorklist initializes the worklist 
-following a heuristics choice for propagation strategies.  A {\em forward} 
-propagation strategy initializes the worklist with abstract deduction 
-transformers that contains constants in the right-hand side. Whereas, a 
-{\em backward} iteration strategy starts with a set of assertions. On the 
-other hand, a {\em multi-way} iteration strategy initializes the worklist 
-with set of all transformers and performs both forward and backward 
-propagations in tandem.  \rmcmt{wrong to say abstract deduction transformer that 
-has lhs, rhs since since it also includes the live variables}. 
+a propagation heuristic. 
+%
+The algorithm maintains a  {\em worklist}, which is a queue that contains 
+abstract deduction transformers.  
+The propagation heuristics provides two 
+functions $\initworklist$ and $\updateworklist$.
+The order of the elements in the worklist and the subdomains $\subdomain$
+attached to each of the abstract deduction transformers
+determine the propagation strategy (forward, backward, multi-way).
+%
+The {\em forward} propagation strategy initialises the worklist with
+abstract deduction transformers that contains constants in the
+right-hand side and the subdomain is constructed via $\makesubdomain$
+from variables in left-hand side of the equality constraints
+originating from the assignment statements in the program.
+%
+The {\em backward} iteration strategy intialises the worklist with the assertions and the subdomain is constructed from the right-hand side variables.
+%
+The {\em multi-way} iteration strategy initialises the worklist 
+with set of all transformers and each subdomain contains the variables occurring in the respective transformers.
 
-Given a constraint system and a domain, an updateWorklist function adds 
-new abstract deduction transformers to the worklist for those variables in 
-the subdomain that appear in newDeductions.  It also updates the subdomain of 
-existing abstract deduction transformers that are in the worklist. 
+Depending on the propagation heuristics $\updateworklist$ adds
+abstract deduction transformers to the worklist that contain variables
+that appear in $\newdeductions$.  It also updates the subdomains of
+existing abstract deduction transformers that are in the worklist.
 
 The function
 $\onlynew(\absval)=\bigsqcap(\decomp(\absval)\setminus\decomp(\abs(\trail)))$
-filters out all known meet irreducibles in the abstract value.
+filters out all meet irreducibles that are already on the trail.
 
+\Omit{
 For every abstract deduction transformer in the worklist, 
 the set of new meet irreducibles inferred by the domain is added 
 to the $\trail$.  Additionally, the reason trail $\reasons$ is 
@@ -215,3 +232,4 @@ $\gamma$-complete~\cite{dhk2013-popl}. If $v$ is $\gamma$-complete, that is, the
 abstract valuation $v$ is abstractly satisfying, the abstract model search 
 terminates with \textsf{sat}.  Otherwise, the algorithm returns \textsf{unknown} and the 
 model search procedure makes a new decision.    
+}
