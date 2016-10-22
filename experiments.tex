@@ -22,10 +22,11 @@ using v2c~\cite{mtk2016}, (c)~controller code generated from Simulink
 (d)~several hand-crafted benchmarks for equivalence checking and bounded
 loop analysis.  All bounded loops are completely unrolled before analysis. 
 We compare our tool with a state-of-the-art SAT-based bounded model checker
-CBMC~\cite{cbmc} and a commercial static analysis tool, Astr{\'e}e. 
-\dkcmt{INSERT VERSION NUMBERS OF CBMC AND ASTREE.} CBMC uses MiniSAT in the
-backend.  Astr{\'e}e uses a range of abstract domains, which includes
-interval, bit-field, congruence, trace partitioning and relational domains
+CBMC (version 5.5)~\cite{cbmc} and a commercial static analysis tool, 
+Astr{\'e}e (version 14.10). 
+CBMC uses MiniSAT~2.2.1 in the backend.  Astr{\'e}e uses a 
+range of abstract domains, which includes interval, 
+bit-field, congruence, trace partitioning and relational domains
 (octagons, polyhedra, zones, equalities, filter).  ACDCL is instantiated
 with a product domain of booleans and template polyhedra.  We use the
 interval and octagon templates for our experiments.  ACDCL is configured
@@ -61,7 +62,7 @@ conflicts compared to analyis using CBMC.
 \begin{tabular}{l|r|r|r|r|r}
 \hline
 Solver & Decisions & propagations & conflict & conflict literals & restarts \\ \hline
-SAT & 27917 & 304031 & 3949 & 33646 & 64 \\ \hline
+MiniSat & 27917 & 304031 & 3949 & 33646 & 64 \\ \hline
 ACDCL (Product Domain) & 161 & 3130 & 10 & 5 & 0 \\ \hline  
 \end{tabular}
 }
@@ -120,10 +121,11 @@ thus allowing the heuristics to choose the decison variable among the set of lea
 \paragraph {\textbf{Learning}}
 %
 Learning has a significant influence on the runtime of ACDCL.  We compare
-the UIP-based learning technique with an analysis that performs
-chronoligical backtracking without learning.  The effect of UIP computation
-allows ACDCL to backtrack non-chronologically and guide the model search
-with a learnt transformer.  However, the DPLL-style analysis exhibits
-case-enumeration behavior and could not finish within the time bound for
-20\% of our benchmarks.
+the UIP-based learning technique with an analysis that performs DPLL-style 
+analysis.
+%chronoligical backtracking without learning.  
+The effect of UIP computation allows ACDCL to backtrack non-chronologically 
+and guide the model search with a learnt transformer.  However, the DPLL-style 
+analysis exhibits case-enumeration behavior and could not finish within the 
+time bound for 20\% of our benchmarks.
 
