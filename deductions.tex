@@ -67,11 +67,9 @@ $\worklist \leftarrow \initworklist_{\propheur}(\abstransset)$ \;
 \While{$!\mathit{worklist.empty}()$} 
 {
   $\abstransel{\subdomain} \leftarrow \mathit{worklist.pop}()$ \; 
-  \rmcmt{how do we get the $\subdomain$ at this point ?}
   $\newdeductions \leftarrow \onlynew(\abstransel{\subdomain}(\abs(\trail)))$\;
   \uIf{$\newdeductions = \bot$} {
-    $\reasons[\bot] \leftarrow \abstransel{\subdomain}$ \rmcmt{shouldn't this be
-    just $\abstransset$} \;
+    $\reasons[\bot] \leftarrow \abstransel{\subdomain}$ \;
     $\mathit{worklist.clear}()$ \;
     \return \conflict \;
   }
@@ -95,18 +93,19 @@ $\worklist \leftarrow \initworklist_{\propheur}(\abstransset)$ \;
 A model search procedure in a SAT solver involves two steps -- {\em deductions} 
 using the unit rule refines current partial assignments and 
 {\em decisions} to heuristically guess a value for an unassigned 
-literal.  The unit rule overapproximates a model transformer and deduction 
-computes a greatest fixed point over the partial assignments
-domain~\cite{dhk2013-popl}.  We present an abstract model search procedure 
-that computes a greatest fixed point over meet irreducible deduction 
-transformer in $S$ \pscmt{???}.  
+literal.  
+%The unit rule overapproximates a model transformer and deduction 
+%computes a greatest fixed point over the partial assignments
+%domain~\cite{dhk2013-popl}.  We present an abstract model search procedure 
+%that computes a greatest fixed point over meet irreducible deduction 
+%transformer in $S$.  
 %
 
 %-------------------------------------------------------------------------------
 \subsection{Abstract Deduction Transformers} \label{sec:abst}
 %-------------------------------------------------------------------------------
 
-To make our algorithm efficient, we have to focus abstract
+To make our algorithm efficient, we have to focus the abstract
 transformers on performing only the minimally necessary
 work. 
 %
@@ -208,28 +207,20 @@ The {\em backward} iteration strategy intialises the worklist with the assertion
 The {\em multi-way} iteration strategy initialises the worklist 
 with set of all transformers and each subdomain contains the variables occurring in the respective transformers.
 
-Depending on the propagation heuristics $\updateworklist$ adds
+Depending on the propagation heuristics, $\updateworklist$ adds
 abstract deduction transformers to the worklist that contain variables
-that appear in $\newdeductions$.  It also updates the subdomains of
-existing abstract deduction transformers that are in the worklist.
+that appear in $\newdeductions$, and it updates the subdomains of
+the abstract deduction transformers in the worklist 
+to include the variables in $\newdeductions$.
 
 The function
 $\onlynew(\absval)=\bigsqcap(\decomp(\absval)\setminus\decomp(\abs(\trail)))$
-filters out all meet irreducibles that are already on the trail.
+is used to filter out all meet irreducibles that are already on the trail
+in order to obtain only new deductions when applying the abstract deduction transformer.
 
-\Omit{
-For every abstract deduction transformer in the worklist, 
-the set of new meet irreducibles inferred by the domain is added 
-to the $\trail$.  Additionally, the reason trail $\reasons$ is 
-updated with the corresponding abstract transformer as the reason for inferring 
-those new meet irreducibles.  If a conflict is deduced, 
-%that is, $\mathit{meet\_irrd} = \bot$ is inferred by the domain, 
-the algorithm terminates with \textsf{conflict}.  However,
-when a fixed-point is reached, the abstract value $v$ computed from 
-the trail is checked for set of models.  This is determined by 
-checking whether the set of assignments in $v$ is 
-$\gamma$-complete~\cite{dhk2013-popl}. If $v$ is $\gamma$-complete, that is, the 
-abstract valuation $v$ is abstractly satisfying, the abstract model search 
-terminates with \textsf{sat}.  Otherwise, the algorithm returns \textsf{unknown} and the 
+If $\bot$ is deduced we return \textsf{conflict}.
+Otherwise, when eventually a fixed point has been reached, i.e.\ the worklist is empty, then the abstract value $\abs(\trail)$ is checked whether it is 
+$\gamma$-complete~\cite{dhk2013-popl}. It is $\gamma$-complete if all concrete values in $\gamma(\abs(\trail))$ satisfy $\formula$.
+Otherwise, the algorithm returns \textsf{unknown} and the 
 model search procedure makes a new decision.    
-}
+
