@@ -3,52 +3,51 @@
 %%%%%%%%%%%%%%%%%%%%%%% AI %%%%%%%%%%%%%%%%%%%%%%%%
 %
 Static program analysis based on abstract interpretation~\cite{CC77} has
-been widely used to verify certain classes of properties for safety-critical
-systems.  A standard static analyses~\cite{se2011} for program safety aims
-to compute invariants as fixed-points of abstract transformers.  Most
-lattice structure used in static analysis have meet and join operations. 
-The meet operation precisely model conjunction, and the join operation
-over-approximate disjunction.  Thus, the precision loss in static analysers
-is often due to imprecise join operations.  The loss in precision is
-overcome by using richer abstract domains or equipping the analysis with
-disjunction -- which is often very expensive since the analysis exhibit case
+been widely used to verify of properties of safety-critical systems. 
+Standard static analyses~\cite{se2011} aim to compute program invariants as
+fixed-points of abstract transformers.  Abstract states are chosen from a
+lattice that has meet and join operations.  The meet precisely models set
+intersection (or conjunction, taking a logical view), and the join
+over-approximates set union (or disjunction).  The over-approximation in the
+join operation is a key cause of loss of precision, which yields false
+alarms.  Standard means to address false alarms in static analysis are
+richer abstract domains or equipping the analysis with more precise set
+unions -- which is often very expensive since the analysis exhibits case
 enumeration behaviour.
-%
+
 %%%%%%%%%%%%%%%%%%%%%%% ACDCL %%%%%%%%%%%%%%%%%%%%%
 %
-On the other hand, the combination of precise conjunction in a partial
-assignments domain with learning allows Conflict Driven Clause Learning
-(CDCL)~\cite{cdcl} based satisfiability (SAT) solvers to reason about
-disjunction without enumerating cases.  Silva et al.~\cite{tacas12, sas12,
-dhk2013-popl} presented a formal recipe for applying abstract interpretation
-to solve the satisfiability problem.  \cite{dhk2013-popl} provide a
-generalisation of CDCL algorithm called, {\em Abstract Conflict Driven
-Clause Learning} (ACDCL), in terms of deduction and abduction transformers,
-fixed-point, interpolation and extrapolation operators on lattices.  The
-partial assignments in the CDCL algorithm are an abstract domain, unit rule
-is the best abstract transformer, Boolean Constraint Propagation (BCP)
-computes a greatest fixed-point over the abstract domain, decision is dual
-widening and clause learning can be viewed as synthesising an abstract
-transformer for negation.
-%
-%Thus, ACDCL lifts learning techniques in SAT solver to operate on a non-distributive lattice -- thus equipping the analysis with negation. 
-This enables the
-analyser to refine the analysis and prevent enumeration behaviour.
+On the other hand, propositional SAT solvers are known to be highly
+effective for solving complex propositional formulae, and are frequently
+able to avoid enumerating the exponential number of cases.  The impressive
+performance of modern solvers is credited to well-tuned decision heuristics
+and clause learning algorithms in modern solvers.  Collectively, these
+algorithms are referred to as \emph{Conflict Driven Clause Learning}
+(CDCL)~\cite{cdcl}. The idea to lift these algorithms from the Boolean
+domain to richer, arithmetic domains suggests itself.
 
-ACDCL has so far been instantiated as a floating-point decision
-procedure~\cite{DBLP:journals/fmsd/BrainDGHK14} and a program analyser that
-only uses interval constraints~\cite{tacas12}.  Hence, the analysis is
-limited to bounds checking in simple numerical programs.  However,
-verification of certain class of programs require more expressive domains
-like octagons or equalities or polyhedra.  These domains capture interesting
-properties of programs which intervals can not express.  In this paper, we
-identify specific properties of the CDCL algorithm that are necessary to
-lift the propositional skeleton of CDCL to relational abstract domains such
-as template polyhedra domains~\cite{sriram} (octagons, zones and
-equalities).  
-\Omit {
-To this end, we present a characterisation of abstract model
-search procedure and conflict analysis procedure that lift the abstract
-deduction transformer and the conflict analysis procedure to relational
-lattice structures.
+\emph{Abstract Conflict Driven Clause Learning} (ACDCL)~\cite{dhk2013-popl}
+is one such generalisation of CDCL.  The partial satisfying assignments in
+CDCL algorithm are generalized to be chosen from a given abstract domain. 
+The unit rule is the best abstract transformer, Boolean Constraint
+Propagation (BCP) computes a greatest fixed-point over the abstract domain,
+decision is dual widening and clause learning can be viewed as synthesising
+an abstract transformer for negation.  This enables an ACDCL-based analyser
+to refine an imprecise analysis and thus prevents enumeration behaviour. 
+ACDCL has so far been instantiated as a decision procedure for
+floating-point arithmetic~\cite{DBLP:journals/fmsd/BrainDGHK14} and a
+program analyser that reasons using interval~\cite{tacas12}.  Hence, the
+existing ACDCL instances are limited to bounds checking in numerical
+programs.
+
+Evidently, the verification of many programs requires more expressive
+domains like octagons or equalities or polyhedra.  These domains capture
+interesting properties of programs that intervals can not express.  In this
+paper, we identify specific modifications to the CDCL algorithm that are
+necessary to lift propositional CDCL to relational abstract domains such as
+octagons, zones and equalities over numerical variables.
+\Omit { To this end, we
+present a characterisation of an abstract model search procedure and a
+conflict analysis procedure that lift the abstract deduction transformer and
+the conflict analysis procedure to relational lattice structures.
 }
