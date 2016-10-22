@@ -10,13 +10,13 @@ relational domains may involve several variables.
 %where $x$ and $y$ are variables, $a,b \in \{-1,0,1\}$ are co-efficients, 
 %and $c \in \mathbb{R}\cup\{\infty\}$ is the bound of the inequality.  
 %
-Hence, a decision can specify a relation between variables, for example 
+Hence, a decision can specify relation between variables, for example 
 $\{x \leq y)$.  A decision must always be consistent with respect to 
 the trail $\trail$, i.e.\ $\abs(\trail\cdot \decisionvar)\neq \bot$.  
 A new decision always increases the decision level by one. 
 
-We call a \emph{singleton} a meet irreducible which does represent a
-valid decision.
+\rmcmt{We call a \emph{singleton} a meet irreducible which does represent a
+valid decision ??}.
 %
 For template polyhedra, singletons are the meet irreducibles
 corresponding to a pair of rows $\vec{c}_1,\vec{c}_2$ in matrix
@@ -54,7 +54,7 @@ returns a non-singleton meet irreducible.
 %Let $\mathcal{V}$ be a set of all singletons and non-singletons.  
 %Otherwise, the variable is non-singleton 
 
-We implemented several decision heuristics namely, {\em ordered}, 
+We have implemented several decision heuristics namely, {\em ordered}, 
 {\em longest-range}, {\em random} and the 
 {\em Berkmin}~\cite{eugoldberg07} decision heuristics.  
 The {\em ordered} decision heuristics creates an ordering among non-singleton 
@@ -74,7 +74,7 @@ since it guarantees that the intervals of meet irreducibles are
 uniformly restricted.
 %
 The {\em random} decision heuristics arbitrarily picks a meet irreducible  
-for making decision. %\pscmt{uniformly?}
+for making decision. \pscmt{uniformly?}
 %
 %The {\em relational} decision heuristics is only relevant for relational 
 %abstract domains.  
