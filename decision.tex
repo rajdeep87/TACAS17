@@ -55,13 +55,13 @@ returns a non-singleton meet irreducible.
 %Otherwise, the variable is non-singleton 
 
 We implemented several decision heuristics namely, {\em ordered}, 
-{\em longest-range}, \pscmt{are these two combined?} {\em random} and the
+{\em longest-range}, {\em random} and the 
 {\em Berkmin}~\cite{eugoldberg07} decision heuristics.  
 The {\em ordered} decision heuristics creates an ordering among non-singleton 
 meet irreducibles, thereby making decisions on meet irreducibles that involve 
 conditional variables (variables that appear in conditional branches) first 
 before choosing meet irreducibles with numerical variables.  
-The ordering heuristic is similar to trace partitioning~\cite{toplas07}. \pscmt{what is this?}  
+The ordered heuristic is similar to trace partitioning~\cite{toplas07}.
 
 The {\em longest-range} heuristics simply keeps track of the bounds
 $numabsval_l,numabsval_u$ of matching template rows $\numabsval_l\leq
@@ -74,7 +74,7 @@ since it guarantees that the intervals of meet irreducibles are
 uniformly restricted.
 %
 The {\em random} decision heuristics arbitrarily picks a meet irreducible  
-for making decision. \pscmt{uniformly?}
+for making decision. %\pscmt{uniformly?}
 %
 %The {\em relational} decision heuristics is only relevant for relational 
 %abstract domains.  
