@@ -182,7 +182,7 @@ The abstraction function is defined as $\alpha(\numconcval) = \min \{\vec{\numab
 \mat{C}\vec{\numvar}\leq\vec{\numabsval}, \vec{\numvar}\in \numconcval\}$ where $\min$ is applied
 component-wise. There are several optimisation-based
 techniques~\cite{sriram,GS07b,BJKS15} for computing the domain
-operations, such as $\meet$, $\sqcup$, etc. In our implementation we
+operations, such as \rmcmt{meet($\meet$), join($\sqcup$)}, etc. In our implementation we
 use the strategy iteration approach available in 2LS~\cite{BJKS15}.
 %
 The concretisation $\gamma(\vec{\numabsval})$ is the set $\{\vec{\numvar}\mid
