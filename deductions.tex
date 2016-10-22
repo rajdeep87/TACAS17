@@ -111,23 +111,24 @@ transformers on performing only the minimally necessary
 work. 
 }
 \rmcmt{The key considerations for building an abstract transformer are 
-precision and efficiency.  An efficient transformer is less precise, 
-and vice-versa.  Our propagation strategy provides a domain-dependant 
-heuristic choice to control these variants.}
+precision and efficiency.  An precise transformer is usually less efficient, 
+and vice-versa.  We provide a parameterised abstract transformer that allows us to 
+control precision and efficiency through propagation heuristics. }
 %
 We thus define a specialised variant of the abstract transformer to compute
 deductions w.r.t.\ a given subdomain $\subdomain\subseteq \domain$,
 which we call \emph{abstract deduction transformer}.
 %
 A subdomain contains a chosen subset of the elements in $\domain$ including
-$\bot$ and $\top$, \rmcmt{which forms a lattice structure}.  An abstract 
+$\bot$ and $\top$, \rmcmt{which forms a lattice}.  An abstract 
 deduction transformer is formally defined as follows. 
 \begin{equation}\label{eq:at2}
 \abstrans{\domain}{\constraint}^\subdomain(\absval)=\absval\meet_\domain \alpha_\subdomain(\{\val\mid \val\in\gamma_\domain(\absval), \val\models \constraint\})
 \end{equation}
 For $\subdomain=\domain$, the abstract deduction transformer is identical 
 to the abstract transformer defined in Eq.~(\ref{eq:abstrans})
-in Section~\ref{sec:domains}.
+in Section~\ref{sec:domains}.  We denote $\abstrans{\domain}{\constraint}^\subdomain$
+as $\abstransel{\subdomain}$.
 
 %We construct the subdomain from a set of variables $\vars$ such that $\subdomain_\domain(\vars)$ is the set of meet irreducibles $\in \domain$ that contain at last one variable in $\vars$ and most one variable that is not in $\vars$. \pscmt{split into two parts}
 %
@@ -163,8 +164,8 @@ precise, but less efficient. Therefore, we have the property
 $\abstrans{\domain}{\constraint}^\domain(\absval)\sqsubseteq
 \abstrans{\domain}{\constraint}^\subdomain(\absval)$.
 %However, the choice of a subdomain makes the deductions more efficient.
-\rmcmt{Thus, a choice of subdomain helps to fine-tune the deduction inferred from a 
-propagation phase.}
+\rmcmt{Thus, the choice of a subdomain helps to fine-tune the deductions 
+during the propagation phase.}
 
 \paragraph {\textbf{Lazy closure computation}} 
 Computing closure for relational domains, such as octagons is extremely
@@ -173,9 +174,9 @@ Eq.~(\ref{eq:at2}) is that
 %we can compute the
 the \emph{closure} operation for relational domains can be computed 
 in a lazy manner. To this end, we construct a subdomain 
-$\subdomain=\makesubdomain_\domain(\subvars)$ which is sufficient 
-to perform one step of the closure operation each
-time the abstract \rmcmt{deduction} transformer is applied.
+$\subdomain=\makesubdomain_\domain(\subvars)$ for $\abstransel{\subdomain}$,
+which is sufficient to perform one step of the closure operation when 
+$\abstransel{\subdomain}$ is applied.
 %
 For example, let us consider $\domain=\octagons[\{x,y,z\}]$ and
 $\subvars=\{y\}$. An octagonal inequality relates at 
@@ -193,12 +194,11 @@ compute the full closure in the full domain,
 but we compute only a single step of the closure in a restricted
 domain, which makes single deduction steps more efficient.
 }
-\rmcmt{Hence, an application of abstract deduction transformer does not 
+Hence, an application of abstract deduction transformer does not 
 compute the full closure in the full domain, but compute only a 
 single step of the closure in a restricted domain, which makes each 
 deduction step more efficient.  Thus, we delay the closure operation 
-until the point where it is absolutely necessary to compute it, thereby 
-increasing the efficiency of the deductions.}
+until the point where it is absolutely necessary. 
 %
 \Omit{
 If $\abstransel{\subdomain}$ deduces new information about $x$ or $z$
@@ -234,10 +234,9 @@ a propagation heuristic ($\propheur$).
 The algorithm maintains a  {\em worklist}, which is a queue that contains 
 abstract deduction transformers.  The propagation heuristics provides two 
 functions $\initworklist$ and $\updateworklist$.
-The order of the elements in the worklist and the subdomains $\subdomain$
-attached \rmcmt{or associated} to each abstract deduction transformers 
-\rmcmt{($\abstransel{\subdomain}$)} determine the propagation strategy 
-(forward, backward, multi-way).
+The order of the elements in the worklist and the subdomain $\subdomain$ 
+associated with each abstract deduction transformer ($\abstransel{\subdomain}$) 
+determine the propagation strategy (forward, backward, multi-way).
 %
 The {\em forward} propagation strategy initialises the worklist with
 abstract deduction transformers that contains constants in the
@@ -250,8 +249,8 @@ with the assertions and the subdomain is constructed from the
 right-hand side variables.
 %
 The {\em multi-way} propagation strategy initialises the worklist 
-with set of all transformers and each \rmcmt{each or the corresponding ?} 
-subdomains contains the variables occurring in the respective transformers.
+with the set of all transformers and the corresponding subdomains 
+contains the variables occurring in the respective transformers.
 %
 Depending on the propagation heuristics, $\updateworklist$ adds
 abstract deduction transformers to the worklist that contain variables
@@ -275,16 +274,13 @@ $\gamma(\absval)$ satisfy $\formula$.
 \end{definition}
 %
 It is $\gamma$-complete if all concrete values in $\gamma(\abs(\trail))$ satisfy $\formula$.
-Otherwise, the algorithm returns \textsf{unknown} and the 
-model search procedure makes a new decision.    
+Otherwise, the algorithm returns \textsf{unknown} and ACDCL makes a new decision.    
 }
-\rmcmt{If $\abstransel{\subdomain}$ deduce $\bot$, then 
+If $\abstransel{\subdomain}$ deduce $\bot$, then 
 the procedure $\mathit{deduce}$ returns \textsf{conflict}.
 Otherwise, when a fixed point is reached, i.e.\ 
 the worklist is empty, then the abstract value $\abs(\trail)$ is checked 
 for $\gamma$-completeness~\cite{dhk2013-popl}.  If it is indeed 
-$\gamma$-complete, then $\mathit{deduce}$ returns \sat.  Otherwise, the 
-algorithm returns \textsf{unknown} and the abstract model search 
-procedure makes a new decision.    
-}  
+$\gamma$-complete, then $\mathit{deduce}$ returns \textsf{sat}.  Otherwise, the 
+algorithm returns \textsf{unknown} and ACDCL makes a new decision.    
   
