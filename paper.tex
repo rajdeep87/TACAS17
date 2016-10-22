@@ -62,35 +62,36 @@ Daniel Kroening\inst{1}\hskip 1em Tom Melham\inst{1}}
 %===============================================================================
 %
 \emph{Abstract Conflict-Driven Clause Learning} (ACDCL) is a generalisation
-of the well-known Conflict-Driven Clause Learning (CDCL) algorithm that is
-used in SAT solvers.  ACDCL alternates between a model search, which
+of the well-known CDCL algorithm that is used in SAT solvers.
+%
+\Omit {  ACDCL alternates between a model search, which
 performs over-approximate deduction with constraint propagation, and a
 conflict analysis, which performs under-approximate abduction with heuristic
 choice.
+}
 %
 ACDCL has been successfully used with non-relational abstract domains such
 as intervals to improve the performance of a floating-point decision
 procedure.  Whereas the propositional reasoning used in satisfiability 
 solvers can be rather easily lifted from the Boolean lattice to other 
-non-relational domains, lifting them to relational domains is 
+non-relational domains, application to relational domains is 
 challenging because of relational properties of deductions.
 %
 In this paper, we present the non-trivial liftings of the model search and
 conflict analysis algorithms for relational abstract domains.  We have
 implemented these algorithms inside the 2LS verification tool and
 instantiated our analyser over a template polyhedra domain to check safety
-properties of C programs.  We evaluate the performance of our analyser in
+properties of C programs.  We~evaluate the performance of our analyser in
 comparison with program verifiers that uses propositional-level solvers and
 a static analysis tool.
 %
-Experimental evidence suggest 
 \Omit {
 on a set of benchmarks drawn from bit-vector regression 
 in SV-COMP'16, bit-precise software models of hardware 
 circuits auto-generated from v2c tool, and several 
 bounds checking benchmarks 
 }
-a reduction of two orders of magnitude in the number of 
+We observe a reduction of two orders of magnitude in the number of 
 decisions and conflict analyses compared to a satisfiability 
 solver and higher precision compared to an abstract interpreter. 
 \Omit{
