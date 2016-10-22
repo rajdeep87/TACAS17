@@ -61,60 +61,58 @@
 
 %%% Program model
 
-\newcommand{\program}{\mathit{Program}}
-\newcommand{\assertions}{\mathit{Assertions}}
-\newcommand{\assertion}{\mathit{assertion}}
-\newcommand{\constraints}{\mathit{Constraints}}
-\newcommand{\constraint}{\mathit{constraint}}
+\newcommand{\program}{\mathit{Prog}}
+\newcommand{\assertions}{\mathit{Asserts}}
+\newcommand{\assertion}{\mathit{assert}}
+\newcommand{\constraints}{\Sigma}
+\newcommand{\constraint}{\sigma}
 \newcommand{\formula}{\varphi}
 
 \newcommand{\vars}{\mathit{Vars}}
-\newcommand{\subvars}{\mathit{SubVars}}
-\newcommand{\boolvars}{\mathit{BoolVars}}
-\newcommand{\numvars}{\mathit{NumVars}}
+\newcommand{\subvars}{\mathit{V}}
+\newcommand{\boolvars}{\mathit{BVars}}
+\newcommand{\numvars}{\mathit{NVars}}
 
 \newcommand{\booldomain}{\mathcal{B}}
-\newcommand{\reldomain}{\mathit{RelationalDomain}}
+\newcommand{\reldomain}{\mathcal{RD}}
 
-\newcommand{\numvar}{\mathit{numVar}}
-\newcommand{\numconcval}{\mathit{numConcVal}}
-\newcommand{\numabsval}{numAbsVal}
-\newcommand{\decisionvar}{\mathit{decisionVar}}
-\newcommand{\conflictset}{\mathit{ConflictSet}}
+\newcommand{\numvar}{x}
+\newcommand{\numconcval}{\mathit{X}}
+\newcommand{\numabsval}{d}
+\newcommand{\decisionvar}{\mathit{q}}
+\newcommand{\conflictset}{\mathit{C}}
 \newcommand{\exclude}{\mathit{exclude}}
 
-\newcommand{\conctransset}{\mathit{ConcreteTransformers}}
-\newcommand{\conctrans}{\mathit{concreteTransformer}}
 \newcommand{\abstrans}[2]{\llbracket #2\rrbracket_{#1}}
-\newcommand{\abstransset}{\mathit{AbstractTransformers}}
-\newcommand{\abstransel}[1]{\mathit{abstractTransformer}^{#1}}
-\newcommand{\domain}{\mathit{Domain}}
-\newcommand{\subdomain}{\mathit{SubDomain}}
-\newcommand{\var}{\mathit{var}}
-\newcommand{\val}{\mathit{val}}
+\newcommand{\abstransset}{\mathcal{A}}
+\newcommand{\abstransel}[1]{\mathit{ded}^{#1}}
+\newcommand{\domain}{\mathit{D}}
+\newcommand{\subdomain}{\mathit{L}}
+\newcommand{\var}{\mathit{s}}
+\newcommand{\val}{\mathit{u}}
 \newcommand{\concval}{\mathit{concVal}}
-\newcommand{\absval}{\mathit{absVal}}
-\newcommand{\newdeductions}{\mathit{newDeductions}}
-\newcommand{\intervals}{\mathit{Intervals}}
-\newcommand{\octagons}{\mathit{Octagons}}
+\newcommand{\absval}{\mathit{a}}
+\newcommand{\newdeductions}{\mathit{v}}
+\newcommand{\intervals}{\mathit{Itvs}}
+\newcommand{\octagons}{\mathit{Octs}}
 \newcommand{\onlynew}{\mathit{OnlyNew}}
-\newcommand{\aunit}{\mathit{AbsUnit}}
+\newcommand{\aunit}{\mathit{AUnit}}
 
 \newcommand{\abs}{\mathit{abs}}
-\newcommand{\trail}{\mathit{Trail}}
-\newcommand{\reasons}{\mathit{Reasons}}
+\newcommand{\trail}{\mathcal{T}}
+\newcommand{\reasons}{\mathcal{R}}
 \newcommand{\worklist}{\mathit{worklist}}
 \newcommand{\initworklist}{\mathit{initWorklist}}
 \newcommand{\updateworklist}{\mathit{updateWorklist}}
-\newcommand{\makesubdomain}{\mathit{MakeSubDomain}}
+\newcommand{\makesubdomain}{\mathit{MakeL}}
 
 \newcommand{\decide}{\mathit{decide}}
 \newcommand{\deduce}{\mathit{deduce}}
 \newcommand{\analyzeconflict}{\mathit{analyzeConflict}}
 
-\newcommand{\propheur}{\mathit{propHeuristics}}
-\newcommand{\decheur}{\mathit{decHeuristics}}
-\newcommand{\confheur}{\mathit{conflictHeuristics}}
+\newcommand{\propheur}{\mathit{H_P}}
+\newcommand{\decheur}{\mathit{H_D}}
+\newcommand{\confheur}{\mathit{H_C}}
 
 
 \newcommand{\cvars}{\mathit{CVar}}
