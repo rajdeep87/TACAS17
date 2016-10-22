@@ -145,12 +145,12 @@ However, the choice of a subdomain makes the deductions more efficient.
 
 The second advantage of Eq.~(\ref{eq:at2}) is that we can compute the
 \emph{closure} operation for relational domains in a lazy manner. To
-this end, we construct a $\subdomain=\makesubdomain_\domain(\vars)$
+this end, we construct a $\subdomain=\makesubdomain_\domain(\subvars)$
 which is sufficient to perform one step of the closure operation each
 time the abstract transformer is applied.
 %
 For example, let us consider $\domain=\octagons[\{x,y,z\}]$ and
-$\vars=\{y\}$. An octagonal inequality relates at 
+$\subvars=\{y\}$. An octagonal inequality relates at 
 most two variables. Thus it is sufficient to consider the subdomain
 $\makesubdomain_\domain(\{y\})=\octagons[\{y\}]\cup\octagons[\{x,y\}]\cup\octagons[\{y,z\}]$,
 which will compute the one-step transitive relations of~$y$ with each
