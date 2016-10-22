@@ -44,12 +44,12 @@ C Program, Control-flow Graph (CFG) and Abstract Conflict Graph}
 
 Let us consider a simple program in Figure~\ref{fig:example}, which performs
 multiplication of machine integers and checks that the result is always
-positive.  To avoid overflow error, we assume that the input $v$ has an
-upper bound~$N$.  The control-flow graph is given in the middle column of
-Figure~\ref{fig:example}.
+positive.  To avoid overflow, we assume that the input $v$ has an upper
+bound~$N$.  The control-flow graph is given in the middle column of
+Figure~\ref{fig:example}.  We apply three different analysis techniques:
+1)~{\em bounded model checking (BMC)}, 2)~{\em abstract interpretation} and
+3)~{\em ACDCL}.
 
-We analyse the program using three different analysers -- {\em bounded 
-model checking (BMC)}, {\em abstract interpretation} and {\em ACDCL}.    
 %
 \Omit {
 The SAT solver makes 36 decisions, 1365 Boolean constraint propagations 
