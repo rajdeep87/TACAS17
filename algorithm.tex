@@ -27,7 +27,7 @@ $\mathit{result} \leftarrow \deduce_{\propheur}(\abstransset,\trail,\reasons)$ \
 \While{$true$} 
 {
 \lIf{$\mathit{result}$ = \sat} {
-  \return (\unsafe,$\abs(\trail)$)}
+  \return (\unsafe)}
   $\decisionvar \leftarrow \decide_{\decheur}(\abs(\trail))$ \;
   $\trail \leftarrow \trail \cdot \decisionvar$ \; 
   $\reasons[|\trail|] \leftarrow \top$ \;
