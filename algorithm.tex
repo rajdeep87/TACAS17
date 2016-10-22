@@ -46,7 +46,7 @@ $\mathit{result} \leftarrow \deduce_{\propheur}(\abstransset,\trail,\reasons)$ \
 %\subsection{Algorithm for Abstract Conflict Driven Clause Learning}
 Algorithm~\ref{Alg:acdcl} presents an overview of the ACDCL algorithm.
 The input to the algorithm is a program in the form of the set of its 
-abstract transformers $\abstransset$ w.r.t.\ an abstract domain~$\domain$.  
+abstract transformers $\abstransset$ w.r.t.\ an abstract domain~$\domain$. \pscmt{define} 
 The algorithm is parametrised by propagation \rmcmt{$(\propheur)$}, decision
 $(\decheur)$, and conflict analysis heuristics $(\confheur)$.  
 %\rmcmt{Approximation of the concrete transformers in 
@@ -58,7 +58,7 @@ a reason trail $\reasons$.
 The propagation trail stores all meet irreducibles inferred by 
 the abstract model search phase (deductions and decisions).  
 The reason trail maps the elements of the propagation trail to 
-transformers $\abstrans\in\abstransset$ that were used to
+transformers $\abstransel{}\in\abstransset$ that were used to
 derive them. 
 %
 \begin{definition} 
