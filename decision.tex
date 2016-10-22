@@ -1,4 +1,4 @@
-\subsection{Decision}
+\subsection{Decision}\label{sec:decide}
 A decision $\decisionvar$ is a meet irreducible that refines the
 current abstract value $\abs(\trail)$.  Note that meet irreducibles in
 relational domains may involve several variables.
@@ -62,7 +62,7 @@ meet irreducibles, thereby making decisions on meet irreducibles that involve
 conditional variables (variables that appear in conditional branches) first 
 before choosing meet irreducibles with numerical variables.  
 The ordered heuristic is similar to trace partitioning~\cite{toplas07}.
-
+%
 The {\em longest-range} heuristics simply keeps track of the bounds
 $\numabsval_l,\numabsval_u$ of matching template rows $\numabsval_l\leq
 \vec{c}\vec{x}\leq \numabsval_u$, picks the one with the longest range

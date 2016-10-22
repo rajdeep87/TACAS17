@@ -166,7 +166,7 @@ For example, the program in Figure~\ref{ssa} has four Boolean variables
 written as the vector $(g_0,g_1,c,g_2)$; then we will denote an abstract value $(\top, \false, \true, \top) \in \booldomain^4$ as $\neg g_1 \wedge c$.
 
 %-------------------------------------------------------------------------------
-\paragraph{Template Polyhedra Abstract Domain}
+\paragraph{\textbf{Template Polyhedra Abstract Domain}}
 %
 An abstract value of the template polyhedra domain~\cite{sriram}
 represents a set $\numconcval$ of values of the vector $\vec{\numvar}$ of numerical variables $\numvars$. For
@@ -218,10 +218,10 @@ express other domains, such as interval and octagon domains.
 % \[\gamma[p,q] = \{c \in \mathbb{Z} | p \leq c \leq q\} \qquad \gamma(\bot) = \emptyset \]
 %
 \begin{wrapfigure}{r}{4.5cm}
-\vspace*{-3ex}
+\vspace*{-7ex}
 \scalebox{.65}{\import{figures/}{octagons.pspdftex}}
 \caption{Example of an octagon}\label{octagon}
-\vspace*{-3ex}
+\vspace*{-5ex}
 \end{wrapfigure} 
 %
 In the interval domain $\intervals[\numvars]$,
@@ -300,7 +300,7 @@ number of program variables).
 % \end{definition}
 
 %-------------------------------------------------------------------------------
-\paragraph{Abstract Transformers}
+\paragraph{\textbf{Abstract Transformers}}
 %
 %In a typical abstract interpretation based Galois-connection setting
 %over an over-approximate domain, every concrete element has a unique
@@ -345,7 +345,7 @@ in abstract domains is different from the notion of precise complements.
 %
 Most numerical abstract domains, such as intervals and octagons lack
 complements, but they can be represented as intersections of
-complementable half-spaces, each of which has a complement. 
+half-spaces, each of which has a complement. 
 %
 % We identify specific properties of domain elements necessary for 
 % abstract model search and learning in abstractions.  

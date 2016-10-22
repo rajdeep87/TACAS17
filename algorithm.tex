@@ -20,8 +20,7 @@
 \Input{A program in the form of a set of abstract transformers $\abstransset$.}
 \Output{The status \safe or \unsafe. %and a counterexample if \unsafe.
 }
-$\trail \leftarrow \langle\rangle$ \;
-$\reasons \leftarrow []$ \;
+$\trail \leftarrow \langle\rangle$, $\reasons \leftarrow []$ \;
 $\mathit{result} \leftarrow \deduce_{\propheur}(\abstransset,\trail,\reasons)$ \;
 \lIf{$\mathit{result}$ = \conflict} {
   \return \safe}
@@ -45,9 +44,9 @@ $\mathit{result} \leftarrow \deduce_{\propheur}(\abstransset,\trail,\reasons)$ \
 \end{algorithm2e}
 %
 %\subsection{Algorithm for Abstract Conflict Driven Clause Learning}
-Algorithm~\ref{Alg:acdcl} presents an overview of the ACDCL algorithm.
-The input to the algorithm is a program in the form of the set of its
-abstract transformers
+% presents an overview of the ACDCL algorithm.
+The input to the ACDCL algorithm (Algorithm~\ref{Alg:acdcl}) is a
+program in the form of the set of its abstract transformers
 $\abstransset=\{\abstrans{\domain}{\sigma}|\sigma\in\Sigma\}$
 w.r.t.\ an abstract domain~$\domain$.  The algorithm is parametrised
 by propagation $(\propheur)$, decision $(\decheur)$, and conflict
@@ -72,15 +71,16 @@ $\abs(\trail)=\bigsqcap_{m \in \trail}m$ with
 $\abs(\trail)=\top$ if $\trail$ is the empty sequence $\langle\rangle$.
 \end{definition}
 %
-The algorithm begins with an empty $\trail$, a empty $\reasons$ 
-and an abstract value $\top$.
-The procedure $\deduce$ computes a greatest fixed point over the
+The algorithm begins with an empty $\trail$, a empty $\reasons$ and an
+abstract value $\top$.  The procedure $\deduce$ (detailed in
+Section~\ref{sec:deduce}) computes a greatest fixed point over the
 transformers in $\abstransset$ that refines the abstract value,
 similar to the BCP step in SAT solvers.  If the result of $\deduce$
 returns \textsf{conflict} ($\bot$), the algorithm terminates with
 \textsf{safe}.  Else, the analysis enters into the while($\true$) loop
-and makes a new decision by a call to $\decide$ which returns a new
-meet irreducible $\decisionvar$.
+and makes a new decision by a call to $\decide$ (see
+Section~\ref{sec:decide}) which returns a new meet irreducible
+$\decisionvar$.
 %
 %\pscmt{what happens if we cannot make any decision any more?
 %  -- then we should either have deduced $\bot$ or $\abs(\trail)$ must
@@ -101,7 +101,7 @@ to mark it as a decision.
 %greatest fixed-point \pscmt{???}. Note that the widening operation in abstract interpretation 
 %jumps above a least fixed-point, so decisions can be viewed as 
 %{\em dual widening} \pscmt{what do we learn?}.  
-
+%
 The procedure $\deduce$ is called next to infer new meet irreducibles
 taking into account the current decision.  The model search phase
 alternates between the decision and deduction until $\deduce$ returns
@@ -120,8 +120,8 @@ are counterexamples to the safety problem, and thus ACDCL return
 % \textsf{unsafe} or the current abstraction is insufficient to
 % determine the satisfiability of $\formula$.  
 
-In the latter case the algorithm enters in the $\analyzeconflict$
-phase to learn the reason for the conflict.   There can be multiple
+In the latter case the algorithm enters in the $\analyzeconflict$ 
+phase (see Section~\ref{sec:conflict}) to learn the reason for the conflict.   There can be multiple
 incomparable reasons for conflict.
 % \pscmt{do you have to explain this here?} -- based on the choice of Unique
 %Implication Point (UIP)~\cite{cdcl}.  

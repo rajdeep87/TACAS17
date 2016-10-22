@@ -1,4 +1,4 @@
-\section{Abstract Conflict Analysis}
+\section{Abstract Conflict Analysis}\label{sec:conflict}
 Conflict analysis in a SAT solver can be seen as abductive 
 reasoning which underapproximates a set of models that do not satisfy a 
 formula~\cite{sas12,dhk2013-popl}.  
@@ -14,6 +14,7 @@ assignments domain or interval domain, so finding a generalized reason for
 conflict through UIP computation~\cite{uip} is non-trivial.  We formally 
 describe the adaptations of conflict analysis procedure for relational domains. %
 \begin{figure}[t]
+\vspace*{-10ex} %BAD TRICK
 %\caption{An example of Octagon}\label{octagon}
 \scalebox{.65}{\import{figures/}{conflict_graph.pspdftex}}
 \caption{\label{conflict} Abstract Conflict Graph}
@@ -39,11 +40,11 @@ using the octagon domain.  The last deduction conflicts with the
 meet irreducible $(y \leq 0)$.
 
 \paragraph {\textbf{Lifting UIP to relational domains}}
-An UIP is a special node in the abstract conflict graph such that 
+An UIP is a node in the abstract conflict graph such that 
 any path from the last decision node to the conflict node must pass 
-through it.  Unlike a SAT solver, a UIP for relational domain may 
+through it.  Unlike a SAT solver, a UIP for a relational domain may 
 involve meet irreducibles that contain the same variables.  The 
-first-UIP is a unique node closest to the conflict, and the last UIP 
+first UIP is a unique node closest to the conflict, and the last UIP 
 is the decision node itself.  Computing UIPs ensures asserting
 cuts~\cite{cdcl,DBLP:journals/fmsd/BrainDGHK14}, that is, it 
 yields clauses that generate new deductions after backtracking.  
@@ -81,9 +82,9 @@ complementable meet irreducibles and a set of meet irreducibles $\conflictset
   \bar{t}    & \text{if } t \in \conflictset \; \text{and} \; \forall t' \in \conflictset \setminus \{t\}. \absval
   \not\sqsubseteq t', \; \text{then} \\ 
              & \quad \forall \absval' \sqsubseteq \absval: \absval'
-             \not\sqsubseteq t \text{ and} & (3)\\ 
+             \not\sqsubseteq t \text{ and} \\ 
              & \quad \absval''=\exclude(\absval,\absval') \text{ and
-             }\absval''\sqsubseteq t'  \\
+             }\absval''\sqsubseteq t' & (3) \\
   \top & \text{otherwise} & (4) \\
  \end{array}\right.
 \]
@@ -111,7 +112,7 @@ using the rule (1), since $\absval \sqsubseteq \bigsqcap\conflictset$.  Now,
 let $\absval' = (x \geq 3\wedge x \leq 4)$, then
 $\aunit_\conflictset(\absval') = (y \geq 8)$ using rule (2), since
 $\absval' \sqsubseteq (x \geq 2)$ and $\absval' \sqsubseteq (x \leq
-5)$.  However, if none of the above rule holds true, $\aunit$ returns~$\top$.
+5)$.  However, if none of the above rules hold true, $\aunit$ returns~$\top$.
  
 \paragraph {\textbf{Backjumping}}
 After adding $\aunit$ to $\abstransset$, we remove all the meet irreducibles from the trail back to a decision level that restores the solver to a
