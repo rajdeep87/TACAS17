@@ -10,10 +10,10 @@ relational domains may involve several variables.
 %where $x$ and $y$ are variables, $a,b \in \{-1,0,1\}$ are co-efficients, 
 %and $c \in \mathbb{R}\cup\{\infty\}$ is the bound of the inequality.  
 %
-Hence, a decision can specify relation between variables, for example 
+Hence, a decision can specify a relation between variables, for example 
 $\{x \leq y)$.  A decision must always be consistent with respect to 
 the trail $\trail$, i.e.\ $\abs(\trail\cdot \decisionvar)\neq \bot$.  
-A new decision always increases the decision level by one. 
+A new decision increases the decision level by one. 
 
 \rmcmt{We call a \emph{singleton} a meet irreducible which does represent a
 valid decision ??}.
@@ -22,7 +22,7 @@ For template polyhedra, singletons are the meet irreducibles
 corresponding to a pair of rows $\vec{c}_1,\vec{c}_2$ in matrix
 $\mat{C}$ with $\vec{c}_1\vec{\numvar}=-\vec{c}_2\vec{\numvar}$
 (i.e.\ \emph{matching} rows) and the corresponding bounds
-$\numabsval_1=-\numabsval_1$.
+$\numabsval_1=-\numabsval_2$.
 %
 A singleton in the interval domain corresponds to a singleton interval
 such as $x\leq 1 \wedge -x\leq -1$ For the octagon domain, $1 \leq x-y
@@ -73,7 +73,7 @@ since it guarantees that the intervals of meet irreducibles are
 uniformly restricted.
 %
 The {\em random} decision heuristics arbitrarily picks a meet irreducible  
-for making decision. \pscmt{uniformly?}
+for making decision. 
 %
 %The {\em relational} decision heuristics is only relevant for relational 
 %abstract domains.  

@@ -47,7 +47,7 @@ $\mathit{result} \leftarrow \deduce_{\propheur}(\abstransset,\trail,\reasons)$ \
 Algorithm~\ref{Alg:acdcl} presents an overview of the ACDCL algorithm.
 The input to the algorithm is a program in the form of the set of its 
 abstract transformers $\abstransset$ w.r.t.\ an abstract domain~$\domain$. \pscmt{define} 
-The algorithm is parametrised by propagation \rmcmt{$(\propheur)$}, decision
+The algorithm is parametrised by propagation $(\propheur)$, decision
 $(\decheur)$, and conflict analysis heuristics $(\confheur)$.  
 %\rmcmt{Approximation of the concrete transformers in 
 %$\abstransset$ are typically available in abstract domain in the 
@@ -68,13 +68,6 @@ meet irreducibles on the trail:
 $\abs(\trail)=\bigsqcap_{m \in \trail}m$ with
 $\abs(\trail)=\top$ if $\trail$ is the empty sequence $\langle\rangle$.
 \end{definition}
-%
-\rmcmt{
-\begin{definition} 
-An abstract value $v$ is $\gamma$-complete if all concrete values in 
-$\gamma(v)$ satisfy $\formula$.  
-\end{definition}
-}
 %
 The procedure $\deduce$ computes a greatest fixed point over the
 transformers in $\abstransset$ that refines the abstract value,

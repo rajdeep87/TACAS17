@@ -67,20 +67,19 @@ $\worklist \leftarrow \initworklist_{\propheur}(\abstransset)$ \;
 \While{$!\mathit{worklist.empty}()$} 
 {
   $\abstransel{\subdomain} \leftarrow \mathit{worklist.pop}()$ \; 
-  $\newdeductions \leftarrow \onlynew(\abstransel{\subdomain}(\abs(\trail)))$\;
-  \rmcmt{can we avoid onlynew or atleast change the name?}
-  \uIf{$\newdeductions = \bot$} {
+  $\absval \leftarrow \abstransel{\subdomain}(\abs(\trail))$\;
+  \uIf{$\absval = \bot$} {
     $\reasons[\bot] \leftarrow \abstransel{\subdomain}$ \;
     $\mathit{worklist.clear}()$ \;
     \return \conflict \;
   }
   \uElse
   {
+    $\newdeductions=\onlynew(\absval)$\;
 %    $\newdeductions=\decomp(\absval)\setminus\decomp(\abs(\trail))$\;
     $\trail \leftarrow \trail \cdot \decomp(\newdeductions)$ \; 
     $\reasons[|\trail|] \leftarrow \abstransel{\subdomain}$ \;
-    $\updateworklist_{\propheur}(\newdeductions, \worklist)$ \rmcmt{shouldn't
-    this be $\abstransel{\subdomain}$}\; 
+    $\updateworklist_{\propheur}(\worklist, \newdeductions, \abstransel{\subdomain},  \abstransset)$ \; 
   }
 }
 \lIf{$\abs(\trail)$ is $\gamma$-complete} {
@@ -127,7 +126,7 @@ deduction transformer is formally defined as follows.
 \abstrans{\domain}{\constraint}^\subdomain(\absval)=\absval\meet_\domain \alpha_\subdomain(\{\val\mid \val\in\gamma_\domain(\absval), \val\models \constraint\})
 \end{equation}
 For $\subdomain=\domain$, the abstract deduction transformer is identical 
-to the abstract transformer defined in Eq.~\ref{eq:abstrans} 
+to the abstract transformer defined in Eq.~(\ref{eq:abstrans})
 in Section~\ref{sec:domains}.
 
 %We construct the subdomain from a set of variables $\vars$ such that $\subdomain_\domain(\vars)$ is the set of meet irreducibles $\in \domain$ that contain at last one variable in $\vars$ and most one variable that is not in $\vars$. \pscmt{split into two parts}
@@ -268,7 +267,14 @@ in order to obtain only new deductions when applying the abstract deduction tran
 \Omit{
 If $\bot$ is deduced we return \textsf{conflict}.
 Otherwise, when eventually a fixed point has been reached, i.e.\ the worklist is empty, then the abstract value $\abs(\trail)$ is checked whether it is 
-$\gamma$-complete~\cite{dhk2013-popl}. It is $\gamma$-complete if all concrete values in $\gamma(\abs(\trail))$ satisfy $\formula$.
+$\gamma$-complete~\cite{dhk2013-popl}. 
+%
+\begin{definition} 
+\pscmt{reformulate} An abstract value $\absval$ is $\gamma$-complete if all concrete values in 
+$\gamma(\absval)$ satisfy $\formula$.  
+\end{definition}
+%
+It is $\gamma$-complete if all concrete values in $\gamma(\abs(\trail))$ satisfy $\formula$.
 Otherwise, the algorithm returns \textsf{unknown} and the 
 model search procedure makes a new decision.    
 }
