@@ -117,14 +117,20 @@ A subdomain contains a chosen subset of the elements in $\domain$ including $\bo
 \begin{equation}\label{eq:at2}
 \abstrans{\domain}{\constraint}^\subdomain(\absval)=\absval\meet_\domain \alpha_\subdomain(\{\val\mid \val\in\gamma_\domain(\absval), \val\models \constraint\})
 \end{equation}
-For $\subdomain=\domain$, the abstract deduction transformer behaves in the same way as the abstract transformer defined in Eq.~\ref{eq:abstrans} in Section~\ref{sec:domains}.
+For $\subdomain=\domain$, the abstract deduction transformer behaves 
+in the same way as the abstract transformer defined in Eq.~\ref{eq:abstrans} 
+in Section~\ref{sec:domains}.
 
 %We construct the subdomain from a set of variables $\vars$ such that $\subdomain_\domain(\vars)$ is the set of meet irreducibles $\in \domain$ that contain at last one variable in $\vars$ and most one variable that is not in $\vars$. \pscmt{split into two parts}
 %
 %For example, $\subdomain=\domain[\{y\}]$ being the octagons domain over variables $\{x,y,z\}$ contains all octagonal meet irreducibles involving $\{y\}$, and the pairs $\{x,y\}$ and $\{y,z\}$, but not the meet irreducibles\pscmt{wrong} over $\{x\}$, $\{z\}$ and~$\{x,z\}$.
 
-The first advantage of this definition is that with the help of $\subdomain$
-we can control how we perform propagation using our abstract transformers.
+%The first advantage of this definition is that 
+\rmcmt{This parameterisation of the abstract deduction transformer with a $\subdomain$ 
+allow us to guide the propagation in {\em forward}, {\em backward} or {\em
+multi-way} direction.}
+%using our abstract transformers.
+%we can control how we perform 
 %
 For example, for $\absval=(0\leq y \leq 1 \wedge 5\leq z)$, we have
 $\abstrans{\intervals[\{x,y,z\}]}{x=y+z}^{\intervals[\{x\}]}(\absval)=\absval\meet(x\geq
@@ -143,7 +149,10 @@ $\abstrans{\domain}{\constraint}^\domain(\absval)\sqsubseteq
 \abstrans{\domain}{\constraint}^\subdomain(\absval)$.
 However, the choice of a subdomain makes the deductions more efficient.
 
-The second advantage of Eq.~(\ref{eq:at2}) is that we can compute the
+\paragraph {\textbf{Lazy closure computation}} 
+Computing closure for relational domains, such as octagons is extremely
+expensive~\cite{pldi15}.  An advantage of our formalism in 
+Eq.~(\ref{eq:at2}) is that we can compute the
 \emph{closure} operation for relational domains in a lazy manner. To
 this end, we construct a $\subdomain=\makesubdomain_\domain(\subvars)$
 which is sufficient to perform one step of the closure operation each
