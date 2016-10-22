@@ -1,8 +1,8 @@
 \section{Motivating Example}
-%
+
 \begin{figure}[t]
-\scriptsize
-\begin{tabular}{l|l|l}
+\scriptsize\centering
+\begin{tabular}{c|c|c}
 \hline
 C program & Control-Flow Graph & Abstract Conflict Graph \\
 \hline
@@ -10,7 +10,8 @@ C program & Control-Flow Graph & Abstract Conflict Graph \\
 void foo(int v, 
          _Bool c) 
 {
-  assume(v>=0 && v<=N);
+  assume(v>=0 &&
+         v<=N);
   int x; 
   if(c)
     x = v;
@@ -24,14 +25,14 @@ void foo(int v,
 \begin{minipage}{3.7cm}
 \centering
 %\vspace*{0.3cm}
-\scalebox{.45}{\import{figures/}{example.pspdftex}}
+\scalebox{.52}{\import{figures/}{example.pspdftex}}
 %\caption{A control flow graph for P, P' and abstract conflict graph (ACFG) \label{fig:filter}}
 \end{minipage}
 &
-\begin{minipage}{4.50cm}
+\begin{minipage}{5.6cm}
 \centering
 \vspace*{0.3cm}
-\scalebox{.45}{\import{figures/}{acdl_run.pspdftex}}
+\scalebox{.5}{\import{figures/}{acdl_run.pspdftex}}
 %\caption{A control flow graph for P, P' and abstract conflict graph (ACFG) \label{fig:filter}}
 \end{minipage}
 \\
@@ -40,6 +41,7 @@ void foo(int v,
 \caption{\label{fig:example}
 C Program, Control-flow Graph (CFG) and Abstract Conflict Graph}
 \end{figure}
+
 Let us consider a simple program in Figure~\ref{fig:example} that performs 
 multiplication of two machine integers and checks that the result of the 
 multiplication is always positive for an integer input $v$.  To avoid 
