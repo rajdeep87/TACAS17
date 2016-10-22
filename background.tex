@@ -14,8 +14,9 @@ programs is Satisfiability Modulo Path Programs (SMPP) \cite{SMPP}. SMPP
 enumerates program paths using a SAT formula, which are then verified
 using abstract interpretation.  
 %
-The lifting of CDCL to first-order theory is proposed
-in~\cite{dpll,cp09} and natural domain SMT framework~\cite{ndsmt}.
+The lifting of CDCL to first-order theories is proposed
+in~\cite{dpll,cp09,ndsmt}.
+%
 \Omit{ operates on a fixed first-order partial assignment lattice
   structure, where first-order variables are mapped to domain values,
   similar to constants lattice in program analysis.  } However, unlike
@@ -28,11 +29,15 @@ involves model search and learning in abstract lattices.  \Omit { The
   complementation property, thus enabling ACDCL to perform generalized
   clause learning.  } 
 %
-\cite{DBLP:journals/fmsd/BrainDGHK14} presents an instantiation of ACDCL for heap-manipulating programs, but uses a simplistic conflict analysis.
+\cite{DBLP:journals/fmsd/BrainDGHK14} presents an instantiation of ACDCL for
+heap-manipulating programs, but uses a simplistic conflict analysis.
 %
-\cite{DBLP:conf/vmcai/PelleauMTB13} describes a constraint solving algorithm using relational numerical domains, but performs model search only.
+\cite{DBLP:conf/vmcai/PelleauMTB13} describes a constraint solving algorithm
+using relational numerical domains, but performs model search only.
 %
-\cite{DBLP:conf/esop/MineBR16} proposes an algorithm inspired by constraint solvers for inferring disjunctive invariants using the interval domain.
+\cite{DBLP:conf/esop/MineBR16} proposes an algorithm inspired by constraint
+solvers for inferring disjunctive invariants using the interval domain.
+%
 % is presented in . They
 %use a relational domain, but focus on the model search, whereas the
 %conflict analysis is simplistic and restarts the algorithm with the
