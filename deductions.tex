@@ -79,7 +79,8 @@ $\worklist \leftarrow \initworklist_{\propheur}(\abstransset)$ \;
 %    $\newdeductions=\decomp(\absval)\setminus\decomp(\abs(\trail))$\;
     $\trail \leftarrow \trail \cdot \decomp(\newdeductions)$ \; 
     $\reasons[|\trail|] \leftarrow \abstransel{\subdomain}$ \;
-    $\updateworklist_{\propheur}(\newdeductions, \worklist)$ \; 
+    $\updateworklist_{\propheur}(\newdeductions, \worklist)$ \rmcmt{shouldn't
+    this be $\abstransel{\subdomain}$}\; 
   }
 }
 \lIf{$\abs(\trail)$ is $\gamma$-complete} {
