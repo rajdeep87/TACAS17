@@ -21,7 +21,7 @@ cycle-accurate software models of hardware circuits automatically generated
 using v2c~\cite{mtk2016}, (c)~controller code generated from Simulink
 (d)~several hand-crafted benchmarks for equivalence checking and bounded
 loop analysis.  All bounded loops are completely unrolled before analysis. 
-We compare our tool with a state-of-the-art SAT-based bounded model checker
+We compare our tool with the state-of-the-art SAT-based bounded model checker
 CBMC (version 5.5)~\cite{cbmc} and a commercial static analysis tool, 
 Astr{\'e}e (version 14.10). 
 CBMC uses MiniSAT~2.2.1 in the backend.  Astr{\'e}e uses a 
@@ -52,7 +52,7 @@ The points on the extreme right below the diagonal in
 Figure~\ref{fig:results}(b) show that the number of propagations in the SAT
 solver is maximal for the benchmarks that exhibit relational behaviour. 
 Cumulative statistics corresponding to each phase of the algorithm for all
-66 benchmarks is given in Table~\ref{result}.  We observe a reduction of at
+66 benchmarks are given in Table~\ref{result}.  We observe a reduction of at
 least two orders of magnitude in the number of decisions, propagations and
 conflicts compared to analysis using CBMC.
 
@@ -61,7 +61,7 @@ conflicts compared to analysis using CBMC.
 {
 \begin{tabular}{l|r|r|r|r|r}
 \hline
-Solver & Decisions & propagations & conflict & conflict literals & restarts \\ \hline
+Solver & Decisions & propagations & conflicts & conflict literals & restarts \\ \hline
 MiniSat & 27917 & 304031 & 3949 & 33646 & 64 \\ \hline
 ACDCL (Product Domain) & 161 & 3130 & 10 & 5 & 0 \\ \hline  
 \end{tabular}
@@ -79,17 +79,17 @@ analysis using ACDCL solved all 66 benchmarks without any restarts.  This is
 attributed to our decision heuristics, which exploit the high-level
 structure of the program combined with the stronger deduction and clause
 learning mechanisms aided by the richer abstract domains.  On the other
-hand, Ast{\'e}e is often faster than ACDCL, but the analysis using
+hand, Astr{\'e}e is often faster than ACDCL, but the analysis using
 Astr{\'e}e shows a high degree of imprecision.  Astr{\'e}e reported 15 false
 alarms for the 41 safe benchmarks.
 
 \paragraph {\textbf{Propagation Strategy}}
 %
-Figure~\ref{prop-dec}(a) presents a comparison between {\em forward}
-propagation strategy and {\em multi-way} propagation strategy in ACDCL.  The
+Figure~\ref{prop-dec}(a) presents a comparison between the {\em forward}
+propagation strategy and the {\em multi-way} propagation strategy in ACDCL.  The
 choice of the propagation strategy influences the total number of decisions
 and clause learning iterations.  Hence, the propagation strategy has a
-significant influence on the run time which can be visualised in
+significant influence on the runtime which can be visualised in
 Figure~\ref{prop-dec}(a).  Compared to forward propagation, the multi-way
 strategy may take more iterations to reach the fixed-point, but it
 significantly reduces the total number of decisions and conflicts, in
@@ -109,7 +109,7 @@ heuristic performs better for programs with conditional branches since it
 prioritises decisions on meet irreducibles that appear in conditional
 branches over meet irreducibles that involve numerical variables.  The
 runtimes for the random heuristic are marginally higher than for the other
-two.  This suggest that domain-specific decision heuristics are important
+two.  This suggests that domain-specific decision heuristics are important
 for ACDCL.
 
 \Omit{

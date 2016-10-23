@@ -99,7 +99,7 @@ The assertions $\assertions$ are constraints of the form $g_3
 \Rightarrow z\geq 0$, for instance, meaning that if $g_3$ holds
 (i.e.\ the assertion is reachable) then the assertion must hold.
 %
-We~denote $\vars$ the set of variables occurring in the $\constraints$.
+We~denote $\vars$ the set of variables occurring in $\constraints$.
 %
 %
 %For example, figure~\ref{swssa} presents the program analysis constraints for 
@@ -226,7 +226,7 @@ express other domains, such as interval and octagon domains.
 %
 In the interval domain $\intervals[\numvars]$,
 for a program with $N=|\numvars|$ variables, the matrix $\mat{C}$ 
-has $2N$ rows; and hence it generates at most $2N$ inequalities, one
+has $2N$ rows. Hence, it generates at most $2N$ inequalities, one
 for the upper and lower bounds of each variable.
 %
 For octagons $\octagons[\numvars]$, we have at most $2N^2$
@@ -342,7 +342,7 @@ non-singleton element of the partial assignment domain can be
 decomposed into a set of precisely complementable singleton elements.  
 This property of the partial assignment domain is required to learn 
 elements that help to guide the model search away from the
-conflicting region of the search space.  Complementation operator 
+conflicting region of the search space.  The complementation operator 
 in abstract domains is different from the notion of precise complements. 
 %
 Most numerical abstract domains, such as intervals and octagons lack
@@ -421,7 +421,7 @@ the concretisation of $\absval$.
 % concretization of $\bar{a}$, that is, $\gamma(\bar{a}) = \neg \gamma(a))$.
 % \end{definition}
 %
-The precise complementation property of partial assignment lattice can
+The precise complementation property of a partial assignment lattice can
 be generalised to other lattice structures.  Most numerical abstract
 domains, such as intervals, octagons, polyhedra, can be decomposed
 into half-spaces, that admits precise complements.  For example, a

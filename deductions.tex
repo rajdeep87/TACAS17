@@ -83,7 +83,7 @@ $\worklist \leftarrow \initworklist_{\propheur}(\abstransset)$ \;
   }
 }
 \lIf{$\abstransset$ is $\gamma$-complete at $\abs(\trail)$} {
-  \return \sat;
+  \return \sat \;
 }
  \return \unknown \;
 
@@ -117,7 +117,7 @@ control precision and efficiency through propagation heuristics.
 %
 We thus define a specialised variant of the abstract transformer to compute
 deductions w.r.t.\ a given subdomain $\subdomain\subseteq \domain$,
-which we call \emph{abstract deduction transformer}.
+which we call the \emph{abstract deduction transformer}.
 %
 A subdomain contains a chosen subset of the elements in $\domain$ including
 $\bot$ and $\top$, which forms a lattice.  An abstract 
@@ -237,7 +237,7 @@ associated with each abstract deduction transformer ($\abstransel{\subdomain}$)
 determine the propagation strategy (forward, backward, multi-way).
 
 The {\em forward} propagation strategy initialises the worklist with
-abstract deduction transformers that contains constants in the
+abstract deduction transformers that contain constants in the
 right-hand side and the subdomain is constructed via $\makesubdomain$
 from variables in left-hand side of the equality constraints
 originating from the assignment statements in the program.
@@ -252,7 +252,7 @@ contains the variables occurring in the respective transformers.
 %
 Depending on the propagation heuristics, $\updateworklist$ adds
 abstract deduction transformers to the worklist that contain variables
-that appear in $\newdeductions$, and it updates the subdomains of
+that appear in $\newdeductions$, and updates the subdomains of
 the abstract deduction transformers in the worklist 
 to include the variables in $\newdeductions$.
 %
@@ -271,7 +271,7 @@ Otherwise, the algorithm returns \textsf{unknown} and ACDCL makes a new decision
 
 If $\abstransel{\subdomain}$ deduces $\bot$, then 
 the procedure $\mathit{deduce}$ returns \textsf{conflict}.
-Otherwise, when a fixed point is reached, i.e.\ 
+Otherwise, when a fixed-point is reached, i.e.\ 
 the worklist is empty, then we check whether
 the abstract transformers $\abstransset$ are $\gamma$-complete~\cite{dhk2013-popl} for the current abstract value $\abs(\trail)$.
 %

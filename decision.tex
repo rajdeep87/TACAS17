@@ -11,7 +11,7 @@ relational domains may involve several variables.
 %and $c \in \mathbb{R}\cup\{\infty\}$ is the bound of the inequality.  
 %
 Hence, a decision can specify a relation between variables, for example 
-$\{x \leq y)$.  A decision must always be consistent with respect to 
+$(x \leq y)$.  A decision must always be consistent with respect to 
 the trail $\trail$, i.e.\ $\abs(\trail\cdot \decisionvar)\neq \bot$.  
 A new decision increases the decision level by one. 
 
@@ -27,7 +27,7 @@ $\mat{C}$ with $\vec{c}_1\vec{\numvar}=-\vec{c}_2\vec{\numvar}$
 $\numabsval_1=-\numabsval_2$.
 %
 A singleton in the interval domain corresponds to a singleton interval
-such as $x\leq 1 \wedge -x\leq -1$ For the octagon domain, $1 \leq x-y
+such as $x\leq 1 \wedge -x\leq -1$.  For the octagon domain, $1 \leq x-y
 \leq 1$ is a singleton.
 %
 %We cannot make decisions for template rows of singletons because there
@@ -54,7 +54,7 @@ returns a non-singleton meet irreducible.
 %Let $\mathcal{V}$ be a set of all singletons and non-singletons.  
 %Otherwise, the variable is non-singleton 
 
-We have implemented several decision heuristics namely, {\em ordered}, 
+We have implemented several decision heuristics, namely, {\em ordered}, 
 {\em longest-range}, {\em random} and the 
 {\em Berkmin}~\cite{eugoldberg07} decision heuristics.  
 The {\em ordered} decision heuristics creates an ordering among non-singleton 
@@ -79,13 +79,14 @@ for making decision.
 %The {\em relational} decision heuristics is only relevant for relational 
 %abstract domains.  
 %
-The {\em berkmin} decision heuristics is inspired 
-from decision heuristic used in Berkmin~\cite{eugoldberg07} SAT solver.  
-The Berkmin heuristics %is currently implemented for interval constraints only.  
+The {\em berkmin} decision heuristic is inspired by the 
+decision heuristic used in the Berkmin~\cite{eugoldberg07} SAT solver.  
+The Berkmin heuristic %is currently implemented for interval constraints only.  
 %The heuristic 
 keeps track of the activity of %an interval 
 meet irreducibles that participate in conflict clauses. 
-Based on the most active meet irreducible, ranges a split similar to the {\em longest-range} heuristics.
+Based on the most active meet irreducible, ranges are split 
+similar to the {\em longest-range} heuristics.
 \Omit {
 as well as variables that actively contribute to conflicts but do not explicitly 
 appear in conflict clauses.  The set of conflict clauses is 

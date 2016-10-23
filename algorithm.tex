@@ -73,7 +73,7 @@ $\abs(\trail)=\top$ if $\trail$ is the empty sequence $\langle\rangle$.
 %
 The algorithm begins with an empty $\trail$, a empty $\reasons$ and an
 abstract value $\top$.  The procedure $\deduce$ (detailed in
-Section~\ref{sec:deduce}) computes a greatest fixed point over the
+Section~\ref{sec:deduce}) computes a greatest fixed-point over the
 transformers in $\abstransset$ that refines the abstract value,
 similar to the BCP step in SAT solvers.  If the result of $\deduce$
 returns \textsf{conflict} ($\bot$), the algorithm terminates with
