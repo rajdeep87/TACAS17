@@ -93,35 +93,40 @@ with $\exclude(\absval,\absval')=\bigsqcap(\decomp(\absval) \setminus
 conflicting following rule (1).  Rule (2) and (3) of $\aunit$ infer a
 valid meet irreducible, which implies that $\conflictset$ is unit.
 
-$\aunit$ strictly generalizes the unit rule in SAT solvers.  
-However, rule (3) only applies to interval and octagons domains.  
-For example, let $\conflictset = \{ x+z \geq 10, w \geq 0 \}$ be a conflicting element 
-that does not satisfy $\formula$ and let $\absval= (x+y
-\geq 2\wedge y+z \geq 5\wedge x+z \leq 15\wedge w \geq 1\wedge w \leq
-1)$.  Applying rule (3) of $\aunit_\conflictset$, we get a
-decomposition of $\absval$ into $\absval'$ and $\absval''$ where
-$\absval'= (x+y \geq 2\wedge y+z \geq 5\wedge x+z \leq 15)
-\not\sqsubseteq (x+z \geq 10)$, and $\absval''= (w \geq 1\wedge w \leq
-1) \sqsubseteq (w \geq 0)$.  Then, $\aunit_C(a) = (x+z < 10)$, which
-constrains the bound of the octagonal constraint.
-
-Let us consider another example, where $\conflictset = \{x \geq 2, x
+%$\aunit$ strictly generalizes the unit rule in SAT solvers.  
+Let us consider an example, where $\conflictset = \{x \geq 2, x
 \leq 5, y \leq 7 \}$ and let $\absval = (x \geq 3\wedge x \leq 4\wedge
 y \geq 5\wedge y \leq 6)$, then $\aunit_\conflictset(\absval) = \bot$
 using the rule (1), since $\absval \sqsubseteq \bigsqcap\conflictset$.  Now,
 let $\absval' = (x \geq 3\wedge x \leq 4)$, then
 $\aunit_\conflictset(\absval') = (y \geq 8)$ using rule (2), since
 $\absval' \sqsubseteq (x \geq 2)$ and $\absval' \sqsubseteq (x \leq
-5)$.  However, if none of the above rules hold true, $\aunit$ returns~$\top$.
- 
+5)$.  
+
+However, rule (3) only applies to interval and octagons domains.  
+For example, let $\conflictset = \{ x+z \geq 10, w \geq 0 \}$ 
+be a conflicting element that does not satisfy $\formula$ 
+and let $\absval= (x+y \geq 2\wedge y+z \geq 5\wedge x+z \leq 15\wedge w \geq 1\wedge w \leq
+1)$.  Applying rule (3) of $\aunit_\conflictset$, we get a
+decomposition of $\absval$ into $\absval'$ and $\absval''$ where
+$\absval'= (x+y \geq 2\wedge y+z \geq 5\wedge x+z \leq 15)
+\not\sqsubseteq (x+z \geq 10)$, and $\absval''= (w \geq 1\wedge w \leq
+1) \sqsubseteq (w \geq 0)$.  Then, $\aunit_C(a) = (x+z < 10)$, which
+constrains the bound of the octagonal inequalities in $absval$, thereby 
+refining $\absval = (x+y \geq 2\wedge y+z \geq 5 \wedge x+z \leq 9 
+\wedge w \geq 1\wedge w \leq)$.  If none of the above rules hold true, 
+$\aunit$ returns~$\top$.
+
 \paragraph {\textbf{Backjumping}}
-After adding $\aunit$ to $\abstransset$, we remove all the meet irreducibles from the trail back to a decision level that restores the solver to a
+%After adding $\aunit$ to $\abstransset$, we 
+A backjumping procedure remove all the meet irreducibles from 
+the trail up to a decision level that restores the analysis to a
 non-conflicting state.  The backjumping level is defined by the
-meet irreducible of the conflict clause that is closest 
+meet irreducibles of the conflict clause that is closest 
 to the root (decision level~0) where the conflict
 clause is still unit.  If a conflict clause is globally unit, then the
 backjumping level is the root of the search tree and
-$\analyzeconflict$ returns $\false$, otherwise $\true$.
+$\analyzeconflict$ returns $\false$, otherwise returns $\true$.
 
 %The abstract clause learning and backjumping procedures in the abstract 
 %conflict graph is stated in terms of the state of ACDCL solver as follows.
