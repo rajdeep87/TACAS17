@@ -22,7 +22,7 @@ we briefly explain the adaptations that have to be made to the conflict analysis
 \end{figure}  
 
 \paragraph {\textbf{Abstract Conflict Graph}}
-The first-UIP algorithm in SAT solvers works on a data structure
+The first-UIP~\cite{uip,cdcl} algorithm in SAT solvers works on a data structure
 called {\em implication graph} and computes a cut that suffices to
 produce a conflict.  The propagation and reason trails in ACDCL
 implicitly encode a graph structure called {\em abstract conflict
@@ -37,8 +37,8 @@ formula $\formula:= (y{=}x \wedge y{=}y{+}x \wedge y {\leq} 0)$ with
 current abstract valuation $\absval:= (x{-}5 {\geq} 0 \wedge {-}x{+}5 {\geq}
 0)$.  Figure~\ref{conflict} shows a snapshot of an abstract conflict
 graph that stores the deductions obtained from abstract model search
-using the octagon domain.  The last deduction conflicts with the
-meet irreducible $(y \leq 0)$.
+using the octagon domain.  The last deduction conflicts with the constraint 
+$(y \leq 0)$.
 
 \paragraph {\textbf{Lifting UIP to relational domains}}
 An UIP is a node in the abstract conflict graph such that 
@@ -99,12 +99,12 @@ Let us consider an example, where $\conflictset = \{x \geq 2, x
 \leq 5, y \leq 7 \}$ and let $\absval = (x \geq 3\wedge x \leq 4\wedge
 y \geq 5\wedge y \leq 6)$, then $\aunit_\conflictset(\absval) = \bot$
 using the rule (1), since $\absval \sqsubseteq \bigsqcap\conflictset$.  Now,
-let $\absval' = (x \geq 3\wedge x \leq 4)$, then
-$\aunit_\conflictset(\absval') = (y \geq 8)$ using rule (2), since
-$\absval' \sqsubseteq (x \geq 2)$ and $\absval' \sqsubseteq (x \leq
-5)$.  
+consider another abstract value $\absval = (x \geq 3\wedge x \leq 4)$, then
+$\aunit_\conflictset(\absval) = (y \geq 8)$ using rule (2), since
+$\absval \sqsubseteq (x \geq 2)$ and $\absval \sqsubseteq (x \leq 5)$.  
 
-However, rule (3) only applies to interval and octagons domains.  
+However, rule (3) of $\aunit$ is specific to interval and octagon domains 
+and is not applicable in the propositional case.  
 For example, let $\conflictset = \{ x+z \geq 10, w \geq 0 \}$ 
 be a conflicting element that does not satisfy $\formula$ 
 and let $\absval= (x+y \geq 2\wedge y+z \geq 5\wedge x+z \leq 15\wedge w \geq 1\wedge w \leq
@@ -113,7 +113,7 @@ decomposition of $\absval$ into $\absval'$ and $\absval''$ where
 $\absval'= (x+y \geq 2\wedge y+z \geq 5\wedge x+z \leq 15)
 \not\sqsubseteq (x+z \geq 10)$, and $\absval''= (w \geq 1\wedge w \leq
 1) \sqsubseteq (w \geq 0)$.  Then, $\aunit_C(a) = (x+z < 10)$, which
-constrains the bound of the octagonal inequalities in $absval$, thereby 
+constrains the bound of the octagonal inequalities in $\absval$, thereby 
 refining $\absval = (x+y \geq 2\wedge y+z \geq 5 \wedge x+z \leq 9 
 \wedge w \geq 1\wedge w \leq)$.  If none of the above rules hold true, 
 $\aunit$ returns~$\top$.
@@ -127,7 +127,7 @@ meet irreducibles of the conflict clause that is closest
 to the root (decision level~0) where the conflict
 clause is still unit.  If a conflict clause is globally unit, then the
 backjumping level is the root of the search tree and
-$\analyzeconflict$ returns $\false$, otherwise returns $\true$.
+$\analyzeconflict$ returns $\false$, otherwise it returns $\true$.
 
 %The abstract clause learning and backjumping procedures in the abstract 
 %conflict graph is stated in terms of the state of ACDCL solver as follows.
