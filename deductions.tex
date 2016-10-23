@@ -240,8 +240,8 @@ determine the propagation strategy (forward, backward, multi-way).
 
 The {\em forward} propagation strategy initialises the worklist with
 abstract deduction transformers that contain constants in the
-right-hand side and the subdomain is constructed via $\makesubdomain$
-from variables in left-hand side of the equality constraints
+right-hand side and the subdomain is constructed via $\makesubdomain_\domain$
+from variables in the left-hand side of the equality constraints
 originating from the assignment statements in the program.
 %
 The {\em backward} propagation strategy initialises the worklist 
@@ -278,7 +278,7 @@ the worklist is empty, then we check whether
 the abstract transformers $\abstransset$ are $\gamma$-complete~\cite{dhk2013-popl} for the current abstract value $\abs(\trail)$.
 %
 Intuitively, this means that all concrete values in 
-$\gamma(\absval)$ satisfy $\formula$.  
+$\gamma(\abs(\trail))$ satisfy $\formula$.  
 %
 If it is indeed 
 $\gamma$-complete, then $\mathit{deduce}$ returns \textsf{sat}.  Otherwise, the 
