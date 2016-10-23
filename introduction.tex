@@ -2,16 +2,17 @@
 
 %%%%%%%%%%%%%%%%%%%%%%% AI %%%%%%%%%%%%%%%%%%%%%%%%
 %
-Static program analysis based on abstract interpretation~\cite{CC77} has
-been widely used to verify properties of safety-critical systems~\cite{DBLP:conf/pldi/BlanchetCCFMMMR03}.
+Static program analysis based on abstract interpretation~\cite{CC77, 
+DBLP:conf/pldi/BlanchetCCFMMMR03} has been widely used to 
+verify properties of safety-critical systems.
 Standard static analyses~\cite{se2011} aim to compute program invariants as
 fixed-points of abstract transformers.  Abstract states are chosen from a
 lattice that has meet and join operations.  The meet precisely models set
 intersection (or conjunction, taking a logical view), and the join
 over-approximates set union (or disjunction).  The over-approximation in the
 join operation is a key cause of loss of precision, which yields false
-alarms.  Standard means to address false alarms in static analysis are
-the use of richer abstract domains or equipping the analysis with more precise set
+alarms.  Standard means to address false alarms in static analysis are 
+richer abstract domains or equipping the analysis with more precise set
 unions -- which is often expensive since the analysis exhibits case
 enumeration behaviour.
 

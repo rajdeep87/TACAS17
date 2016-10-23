@@ -99,7 +99,10 @@ The assertions $\assertions$ are constraints of the form $g_3
 \Rightarrow z\geq 0$, for instance, meaning that if $g_3$ holds
 (i.e.\ the assertion is reachable) then the assertion must hold.
 %
-We~denote $\vars$ the set of variables occurring in $\constraints$.
+We~denote $\vars$ the set of variables occurring in $\constraints$.  
+Based on the above program representation, we define a safety equation as, 
+$\formula:= \bigwedge_{\constraint\in\constraints} \constraint$. The formula $\formula$ is 
+unsatisfiable if and only if the program is safe.
 %
 %
 %For example, figure~\ref{swssa} presents the program analysis constraints for 
@@ -123,9 +126,6 @@ We~denote $\vars$ the set of variables occurring in $\constraints$.
 %-------------------------------------------------------------------------------
 %\paragraph{Safety problem}  
 %
-Based on the above program representation, we define a safety equation as, 
-$\formula:= \bigwedge_{\constraint\in\constraints} \constraint$. The formula $\formula$ is 
-unsatisfiable if and only if the program is safe.
 
 % \subsection{Static Analysis Equations for Safety}
 % Static program analysis based on abstract interpretation~\cite{DBLP:conf/emsoft/Cousot07} 
@@ -366,9 +366,9 @@ structure $A$ is an element with the following property.
 \begin{equation}
 \forall m_1, m_2 \in A: m_1 \meet m_2 = m \implies (m = m_1 \lor m = m_2), m \neq \top  
 \end{equation}
-Meet irreducibles in ACDCL correspond to the concept of literals in a SAT solver.
 \end{definition}
 %
+%Meet irreducibles in ACDCL correspond to the concept of literals in a SAT solver.
 The meet irreducibles in the Boolean domain $\booldomain$ for a variable $x$ are 
 $x$ and $\neg x$. The meet 
 irreducibles in the template polyhedra domain are all elements 
