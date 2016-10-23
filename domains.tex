@@ -224,9 +224,11 @@ express other domains, such as interval and octagon domains.
 \vspace*{-5ex}
 \end{wrapfigure} 
 %
-In the interval domain $\intervals[\numvars]$,
-for a program with $N=|\numvars|$ variables, the matrix $\mat{C}$ 
-has $2N$ rows. Hence, it generates at most $2N$ inequalities, one
+%In the interval domain $\intervals[\numvars]$,
+For a program with $N=|\numvars|$ variables, 
+the matrix $\mat{C}$ for the interval domain 
+$\intervals[\numvars]$, has $2N$ rows. Hence, it 
+generates at most $2N$ inequalities, one
 for the upper and lower bounds of each variable.
 %
 For octagons $\octagons[\numvars]$, we have at most $2N^2$
@@ -252,8 +254,8 @@ $\mathit{closure}((x-y \leq 4) \wedge (y-z \leq 5))=((x-y \leq 4) \wedge (y-z
 %\[\mathit{closure}((x-y \leq 4) \wedge (y-z \leq 5))=((x-y \leq 4) \wedge (y-z \leq 5) \wedge (x-z \leq 9)) \]  
 %
 The closure computes all implied domain constraints.  For octagons,
-the closure operation is very expensive (cubic complexity in the
-number of program variables).
+closure is the most critical and expensive operator (cubic complexity in the
+number of program variables)~\cite{pldi15}.
 %
 %We will see that our model search algorithm performs closure computations lazily,
 %postponing them to the point where they are actually necessary.\rmcmt{are we
