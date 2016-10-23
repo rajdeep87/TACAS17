@@ -85,7 +85,7 @@ where $\program$ are the statements of the transformed program in the
 form of constraints as typically obtained by translating the program
 into single static assignment (SSA) form via a data flow analysis.
 %
-Figure~\ref{ssa} shows the SSA constraints for the program in
+Figure~\ref{ssa} gives the SSA constraints for the program in
 Figure~\ref{fig:example}.
 %
 Assignments such as \texttt{x=v;} become equalities $x_1=v$ where the
@@ -232,7 +232,7 @@ for the upper and lower bounds of each variable.
 For octagons $\octagons[\numvars]$, we have at most $2N^2$
 inequalities, one for the upper and lower bounds of each variable and
 sums and differences for each pair of variables. Figure~\ref{octagon}
-shows an example octagon and its associated inequalities.
+gives an example of an octagon and its associated inequalities.
 
 The interval domain is a non-relational domain because a single
 inequality only contains a single variable.
@@ -311,7 +311,7 @@ number of program variables).
 %transformer.  We now define an abstract deduction transformer.
 %
 An abstract transformer $\abstrans{\domain}{\constraint}$ transforms an abstract value $\absval$ through a
-constraint $\constraint$, i.e.\ it \emph{deduces} information from $\absval$ and $\constraint$.
+constraint $\constraint$, i.e., it \emph{deduces} information from $\absval$ and $\constraint$.
 The best abstract transformer is 
 \begin{equation}\label{eq:abstrans}
 \abstrans{\domain}{\constraint}(\absval)=\absval\meet\alpha(\{\val\mid \val\in\gamma(\absval), \val\models \constraint\})
@@ -319,7 +319,7 @@ The best abstract transformer is
  where we write 
 $\val\models \constraint$ if the concrete value $\val$ satisfies the constraint $\constraint$.
 %$\forall \vec{y}\in c: (s[\vec{y}/\vec{\numvar}]
-%\equiv \true)$, i.e.\ the constraint $s$ is valid when evaluated over
+%\equiv \true)$, i.e., the constraint $s$ is valid when evaluated over
 %all values $\vec{y}$ of its variables $\vec{\numvar}$ in the concretisation
 %of $a$. 
 Any abstract transformer that over-approximates the best abstract
@@ -365,7 +365,7 @@ Meet irreducibles in ACDCL correspond to the concept of literals in a SAT solver
 The meet irreducibles in the Boolean domain $\booldomain$ for a variable $x$ are 
 $x$ and $\neg x$. The meet 
 irreducibles in the template polyhedra domain are all elements 
-that concretise to half-spaces, i.e.\ they can be represented 
+that concretise to half-spaces, i.e., they can be represented 
 by a single inequality. For the interval domain, these are 
 \ $x \leq d$ or $x \geq d$ for constants $d$. 
 
@@ -396,7 +396,7 @@ the set $\{x\geq 2, x\leq 4, y\geq 3, y\leq 5\}$.
 \begin{definition} 
 An element $\absval\in \domain$ is called \emph{precisely complementable}
 iff $\exists \bar{\absval} \in \domain: \neg\gamma(\bar{\absval})=\gamma(\absval)$, 
-i.e.\ there is an element whose negated concretisation equals
+i.e., there is an element whose negated concretisation equals
 the concretisation of $\absval$.
 %m\meet\bar{m}=\bot \wedge m\join\bar{m}=\top$.
 %A complementable meet irreducible $\bar{M}$ of an abstract lattice $A$ is the complement of a meet 
