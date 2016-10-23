@@ -242,8 +242,10 @@ between relational and non-relational domains is that relational
 domains require the computation of a \emph{closure} in order to obtain
 a normal form that is usually required for precise and efficient 
 domain operations.  An example of a closure computation for octagonal 
-inequalities is shown below.
+inequalities is given below.
+%
 \[\mathit{closure}((x-y \leq 4) \wedge (y-z \leq 5))=((x-y \leq 4) \wedge (y-z \leq 5) \wedge (x-z \leq 9)) \]  
+%
 The closure computes all implied domain constraints.  For octagons,
 the closure operation is very expensive (cubic complexity in the
 number of program variables).
