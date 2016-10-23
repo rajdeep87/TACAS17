@@ -53,14 +53,13 @@ Figure~\ref{fig:example}.  We apply three different analysis techniques:
 3)~{\em ACDCL}.
 
 A standard forward interval analysis is too imprecise to verify the safety
-of the above program.  The imprecision is owed to the control-flow join at
+of the program.  The imprecision is owed to the control-flow join at
 node~$n4$.  A state-of-the-art abstract interpretation tool,
 Astr{\'e}e~\cite{se2011}, requires external hints, provided by manually
-annotating the code with partition directives at $n1$, to prove safety.  The
-partition directive tells the tool to analyse each program execution path
-separately.  To determine safety, Astr{\'e}e requires a product of a trace
-partitioning domain and an interval domain or a relational domain such as
-octagons.
+annotating the code with partition directives at $n1$, to prove safety using
+intervals.  The partition directive tells the tool to analyse each program
+execution path separately.  Alternatively, Astr{\'e}e can show safety
+using a relational domain such as octagons.
 %
 \Omit { In general, the imprecision is either intended by the tool because such
 high precision analysis is normally not required for runtime error analysis
@@ -86,7 +85,7 @@ ACDCL (Octagons) & 0 & 7 & 0 & 0 & 0 \\
 \end{table}
 
 BMC converts the program into a bit-vector equation and passes that to a
-CDCL-based SAT solver.  We will contast the analysis performed by CDCL with
+CDCL-based SAT solver.  We will contrast the analysis performed by CDCL with
 that of ACDCL.  The right-hand side of Figure~\ref{fig:example} illustrates
 an analysis using ACDCL with the octagon domain (top) and the interval
 domain (bottom). The analysis associates an abstract element with each
@@ -119,7 +118,7 @@ and therefore it terminates, proving that the program is safe.  Thus,
 decision and clause learning are used to avoid case-based reasoning and
 prevent enumeration behaviour.
    
-Table~\ref{solver} compares statistics for the MiniSAT~\cite{minisat}
+Table~\ref{solver} compares statistics for the MiniSat~\cite{minisat}
 solver for $N=46000$ for the analysis using BMC, and the analysis using
 ACDCL with the interval and octagon domains.  Compared to the propositional
 SAT solver, there is a significant reduction in the number of decisions,

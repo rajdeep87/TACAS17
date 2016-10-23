@@ -55,7 +55,7 @@ computes a cut that suffices to produce a conflict.
 \Omit {
 contradict with the transformer stored in $\reasons[\bot]$.  
 }
-For our example, there exist multiple incomaparable reasons for conflict,
+For our example, there exist multiple incomparable reasons for conflict,
 marked as {\em cut0, cut1}, in Figure~\ref{conflict}.  Here, cut0 is the first UIP.  
 Choosing cut0 yields a learnt clause 
 $(x+y<15 \vee -x-y<-15 \vee -x+y<5 \vee x-y<-5 \vee y-10<0 \vee -y+10<0)$, 
@@ -147,7 +147,7 @@ clauses that can be used to derive new information after backtracking.
 
 \item There can be multiple cuts and hence multiple UIPs. In other words, there
 can be multiple incomparable reasons for a conflict. But conflict analysis
-procedure choses one that is asserting. 
+procedure chooses one that is asserting. 
 
 \item The conflict clause should be made false by the current partial assignment
 and thus exclude an assignment leading to conflict. 

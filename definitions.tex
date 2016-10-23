@@ -105,7 +105,7 @@ mind satisfiability information.
 
 \textbf{Program representation as CNF:}
 A CNF formulation of a program is a conjunction of all 
-SSA constriants of type $E$, $C$ and negation of $A$.
+SSA constraints of type $E$, $C$ and negation of $A$.
 
 \textbf{Literal:} A Literal is a meet irreducible which are minimum complementable
 elements which specify that for certain program variable, there is a certain
@@ -180,7 +180,7 @@ clauses that can be used to derive new information after backtracking.
 
 \item There can be multiple cuts and hence multiple UIPs. In other words, there
 can be multiple incomparable reasons for a conflict. But conflict analysis
-procedure choses one that is asserting. 
+procedure chooses one that is asserting. 
 
 \item The conflict clause should be made false by the current partial assignment
 and thus exclude an assignment leading to conflict. 
