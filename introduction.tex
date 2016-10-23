@@ -10,7 +10,7 @@ fixed-points of abstract transformers.  Abstract states are chosen from a
 lattice that has meet and join operations.  The meet precisely models set
 intersection (or conjunction, taking a logical view), and the join
 over-approximates set union (or disjunction).  The over-approximation in the
-join operation is a key cause of loss of precision, which yields false
+join operation loses precision, which can yield false
 alarms.  Standard means to address false alarms in static analysis are 
 richer abstract domains or equipping the analysis with more precise set
 unions -- which is often expensive since the analysis exhibits case
@@ -19,30 +19,30 @@ enumeration behaviour.
 %%%%%%%%%%%%%%%%%%%%%%% ACDCL %%%%%%%%%%%%%%%%%%%%%
 %
 On the other hand, propositional SAT solvers are known to be highly
-effective for solving complex propositional formulae, and are frequently
+effective for solving complex propositional formulae, and are often
 able to avoid enumerating the exponential number of cases.  The impressive
 performance of modern solvers is credited to well-tuned decision heuristics
 and clause learning algorithms.  Collectively, these
 algorithms are referred to as \emph{Conflict Driven Clause Learning}
-(CDCL)~\cite{cdcl}. The idea to lift these algorithms from the Boolean
-domain to richer, arithmetic domains suggests itself.
+(CDCL)~\cite{cdcl}. An obvious goal is to lift these algorithms from the Boolean
+domain to richer, arithmetic domains.
 
 \emph{Abstract Conflict Driven Clause Learning} (ACDCL)~\cite{dhk2013-popl}
 is one such generalisation of CDCL.  The partial satisfying assignments in
 the CDCL algorithm are generalized to be chosen from a given abstract domain. 
 The unit rule is the best abstract transformer, Boolean Constraint
 Propagation (BCP) computes a greatest fixed-point over the abstract domain,
-decision is dual widening and clause learning can be viewed as synthesising
+decision is dual widening, and clause learning can be viewed as synthesising
 an abstract transformer for negation.  This enables an ACDCL-based analyser
 to refine an imprecise analysis and thus prevents enumeration behaviour. 
-ACDCL has so far been instantiated as a decision procedure for
+To date, ACDCL has been instantiated as a decision procedure for
 floating-point arithmetic~\cite{DBLP:journals/fmsd/BrainDGHK14} and a
-program analyser that reasons using intervals~\cite{tacas12}.  Hence, the
+program analyser that reasons using intervals~\cite{tacas12}.  So the
 existing ACDCL instances are limited to bounds checking in numerical
 programs.
 
 Evidently, the verification of many programs requires more expressive
-domains like octagons or equalities or polyhedra.  These domains capture
+domains, such as octagons, equalities, or polyhedra.  These domains capture
 interesting properties of programs that intervals cannot express.  In this
 paper, we identify specific modifications to the CDCL algorithm that are
 necessary to lift propositional CDCL to relational abstract domains such as
