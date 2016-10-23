@@ -1,4 +1,5 @@
 \section{Abstract Conflict Analysis}\label{sec:conflict}
+
 Conflict analysis in a SAT solver can be seen as abductive 
 reasoning which underapproximates a set of models that do not satisfy a 
 formula~\cite{sas12,dhk2013-popl}.  
@@ -9,10 +10,10 @@ analysis is a generalization of an under-approximation of a set of
 countermodels, where a countermodel is a 
 set of structures that do not satisfy a formula 
 }
-Since relational abstract domains have more complex structure than the partial 
+Relational abstract domains have more complex structure than the partial 
 assignments domain or interval domain, so finding a generalized reason for 
-conflict through UIP computation~\cite{uip} is non-trivial.  We formally 
-describe the adaptations of conflict analysis procedure for relational domains. %
+conflict through UIP computation~\cite{uip} is non-trivial.  To make this paper self-contained, 
+we breifly explain the adaptations that have to be made to the conflict analysis procedure for relational domains. %
 \begin{figure}[t]
 \vspace*{-10ex} %BAD TRICK
 %\caption{An example of Octagon}\label{octagon}
