@@ -99,7 +99,7 @@ The assertions $\assertions$ are constraints of the form $g_3
 \Rightarrow z\geq 0$, for instance, meaning that if $g_3$ holds
 (i.e.\ the assertion is reachable) then the assertion must hold.
 %
-We denote $\vars$ the set of variables occurring in the $\constraints$.
+We~denote $\vars$ the set of variables occurring in the $\constraints$.
 %
 %
 %For example, figure~\ref{swssa} presents the program analysis constraints for 
@@ -328,7 +328,7 @@ transformer is a sound transformer and can be used in our algorithm.
 For example, we can deduce $\abstrans{\domain}{x=2(y+z)}(\absval)=\absval\meet(-2\leq x\leq 6)$ for the abstract value $\absval=(0\leq y \leq 2 \wedge 1 \leq y-z \leq 1)$.
 %
 %A detailed description of abstract transformer is presented in Section~\ref{sec:abst}.
-We denote the set of abstract transformers for a safety equation
+We~denote the set of abstract transformers for a safety equation
 $\formula$ using abstract domain $\domain$ as
 $\abstransset=\{\abstrans{\domain}{\constraint}\mid
 \constraint\in\constraints\}$.
