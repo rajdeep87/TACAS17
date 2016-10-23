@@ -1,10 +1,12 @@
 \section{Conclusions}
 In this paper, we present a procedure for lifting the model search 
-in satisfiability solvers to relational abstract domains.  
+and conflict analysis procedures in satisfiability solvers for 
+relational abstract domains.  
 %We explain specific properties of abstract domain elements that are necessary to infer domain-specific deductions.  
 We present a parameterised abstract transformer that allows us to
-flexibly implement various propagation heuristics while taking care of
-the closure operation required in relational abstract domains.
+%flexibly implement various propagation heuristics while taking care of
+flexibly guide the deductions in the abstract domain while performing lazy 
+closure operations in the relational domains for efficiency reasons.
 %
 Our decision heuristics take into account the high-level structure of
 programs and the underlying expressivity of the abstract domains.  Our
