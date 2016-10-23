@@ -233,18 +233,23 @@ For octagons $\octagons[\numvars]$, we have at most $2N^2$
 inequalities, one for the upper and lower bounds of each variable and
 sums and differences for each pair of variables. Figure~\ref{octagon}
 gives an example of an octagon and its associated inequalities.
-
+\Omit{
 The interval domain is a non-relational domain because a single
-inequality only contains a single variable.
+inequality only contains a single variable.  The octagon domain, 
+however, is relational.  
+}
 %
-The octagon domain, however, is relational.  A fundamental difference
-between relational and non-relational domains is that relational
-domains require the computation of a \emph{closure} in order to obtain
-a normal form that is usually required for precise and efficient 
+A fundamental difference between relational and 
+non-relational domains is that the relational
+domains require the computation of a \emph{closure} 
+in order to obtain a normal form that is usually required for precise 
+%and efficient 
 domain operations.  An example of a closure computation for octagonal 
-inequalities is given below.
-%
-\[\mathit{closure}((x-y \leq 4) \wedge (y-z \leq 5))=((x-y \leq 4) \wedge (y-z \leq 5) \wedge (x-z \leq 9)) \]  
+inequalities is given by
+$\mathit{closure}((x-y \leq 4) \wedge (y-z \leq 5))=((x-y \leq 4) \wedge (y-z
+\leq 5) \wedge (x-z \leq 9))$.
+%below.
+%\[\mathit{closure}((x-y \leq 4) \wedge (y-z \leq 5))=((x-y \leq 4) \wedge (y-z \leq 5) \wedge (x-z \leq 9)) \]  
 %
 The closure computes all implied domain constraints.  For octagons,
 the closure operation is very expensive (cubic complexity in the
