@@ -23,7 +23,7 @@ using v2c~\cite{mtk2016}, (c)~controller code generated from Simulink
 loop analysis.  All bounded loops are completely unrolled before analysis. 
 We compare our tool with the state-of-the-art SAT-based bounded model checker
 CBMC (version 5.5)~\cite{cbmc} and a commercial static analysis tool, 
-Astr{\'e}e (version 14.10). 
+Astr{\'e}e (version 14.10)~\cite{astree}. 
 CBMC uses MiniSAT~2.2.1 in the backend.  Astr{\'e}e uses a 
 range of abstract domains, which includes interval, 
 bit-field, congruence, trace partitioning and relational domains
@@ -61,7 +61,7 @@ conflicts compared to analysis using CBMC.
 {
 \begin{tabular}{l|r|r|r|r|r}
 \hline
-Solver & Decisions & propagations & conflicts & conflict literals & restarts \\ \hline
+Solver & decisions & propagations & conflicts & conflict literals & restarts \\ \hline
 MiniSat & 27917 & 304031 & 3949 & 33646 & 64 \\ \hline
 ACDCL (Product Domain) & 161 & 3130 & 10 & 5 & 0 \\ \hline  
 \end{tabular}
@@ -108,7 +108,7 @@ benchmarks and all bit-vector category benchmarks.  By contrast, the ordered
 heuristic performs better for programs with conditional branches since it
 prioritises decisions on meet irreducibles that appear in conditional
 branches over meet irreducibles that involve numerical variables.  The
-runtimes for the random heuristic are marginally higher than for the other
+runtimes for the random heuristic are marginally higher than the other
 two.  This suggests that domain-specific decision heuristics are important
 for ACDCL.
 
