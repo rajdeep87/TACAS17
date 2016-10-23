@@ -86,7 +86,7 @@ ACDCL (Octagons) & 0 & 7 & 0 & 0 & 0 \\
 \end{table}
 
 BMC converts the program into a bit-vector equation and passes that to a
-CDCL-based SAT solver.  We will contast the analysis performed by CDCL with
+CDCL-based SAT solver.  We will contrast the analysis performed by CDCL with
 that of ACDCL.  The right-hand side of Figure~\ref{fig:example} illustrates
 an analysis using ACDCL with the octagon domain (top) and the interval
 domain (bottom). The analysis associates an abstract element with each
@@ -119,7 +119,7 @@ and therefore it terminates, proving that the program is safe.  Thus,
 decision and clause learning are used to avoid case-based reasoning and
 prevent enumeration behaviour.
    
-Table~\ref{solver} compares statistics for the MiniSAT~\cite{minisat}
+Table~\ref{solver} compares statistics for the MiniSat~\cite{minisat}
 solver for $N=46000$ for the analysis using BMC, and the analysis using
 ACDCL with the interval and octagon domains.  Compared to the propositional
 SAT solver, there is a significant reduction in the number of decisions,
