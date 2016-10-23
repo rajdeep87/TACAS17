@@ -64,7 +64,7 @@ Daniel Kroening\inst{1} \and Tom Melham\inst{1}}
 %===============================================================================
 %
 \emph{Abstract Conflict-Driven Clause Learning} (ACDCL) is a generalisation
-of the well-known CDCL algorithm that is used in SAT solvers.
+of the well-known CDCL algorithm used in SAT solvers.
 %
 \Omit {  ACDCL alternates between a model search, which
 performs over-approximate deduction with constraint propagation, and a
@@ -72,19 +72,19 @@ conflict analysis, which performs under-approximate abduction with heuristic
 choice.
 }
 %
-ACDCL has been successfully used with non-relational abstract domains such
-as intervals to improve the performance of a floating-point decision
-procedure.  Whereas the propositional reasoning in SAT 
+It has been successfully used with non-relational abstract domains, such
+as intervals, to improve the performance of a floating-point decision
+procedure.  Whereas the propositional reasoning of SAT 
 solvers can be lifted easily from the Boolean lattice to other 
 non-relational domains, application to relational domains is 
 challenging because of the relational properties of deductions.
 %
-In this paper, we present the non-trivial liftings of the model search and
-conflict analysis algorithms in SAT solver for relational abstract domains.  We have
+In this paper, we present non-trivial liftings of the model search and
+conflict analysis algorithms of SAT solvers to relational abstract domains.  We have
 implemented these algorithms inside the 2LS verification tool and
-instantiated our analyser over a template polyhedra domain to check safety
-properties of C programs.  We~evaluate the performance of our analyser in
-comparison with a program verifier that use propositional solvers and
+instantiated our analyser with a template polyhedra domain to check safety
+properties of C programs.  We~evaluate the performance of our analyser 
+compared to a program verifier that uses propositional solvers and
 an abstract interpretation tool.
 %static analyser based on abstract interpretation.
 %
