@@ -28,7 +28,7 @@ CBMC uses MiniSAT~2.2.1 in the backend.  Astr{\'e}e uses a
 range of abstract domains, which includes interval, 
 bit-field, congruence, trace partitioning and relational domains
 (octagons, polyhedra, zones, equalities, filter).  ACDCL is instantiated
-with a product domain of booleans and template polyhedra.  We use the
+with a product domain of Booleans and template polyhedra.  We use the
 interval and octagon templates for our experiments.  ACDCL is configured
 with a heuristic choice of decision (ordered, random, berkmin), propagation
 (forward and multi-way) and conflict-analysis (learning UIP, DPLL-style). 
@@ -50,11 +50,11 @@ and ACDCL.  Figure~\ref{fig:results}(a) clearly shows that the SAT solver
 made significantly more decisions compared to ACDCL for all the benchmarks. 
 The points on the extreme right below the diagonal in
 Figure~\ref{fig:results}(b) show that the number of propagations in the SAT
-solver is maximal for the benchmarks that exhibit relational behavior. 
+solver is maximal for the benchmarks that exhibit relational behaviour. 
 Cumulative statistics corresponding to each phase of the algorithm for all
 66 benchmarks is given in Table~\ref{result}.  We observe a reduction of at
 least two orders of magnitude in the number of decisions, propagations and
-conflicts compared to analyis using CBMC.
+conflicts compared to analysis using CBMC.
 
 \begin{table}[t]
 \begin{center}
@@ -72,7 +72,7 @@ ACDCL (Product Domain) & 161 & 3130 & 10 & 5 & 0 \\ \hline
 \vspace*{-3ex} %BAD TRICK
 \end{table}
 
-Out of 66 benchmarks, CBMC with MiniSAT backend could only prove 16
+Out of 66 benchmarks, CBMC with MiniSat backend could only prove 16
 benchmarks without any restarts.  The solver is restarted in 50 cases to
 avoid spending too much time in ``hopeless'' branches.  By contrast, the
 analysis using ACDCL solved all 66 benchmarks without any restarts.  This is
@@ -99,9 +99,9 @@ subsequently aids the decision heuristics to make better decisions.
 
 \paragraph {\textbf{Decision Heuristics}}
 %
-Figure~\ref{prop-dec}(b) presents a visualization of the performance of
+Figure~\ref{prop-dec}(b) presents a visualisation of the performance of
 different decision heuristics in ACDCL.  Note that the runtimes for all
-decision heuristics are obtained with multi-way propagtion strategy.  The
+decision heuristics are obtained with multi-way propagation strategy.  The
 runtimes are very close, but we observe some key characteristics of these
 heuristics.  Berkmin heuristic performs consistently well for most safe
 benchmarks and all bit-vector category benchmarks.  Whereas, the ordered
@@ -116,7 +116,7 @@ ACDCL.
 Whereas activity-based heuristics such as Berkmin heuristic which 
 works well in propositional cases performs best for benchmarks 
 that encountered the maximum number of conflicts to prove safety, 
-thus allowing the heuristics to choose the decison variable among the set of learnt clauses.   
+thus allowing the heuristics to choose the decision variable among the set of learnt clauses.   
 }
 
 \paragraph {\textbf{Learning}}
@@ -127,6 +127,6 @@ analysis.
 %chronoligical backtracking without learning.  
 The effect of UIP computation allows ACDCL to backtrack non-chronologically 
 and guide the model search with a learnt transformer.  However, the DPLL-style 
-analysis exhibits case-enumeration behavior and could not finish within the 
+analysis exhibits case-enumeration behaviour and could not finish within the 
 time bound for 20\% of our benchmarks.
 
