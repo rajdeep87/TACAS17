@@ -46,7 +46,7 @@ $\mathit{result} \leftarrow \deduce_{\propheur}(\abstransset,\trail,\reasons)$ \
 %\subsection{Algorithm for Abstract Conflict Driven Clause Learning}
 % presents an overview of the ACDCL algorithm.
 The input to the ACDCL algorithm (Algorithm~\ref{Alg:acdcl}) is a
-program in the form of the set of its abstract transformers
+program in the form of a set of abstract transformers
 $\abstransset=\{\abstrans{\domain}{\sigma}|\sigma\in\Sigma\}$
 w.r.t.\ an abstract domain~$\domain$.  The algorithm is parametrised
 by propagation $(\propheur)$, decision $(\decheur)$, and conflict
@@ -68,11 +68,11 @@ The \emph{abstract value} $\abs(\trail)$ corresponding to
 the propagation trail $\trail$ is the conjunction of the 
 meet irreducibles on the trail:
 $\abs(\trail)=\bigsqcap_{m \in \trail}m$ with
-$\abs(\trail)=\top$ if $\trail$ is the empty sequence $\langle\rangle$.
+$\abs(\trail)=\top$ if $\trail$ is an empty sequence $\langle\rangle$.
 \end{definition}
 %
 The algorithm begins with an empty $\trail$, a empty $\reasons$ and an
-abstract value $\top$.  The procedure $\deduce$ (detailed in
+abstract value $\top$.  The procedure $\deduce$ (details in
 Section~\ref{sec:deduce}) computes a greatest fixed-point over the
 transformers in $\abstransset$ that refines the abstract value,
 similar to the BCP step in SAT solvers.  If the result of $\deduce$
@@ -105,7 +105,7 @@ to mark it as a decision.
 %{\em dual widening} \pscmt{what do we learn?}.  
 %
 The procedure $\deduce$ is called next to infer new meet irreducibles
-taking into account the current decision.  The model search phase
+based on the current decision.  The model search phase
 alternates between the decision and deduction until $\deduce$ returns
 either \textsf{sat} or \textsf{conflict}.  In the former case, we have
 found an abstract value that represents models of $\formula$, which
@@ -128,11 +128,11 @@ incomparable reasons for conflict.
 % \pscmt{do you have to explain this here?} -- based on the choice of Unique
 %Implication Point (UIP)~\cite{cdcl}.  
 ACDCL heuristically chooses one reason $\conflictset$ and learns it 
-by adding it as an abstract transformer to $\abstransset$. The algorithm 
+by adding it as an abstract transformer to $\abstransset$. The analysis 
 backtracks by removing the content of $\trail$ up to a point where it does not 
 conflict with $\conflictset$.  ACDCL then performs deductions with the learnt 
 transformer.  If $\analyzeconflict$ returns $\false$, then no further
-backtracking is possible.  Thus, the $\formula$ is unsatisfiable
+backtracking is possible.  Thus, the safety equation $\formula$ is unsatisfiable
 and ACDCL return \textsf{safe}.
 
 % A learnt clause must include asserting cuts which guarantees
