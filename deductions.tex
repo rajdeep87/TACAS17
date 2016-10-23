@@ -111,9 +111,10 @@ transformers on performing only the minimally necessary
 work. 
 }
 The key considerations for building an abstract transformer are 
-precision and efficiency.  An precise transformer is usually less efficient, 
+precision and efficiency.  A precise transformer is usually less efficient, 
 and vice-versa.  We provide a parameterised abstract transformer that allows us to 
-control precision and efficiency through propagation heuristics. 
+control the precision and efficiency of deductions through the application of 
+different propagation heuristics. 
 %
 We thus define a specialised variant of the abstract transformer to compute
 deductions w.r.t.\ a given subdomain $\subdomain\subseteq \domain$,
@@ -128,7 +129,7 @@ deduction transformer is formally defined as follows.
 For $\subdomain=\domain$, the abstract deduction transformer is identical 
 to the abstract transformer defined in Eq.~(\ref{eq:abstrans})
 in Section~\ref{sec:domains}.  We denote $\abstrans{\domain}{\constraint}^\subdomain$
-as $\abstransel{\subdomain}$.
+as $\abstransel{\subdomain}$ in Algorithm~\ref{Alg:ms}. 
 
 %We construct the subdomain from a set of variables $\vars$ such that $\subdomain_\domain(\vars)$ is the set of meet irreducibles $\in \domain$ that contain at last one variable in $\vars$ and most one variable that is not in $\vars$. \pscmt{split into two parts}
 %
@@ -141,7 +142,7 @@ or {\em multi-way} direction.
 %using our abstract transformers.
 %we can control how we perform 
 %
-For example, for $\absval=(0\leq y \leq 1 \wedge 5\leq z)$, we have
+Consider an example, where $\absval=(0\leq y \leq 1 \wedge 5\leq z)$, we have
 $\abstrans{\intervals[\{x,y,z\}]}{x=y+z}^{\intervals[\{x\}]}(\absval)=\absval\meet(x\geq
 6)$. For $x=y+z$, this performs a right-hand side to left-hand side propagation and
 hence emulates a forward analysis, whereas
@@ -166,9 +167,9 @@ Thus, the choice of a subdomain helps to fine-tune the deductions
 during the propagation phase.
 
 \paragraph {\textbf{Lazy closure computation}} 
-Computing closure for relational domains, such as octagons is extremely
-expensive~\cite{pldi15}.  An advantage of our formalism in 
-Eq.~(\ref{eq:at2}) is that
+Computing closure for relational domains, such as octagons is an 
+extremely expensive operation~\cite{pldi15}.  An advantage of our 
+formalism in Eq.~(\ref{eq:at2}) is that
 %we can compute the
 the \emph{closure} operation for relational domains can be computed 
 in a lazy manner. To this end, we construct a subdomain 
@@ -196,7 +197,8 @@ Hence, an application of abstract deduction transformer does not
 compute the full closure in the full domain, but compute only a 
 single step of the closure in a restricted domain, which makes each 
 deduction step more efficient.  Thus, we delay the closure operation 
-until the point where it is absolutely necessary. 
+until the point where it is absolutely necessary.  This makes our deductions 
+in relational domain more efficient.  
 %
 \Omit{
 If $\abstransel{\subdomain}$ deduces new information about $x$ or $z$
