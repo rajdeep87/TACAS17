@@ -1,4 +1,4 @@
-\section{Abstract Model Search}
+\section{Abstract Model Search}\label{sec:deduce}
 %
 \Omit {
 \begin{figure}[t]
@@ -66,32 +66,23 @@ a propagation trail $\trail$, and a reason trail $\reasons$.}
 $\worklist \leftarrow \initworklist_{\propheur}(\abstransset)$ \;
 \While{$!\mathit{worklist.empty}()$} 
 {
-%  $(\abstransel,\livevars) \leftarrow \mathit{worklist.pop}()$ \;
-  $\abstransel{\subdomain} \leftarrow \mathit{worklist.pop}()$ \;
-%  $v \leftarrow ded(s, \makesubdomain(\livevars), \abs(\trail))$\;
-  $v \leftarrow \abstransel{\subdomain}(\abs(\trail))$\;
-  \uIf{$v = \bot$} {
+  $\abstransel{\subdomain} \leftarrow \mathit{worklist.pop}()$ \; 
+  $\absval \leftarrow \abstransel{\subdomain}(\abs(\trail))$\;
+  \uIf{$\absval = \bot$} {
     $\reasons[\bot] \leftarrow \abstransel{\subdomain}$ \;
-%\pscmt{how is this used in the conflict
-%    analysis? wouldn't it be more uniform to add $\bot$ to the $\trail$?}
-%    \rmcmt{UIP uses the transformer stored at $\reasons[\bot]$ to derive the
-%    cut. No, we dont want to make the trail inconsistent by adding $\bot$}
     $\mathit{worklist.clear}()$ \;
-%\pscmt{why can't you clean up the worklist during conflict analysis? it seems inefficient to throw everything away...}
-%    \rmcmt{When a bottom is deduced, the direction of search
-%    changes--so the worklist is populated with new set of statement and must be
-%    flushed out} 
     \return \conflict \;
   }
   \uElse
   {
-    $\trail \leftarrow \trail \cdot \decomp(v)$ \; 
-%    $v \leftarrow v \meet \mathit{meet\_irrd}$ \; 
-    $\reasons[|\trail|] \leftarrow s$ \;
-    $\updateworklist_{\propheur}(v, \worklist)$ \; 
+    $\newdeductions=\onlynew(\absval)$\;
+%    $\newdeductions=\decomp(\absval)\setminus\decomp(\abs(\trail))$\;
+    $\trail \leftarrow \trail \cdot \decomp(\newdeductions)$ \; 
+    $\reasons[|\trail|] \leftarrow \abstransel{\subdomain}$ \;
+    $\updateworklist_{\propheur}(\worklist, \newdeductions, \abstransel{\subdomain},  \abstransset)$ \; 
   }
 }
-\lIf{$\abs(\trail)$ is $\gamma$-complete} {
+\lIf{$\abstransset$ is $\gamma$-complete at $\abs(\trail)$} {
   \return \sat;
 }
  \return \unknown \;
@@ -103,106 +94,191 @@ $\worklist \leftarrow \initworklist_{\propheur}(\abstransset)$ \;
 A model search procedure in a SAT solver involves two steps -- {\em deductions} 
 using the unit rule refines current partial assignments and 
 {\em decisions} to heuristically guess a value for an unassigned 
-literal.  The unit rule overapproximates a model transformer and deduction 
-computes a greatest fixed point over the partial assignments
-domain~\cite{dhk2013-popl}.  We present an abstract model search procedure 
-that computes a greatest fixed point over meet irreducible deduction 
-transformer in $S$ \pscmt{???}.  
+literal.  
+%The unit rule overapproximates a model transformer and deduction 
+%computes a greatest fixed point over the partial assignments
+%domain~\cite{dhk2013-popl}.  We present an abstract model search procedure 
+%that computes a greatest fixed point over meet irreducible deduction 
+%transformer in $S$.  
 %
 
 %-------------------------------------------------------------------------------
 \subsection{Abstract Deduction Transformers} \label{sec:abst}
 %-------------------------------------------------------------------------------
-
-To make our algorithm efficient, we have to focus abstract
+\Omit{
+To make our algorithm efficient, we have to focus the abstract
 transformers on performing only the minimally necessary
 work. 
+}
+The key considerations for building an abstract transformer are 
+precision and efficiency.  An precise transformer is usually less efficient, 
+and vice-versa.  We provide a parameterised abstract transformer that allows us to 
+control precision and efficiency through propagation heuristics. 
 %
-We thus define a specialised variant of the transformer to compute
-deductions w.r.t.\ a given subdomain $\subdomain\subseteq \domain$.
-A subdomain contains a chosen subset of the elements in $\domain$ including $\bot$ and $\top$.
-\[\abstrans{\domain}{\constraint}^\subdomain(\absval)=\absval\meet_\domain \alpha_\subdomain(\{\val\mid \val\models \constraint\})\]
-For $\subdomain=\domain$, the abstract transformer behaves in the same way as the one defined in Section~\ref{sec:domains}.
+We thus define a specialised variant of the abstract transformer to compute
+deductions w.r.t.\ a given subdomain $\subdomain\subseteq \domain$,
+which we call \emph{abstract deduction transformer}.
 %
-The restriction to a subdomain makes it less precise. Therefore, we have the property $\abstrans{\domain}{\constraint}^\domain(\absval)\sqsubseteq \abstrans{\domain}{\constraint}^\subdomain(\absval)$.
+A subdomain contains a chosen subset of the elements in $\domain$ including
+$\bot$ and $\top$, which forms a lattice.  An abstract 
+deduction transformer is formally defined as follows. 
+\begin{equation}\label{eq:at2}
+\abstrans{\domain}{\constraint}^\subdomain(\absval)=\absval\meet_\domain \alpha_\subdomain(\{\val\mid \val\in\gamma_\domain(\absval), \val\models \constraint\})
+\end{equation}
+For $\subdomain=\domain$, the abstract deduction transformer is identical 
+to the abstract transformer defined in Eq.~(\ref{eq:abstrans})
+in Section~\ref{sec:domains}.  We denote $\abstrans{\domain}{\constraint}^\subdomain$
+as $\abstransel{\subdomain}$.
+
+%We construct the subdomain from a set of variables $\vars$ such that $\subdomain_\domain(\vars)$ is the set of meet irreducibles $\in \domain$ that contain at last one variable in $\vars$ and most one variable that is not in $\vars$. \pscmt{split into two parts}
 %
-\pscmt{explain $\makesubdomain(Vars)$}
-For example, for
-$\absval=(0\leq y \leq 1 \wedge 5\leq z)$ we have
-$\abstrans{\domain}{x=y+z}^{\makesubdomain(\{x\})}(\absval)=(x\geq 6)$, whereas
-$\abstrans{\domain}{x=y+z}^{\makesubdomain(\{y,z\})}=\top$.
+%For example, $\subdomain=\domain[\{y\}]$ being the octagons domain over variables $\{x,y,z\}$ contains all octagonal meet irreducibles involving $\{y\}$, and the pairs $\{x,y\}$ and $\{y,z\}$, but not the meet irreducibles\pscmt{wrong} over $\{x\}$, $\{z\}$ and~$\{x,z\}$.
+
+%The first advantage of this definition is that 
+This parameterisation of the abstract deduction transformer with a subdomain 
+$\subdomain$ allow us to guide the propagation in {\em forward}, {\em backward} 
+or {\em multi-way} direction.
+%using our abstract transformers.
+%we can control how we perform 
 %
-The advantage of this definition is that with the help of $\subdomain$
-we can now control how we propagate within our constraint system.
+For example, for $\absval=(0\leq y \leq 1 \wedge 5\leq z)$, we have
+$\abstrans{\intervals[\{x,y,z\}]}{x=y+z}^{\intervals[\{x\}]}(\absval)=\absval\meet(x\geq
+6)$. For $x=y+z$, this performs a right-hand side to left-hand side propagation and
+hence emulates a forward analysis, whereas
+$\abstrans{\intervals[\{x,y,z\}]}{x=y+z}^{\intervals[\{y,z\}]}=\absval\meet\top$
+emulates a backward analysis.
+
+We call the propagation with arbitrary subdomains,
+e.g. $\subdomain=\domain$, \emph{multi-way propagation}, which is able
+to simultaneously perform forward and backward propagation.
 %
-For the example above, $\subdomain=\makesubdomain(\{x\})$ performs a
-right-hand side to left-hand side propagation and hence emulates a
-forward analysis on the input program; whereas with
-$\subdomain=\makesubdomain(\{y,z\})$) we emulate a backward analysis.
+\Omit{
+Note that a restriction to a subdomain makes a transformer less
+precise.
+}
+Note that a restricted subdomain makes a transformer less precise, but more
+efficient.  On the contrary, an unrestricted subdomain make a transformer more 
+precise, but less efficient. Therefore, we have the property
+$\abstrans{\domain}{\constraint}^\domain(\absval)\sqsubseteq
+\abstrans{\domain}{\constraint}^\subdomain(\absval)$.
+%However, the choice of a subdomain makes the deductions more efficient.
+Thus, the choice of a subdomain helps to fine-tune the deductions 
+during the propagation phase.
+
+\paragraph {\textbf{Lazy closure computation}} 
+Computing closure for relational domains, such as octagons is extremely
+expensive~\cite{pldi15}.  An advantage of our formalism in 
+Eq.~(\ref{eq:at2}) is that
+%we can compute the
+the \emph{closure} operation for relational domains can be computed 
+in a lazy manner. To this end, we construct a subdomain 
+$\subdomain=\makesubdomain_\domain(\subvars)$ for $\abstransel{\subdomain}$,
+which is sufficient to perform one step of the closure operation when 
+$\abstransel{\subdomain}$ is applied.
 %
-We call the propagation with $\subdomain=\domain$ \emph{multi-way
-  propagation}, which simultaneously performs forward and backward
-propagation.
+For example, let us consider $\domain=\octagons[\{x,y,z\}]$ and
+$\subvars=\{y\}$. An octagonal inequality relates at 
+most two variables. Thus it is sufficient to consider the subdomain
+$\makesubdomain_\domain(\{y\})=\octagons[\{y\}]\cup\octagons[\{x,y\}]\cup\octagons[\{y,z\}]$,
+which will compute the one-step transitive relations of~$y$ with each
+of the other variables. 
+%
+Only if a abstract deduction transformer subsequently makes new deductions 
+on $x$ or $z$, then the next step of the closure will be computed through 
+the subdomain $\octagons[\{x,z\}]$.
+\Omit{
+Hence, when the abstract deduction transformer is applied we do not
+compute the full closure in the full domain,
+but we compute only a single step of the closure in a restricted
+domain, which makes single deduction steps more efficient.
+}
+Hence, an application of abstract deduction transformer does not 
+compute the full closure in the full domain, but compute only a 
+single step of the closure in a restricted domain, which makes each 
+deduction step more efficient.  Thus, we delay the closure operation 
+until the point where it is absolutely necessary. 
+%
+\Omit{
+If $\abstransel{\subdomain}$ deduces new information about $x$ or $z$
+then the next step of the closure will be computed by the worklist
+mechanism of Algorithm~\ref{Alg:ms} that we describe next.
+}
+%
+ 
+%If this indeed affects $x$ and~$z$ then their
+%relations will be inferred in a later step of the propagation
+%algorithm, thus gradually computing the closure. 
+
+%Note that this might
+%increase the number of propagation steps, but it reduces the size of
+%the subdomain used in the abstract deduction transformer.
 
 %Moreover, we want to know what the reasons for a specific deduction are.
 %\[ded(s,a,L)=\{R\rightarrow d\mid R=reasons(s,a,L,d), d \in decomp(\llbracket s \rrbracket^\sharp(a,L))\}\]
 %where 
 %$reasons(s,a,L,d)=\text{argmin}_{R\in\{R'\mid R'\subseteq decomp(a), \llbracket s\rrbracket^\sharp(R,L)=d\}} |R| $.
 
-\pscmt{give an example for $ded$, link it to the reason trail}
-
-\pscmt{define $ded$ for all statements, connect this to worklist}
-
-\pscmt{link livevars to $L$ -- the subdomain spanned by livevars}
-
 %-------------------------------------------------------------------------------
 \subsection{Algorithm for Deduction Phase}
 %-------------------------------------------------------------------------------
 %
-\rmcmt{Talk about lazy closure operation}
 
-\pscmt{
-Rough and sketchy:
+Algorithm~\ref{Alg:ms} presents the deduction phase $\deduce$ in 
+abstract model search procedure.  The input to the algorithm is 
+the set of abstract transformers, a propagation trail and a reason 
+trail.  Additionally, the procedure $\deduce$ is parameterised with 
+a propagation heuristic ($\propheur$). 
 %
-$espan(V)=$all meet irreducibles $\in A$ that contain at most one variable that is not in $V$.
+The algorithm maintains a  {\em worklist}, which is a queue that contains 
+abstract deduction transformers.  The propagation heuristics provides two 
+functions $\initworklist$ and $\updateworklist$.
+The order of the elements in the worklist and the subdomain $\subdomain$ 
+associated with each abstract deduction transformer ($\abstransel{\subdomain}$) 
+determine the propagation strategy (forward, backward, multi-way).
+
+The {\em forward} propagation strategy initialises the worklist with
+abstract deduction transformers that contains constants in the
+right-hand side and the subdomain is constructed via $\makesubdomain$
+from variables in left-hand side of the equality constraints
+originating from the assignment statements in the program.
 %
-$select(S,PV)$ is the set of statements that contain variables in $PV$ where $PV$ is the set of variables in the previous deduction.
+The {\em backward} propagation strategy intialises the worklist 
+with the assertions and the subdomain is constructed from the 
+right-hand side variables.
 %
-$LV(s)$ are the live variables of a statement $s$, i.e.\ the intersection of $PV$ with the variables in $s$.
-\begin{theorem}
-$$
-\gfp\lambda a. \bigsqcap_{s\in S} ded(s,a,A) = 
-\gfp\lambda a. \bigsqcap_{s\in select(S,PV)} ded(s,a,espan(LV(s)))
-$$
-\end{theorem}
-Proof sketch: see Appendix
-}
+The {\em multi-way} propagation strategy initialises the worklist 
+with the set of all transformers and the corresponding subdomains 
+contains the variables occurring in the respective transformers.
+%
+Depending on the propagation heuristics, $\updateworklist$ adds
+abstract deduction transformers to the worklist that contain variables
+that appear in $\newdeductions$, and it updates the subdomains of
+the abstract deduction transformers in the worklist 
+to include the variables in $\newdeductions$.
+%
+The function
+$\onlynew(\absval)=\bigsqcap(\decomp(\absval)\setminus\decomp(\abs(\trail)))$
+is used to filter out all meet irreducibles that are already on the trail
+in order to obtain only new deductions when applying the abstract deduction transformer.
+%
+\Omit{
+If $\bot$ is deduced we return \textsf{conflict}.
+Otherwise, when eventually a fixed point has been reached, i.e.\ the worklist is empty, then the abstract value $\abs(\trail)$ is checked whether it is 
+$\gamma$-complete~\cite{dhk2013-popl}. 
+%
+It is $\gamma$-complete if all concrete values in $\gamma(\abs(\trail))$ satisfy $\formula$.
+Otherwise, the algorithm returns \textsf{unknown} and ACDCL makes a new decision.}
 
-Algorithm~\ref{Alg:ms} presents the deduction phase in abstract model
-search procedure. \pscmt{The propagation heuristics $H$ provides two
-  functions $\initworklist$ and
-  $\updateworklist$. Describe them for the different
-  heuristics (already done for initialize, TBD for update...}
-A {\em worklist} is a queue which contains \rmcmt{abstract deduction
-transformers}.  A {\em worklist} is initialized following a heuristics 
-choice for propagation strategies. A {\em forward} propagation strategy 
-initializes the worklist with \rmcmt{abstract} transformers that 
-has constants in the right-hand side. Whereas, a {\em backward} 
-iteration strategy starts with a set of assertions. On the other hand, a 
-{\em multi-way} iteration strategy initializes the worklist with set of all 
-transformers and performs both forward and backward propagations in tandem.  
-For every meet irreducible deduction transformer \pscmt{rename} $s \in S$ 
-passed to the abstract domain, if the domain infers a new meet irreducible 
-$\mathit{meet\_irrd}$, it is added to $\trail$ \pscmt{It usually infers several ones.}.  Additionally, the reason 
-trail $\reasons$ \pscmt{define} is updated with the transformer $s$ as the reason for inferring
-$\mathit{meet\_irrd}$. If a conflict is deduced, that is, $\mathit{meet\_irrd} = \bot$ 
-is inferred by the domain, the algorithm terminates with \textsf{conflict}.  However,
-when a fixed-point is reached, the abstract valuation $v$ is checked for set of
-models.  This is determined by checking whether the set of assignments in $v$ is 
-$\gamma$-complete~\cite{dhk2013-popl}. If $v$ is $\gamma$-complete, that is, the 
-abstract valuation $v$ is abstractly satisfying, the abstract model 
-search terminates with \textsf{sat}.  Otherwise, the algorithm returns \textsf{unknown} and the 
-model search procedure makes a new decision.    
-
-
-
+If $\abstransel{\subdomain}$ deduces $\bot$, then 
+the procedure $\mathit{deduce}$ returns \textsf{conflict}.
+Otherwise, when a fixed point is reached, i.e.\ 
+the worklist is empty, then we check whether
+the abstract transformers $\abstransset$ are $\gamma$-complete~\cite{dhk2013-popl} for the current abstract value $\abs(\trail)$.
+%
+Intuitively, this means that all concrete values in 
+$\gamma(\absval)$ satisfy $\formula$.  
+%
+If it is indeed 
+$\gamma$-complete, then $\mathit{deduce}$ returns \textsf{sat}.  Otherwise, the 
+algorithm returns \textsf{unknown} and ACDCL makes a new decision.    
+  

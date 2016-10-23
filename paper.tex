@@ -2,6 +2,7 @@
 
 \usepackage{import}
 \usepackage{times}
+\usepackage{microtype}
 \usepackage{array}
 \usepackage{graphicx,wrapfig}
 \usepackage{cite}
@@ -32,15 +33,16 @@
 \usepackage[subnum]{cases}
 \makeatother
 
-\newcommand{\extendedonly}[1]{#1}
-\newcommand{\paperonly}[1]{}
+\newcommand{\extendedonly}[1]{}
+\newcommand{\paperonly}[1]{#1}
 
 \newcommand{\tool}[1]{\textsc{#1}\xspace}
 \newcommand{\cbmcv}{\tool{cbmc 5.0}}
 \newcommand{\Omit}[1]{}
 \newcommand{\mydef}[1]{\begin{definition}#1\end{definition}}
-\newcommand{\rmcmt}[1]{{\color{magenta}{#1}}}
-\newcommand{\pscmt}[1]{{\color{blue}{#1}}}
+\newcommand{\rmcmt}[1]{{\color{magenta}{#1}}}%#1
+\newcommand{\pscmt}[1]{{\color{blue}{#1}}}%#1
+\newcommand{\dkcmt}[1]{{\color{red!70!black}{#1}}}%#1
 
 \input{symbols}
 
@@ -52,8 +54,9 @@
 Daniel Kroening\inst{1}\hskip 1em Tom Melham\inst{1}}
 
 \institute{University of Oxford, UK \and University of Sussex, UK \\
-\email{\{rajdeep.mukherjee,kroening,tom.melham\}@cs.ox.ac.uk},
-\email{p.schrammel@sussex.ac.uk}}
+%\email{\{rajdeep.mukherjee,kroening,tom.melham\}@cs.ox.ac.uk},
+%\email{p.schrammel@sussex.ac.uk}
+}
 
 \maketitle
 
@@ -61,38 +64,39 @@ Daniel Kroening\inst{1}\hskip 1em Tom Melham\inst{1}}
 \begin{abstract}
 %===============================================================================
 %
-\emph{Abstract Conflict-Driven Clause Learning} (ACDCL) is a generalization
-of the well-known Conflict-Driven Clause Learning (CDCL) algorithm that is
-used in SAT solvers.  ACDCL alternates between a model search, which
-performs overapproximate deduction with constraint propagation, and a
+\emph{Abstract Conflict-Driven Clause Learning} (ACDCL) is a generalisation
+of the well-known CDCL algorithm that is used in SAT solvers.
+%
+\Omit {  ACDCL alternates between a model search, which
+performs over-approximate deduction with constraint propagation, and a
 conflict analysis, which performs under-approximate abduction with heuristic
 choice.
+}
 %
 ACDCL has been successfully used with non-relational abstract domains such
 as intervals to improve the performance of a floating-point decision
-procedure.  Whereas the propositional reasoning used in satisfiability 
-solvers can be rather easily lifted from the boolean lattice to other 
-non-relational domains, lifting them to relational domains is 
+procedure.  Whereas the propositional reasoning used in SAT 
+solvers can be rather easily lifted from the Boolean lattice to other 
+non-relational domains, application to relational domains is 
 challenging because of relational properties of deductions.
 %
-In this paper, we present the non-trivial adaptations of the model search
-and conflict analysis algorithms in order to enable the use of
-relational abstract domains.  We have implemented these algorithms inside
-the 2LS verification tool and instantiated our analyzer over a template 
-polyhedra domain to check safety properties of C programs.  We evaluate 
-the performance of our analyzer in comparison with program verifiers that 
-uses propositional-level solvers and a static analysis tool.
+In this paper, we present the non-trivial liftings of the model search and
+conflict analysis algorithms for relational abstract domains.  We have
+implemented these algorithms inside the 2LS verification tool and
+instantiated our analyser over a template polyhedra domain to check safety
+properties of C programs.  We~evaluate the performance of our analyser in
+comparison with program verifiers that use propositional-level solvers and
+a static analysis tool.
 %
-Experimental evidence suggest 
 \Omit {
 on a set of benchmarks drawn from bit-vector regression 
 in SV-COMP'16, bit-precise software models of hardware 
 circuits auto-generated from v2c tool, and several 
 bounds checking benchmarks 
 }
-two orders of magnitude reduction in the number of 
-decisions and conflict analysis compared to a satisfiability 
-solver while being more precise compared to an abstract interpreter. 
+We observe a reduction of two orders of magnitude in the number of 
+decisions and conflict analyses compared to a SAT 
+solver and higher precision compared to an abstract interpreter. 
 \Omit{
 along with stronger deductions and learnt clauses aided by the richer
 abstract domains.

@@ -55,7 +55,7 @@ SSA for the example in Figure~\ref{fig:example}
 \hline
 \begin{minipage}{4.50cm}
 $\begin{array}{rcl}
-\conctransset:= (g_0 = (0 \leq v\leq N)) \\
+\constraints:= (g_0 = (0 \leq v\leq N)) \\
 (g_1 = (g_0 \wedge c)) \wedge (x_0 = v) \wedge \\
 (x_1 = -v) \wedge (x_2 = g_1?x_0:x_1) \wedge \\
 (g_2 = (g_1 \vee g_0\wedge \neg c)) \wedge \\
@@ -99,6 +99,7 @@ The assertions $\assertions$ are constraints of the form $g_3
 \Rightarrow z\geq 0$, for instance, meaning that if $g_3$ holds
 (i.e.\ the assertion is reachable) then the assertion must hold.
 %
+We denote $\vars$ the set of variables occurring in the $\constraints$.
 %
 %
 %For example, figure~\ref{swssa} presents the program analysis constraints for 
@@ -122,7 +123,7 @@ The assertions $\assertions$ are constraints of the form $g_3
 %-------------------------------------------------------------------------------
 %\paragraph{Safety problem}  
 %
-Based on the above program representation, we define a safety equation \pscmt{why ``equation''?} as, 
+Based on the above program representation, we define a safety equation as, 
 $\formula:= \bigwedge_{\constraint\in\constraints} \constraint$. The formula $\formula$ is 
 unsatisfiable if and only if the program is safe.
 
@@ -149,26 +150,26 @@ We present an instantiation of ACDCL as program analyser that uses relational
 domains.  
 % 
 %In our prototype implementation and for illustrative purposes 
-In this paper we use a product domain $\domain=\booldomain^\booldim\times\reldomain$ where
-$\booldomain$ is the boolean domain
+In this paper we use a product domain $\domain[\vars]=\booldomain^{|\boolvars|}\times\reldomain[\numvars]$ where
+$\booldomain$ is the Boolean domain
 $\langle\{\true,\false,\bot,\top\},\Rightarrow,\wedge,\vee\rangle$, 
-$\booldim$ is the number of boolean variables in the program, 
+$\boolvars$ are the Boolean variables in the program, 
 and $\reldomain$ is a \emph{relational} domain over the 
-numerical (bitvector) variables of respective
+numerical (bitvector) variables $\numvars$ of their respective
 data types (currently, signed and unsigned integers are supported).
 %
 We instantiate $\reldomain$ with the template polyhedra domain.
 
 For notational convenience we will denote elements of
-$\booldomain^\booldim$ by their concretisations to propositional formulae,
-For example, the program in Figure~\ref{ssa} has four boolean variables
+$\booldomain^{|\boolvars|}$ by their concretisations to propositional formulae,
+For example, the program in Figure~\ref{ssa} has four Boolean variables
 written as the vector $(g_0,g_1,c,g_2)$; then we will denote an abstract value $(\top, \false, \true, \top) \in \booldomain^4$ as $\neg g_1 \wedge c$.
 
 %-------------------------------------------------------------------------------
-\paragraph{Template Polyhedra Abstract Domain}
+\paragraph{\textbf{Template Polyhedra Abstract Domain}}
 %
 An abstract value of the template polyhedra domain~\cite{sriram}
-represents a set $\numconcval$ of values of numerical variables $\vec{\numvar}$. For
+represents a set $\numconcval$ of values of the vector $\vec{\numvar}$ of numerical variables $\numvars$. For
 example, in the program in Figure~\ref{ssa}, we have four numerical
 variables, written as the vector $\vec{\numvar}:=(x_0,x_1,x_2,z)$.  We can
 represent sets of values for $\vec{\numvar}$ such that
@@ -181,7 +182,7 @@ The abstraction function is defined as $\alpha(\numconcval) = \min \{\vec{\numab
 \mat{C}\vec{\numvar}\leq\vec{\numabsval}, \vec{\numvar}\in \numconcval\}$ where $\min$ is applied
 component-wise. There are several optimisation-based
 techniques~\cite{sriram,GS07b,BJKS15} for computing the domain
-operations, such as $\meet$, $\sqcup$, etc. In our implementation we
+operations, such as meet ($\meet$), join ($\sqcup$), etc. In our implementation we
 use the strategy iteration approach available in 2LS~\cite{BJKS15}.
 %
 The concretisation $\gamma(\vec{\numabsval})$ is the set $\{\vec{\numvar}\mid
@@ -215,22 +216,23 @@ express other domains, such as interval and octagon domains.
 % given as follows.
 % \[\alpha(x) = \{[inf(x), sup(x)] | x \in Var\} \qquad   \alpha(\emptyset) = \bot \]
 % \[\gamma[p,q] = \{c \in \mathbb{Z} | p \leq c \leq q\} \qquad \gamma(\bot) = \emptyset \]
-
+%
 \begin{wrapfigure}{r}{4.5cm}
-\vspace*{-3ex}
+\vspace*{-7ex}
 \scalebox{.65}{\import{figures/}{octagons.pspdftex}}
-\caption{Example of an octagon \pscmt{BUG: should be $x\geq -2$, $y\geq -1$; please rename x to $x_1$ and $y$ to $z$}}\label{octagon}
-\vspace*{-3ex}
+\caption{Example of an octagon}\label{octagon}
+\vspace*{-5ex}
 \end{wrapfigure} 
-
-For a program with $N$ variables, the matrix $\mat{C}$ for intervals
+%
+In the interval domain $\intervals[\numvars]$,
+for a program with $N=|\numvars|$ variables, the matrix $\mat{C}$ 
 has $2N$ rows; and hence it generates at most $2N$ inequalities, one
 for the upper and lower bounds of each variable.
 %
-For octagons, we have at most $2N^2$ inequalities, one for the upper
-and lower bounds of each variable and sums and differences for each
-pair of variables. Figure~\ref{octagon} shows an 
-example octagon and its associated inequalities.   
+For octagons $\octagons[\numvars]$, we have at most $2N^2$
+inequalities, one for the upper and lower bounds of each variable and
+sums and differences for each pair of variables. Figure~\ref{octagon}
+shows an example octagon and its associated inequalities.
 
 The interval domain is a non-relational domain because a single
 inequality only contains a single variable.
@@ -246,9 +248,9 @@ The closure computes all implied domain constraints.  For octagons,
 the closure operation is very expensive (cubic complexity in the
 number of program variables).
 %
-We will see that our model search algorithm performs closure computations lazily,
-postponing them to the point where they are actually necessary.\rmcmt{are we
-showing this ?}
+%We will see that our model search algorithm performs closure computations lazily,
+%postponing them to the point where they are actually necessary.\rmcmt{are we
+%showing this ?}
 
 % \paragraph{Octagon Abstract Domain} \pscmt{TODO: simplify}
 % The {\em Octagon} abstract domain is a lattice 
@@ -298,7 +300,7 @@ showing this ?}
 % \end{definition}
 
 %-------------------------------------------------------------------------------
-\paragraph{Abstract Transformers}
+\paragraph{\textbf{Abstract Transformers}}
 %
 %In a typical abstract interpretation based Galois-connection setting
 %over an over-approximate domain, every concrete element has a unique
@@ -309,7 +311,10 @@ showing this ?}
 An abstract transformer $\abstrans{\domain}{\constraint}$ transforms an abstract value $\absval$ through a
 constraint $\constraint$, i.e.\ it \emph{deduces} information from $\absval$ and $\constraint$.
 The best abstract transformer is 
-\[\abstrans{\domain}{\constraint}(\absval)=\absval\meet \alpha(\{\val\mid \val\models \constraint\})\] where we write 
+\begin{equation}\label{eq:abstrans}
+\abstrans{\domain}{\constraint}(\absval)=\absval\meet\alpha(\{\val\mid \val\in\gamma(\absval), \val\models \constraint\})
+\end{equation}
+ where we write 
 $\val\models \constraint$ if the concrete value $\val$ satisfies the constraint $\constraint$.
 %$\forall \vec{y}\in c: (s[\vec{y}/\vec{\numvar}]
 %\equiv \true)$, i.e.\ the constraint $s$ is valid when evaluated over
@@ -321,6 +326,10 @@ transformer is a sound transformer and can be used in our algorithm.
 For example, we can deduce $\abstrans{\domain}{x=2(y+z)}(\absval)=\absval\meet(-2\leq x\leq 6)$ for the abstract value $\absval=(0\leq y \leq 2 \wedge 1 \leq y-z \leq 1)$.
 %
 %A detailed description of abstract transformer is presented in Section~\ref{sec:abst}.
+We denote the set of abstract transformers for a safety equation
+$\formula$ using abstract domain $\domain$ as
+$\abstransset=\{\abstrans{\domain}{\constraint}\mid
+\constraint\in\constraints\}$.
 
 %-------------------------------------------------------------------------------
 \subsection{Properties of Abstract Domains}
@@ -336,7 +345,7 @@ in abstract domains is different from the notion of precise complements.
 %
 Most numerical abstract domains, such as intervals and octagons lack
 complements, but they can be represented as intersections of
-complementable half-spaces, each of which has a complement. 
+half-spaces, each of which has a complement. 
 %
 % We identify specific properties of domain elements necessary for 
 % abstract model search and learning in abstractions.  
@@ -345,8 +354,10 @@ We formalise this in the sequel.
 \begin{definition} 
 A \emph{meet irreducible} $m$ in a complete lattice 
 structure $A$ is an element with the following property.
-\[\forall m_1, m_2 \in A: m_1 \meet m_2 = m \implies (m = m_1 \lor m = m_2), m \neq \top \]  
-%\rmcmt{mention minimum complementable element}
+\begin{equation}
+\forall m_1, m_2 \in A: m_1 \meet m_2 = m \implies (m = m_1 \lor m = m_2), m \neq \top  
+\end{equation}
+Meet irreducibles in ACDCL correspond to the concept of literals in a SAT solver.
 \end{definition}
 %
 The meet irreducibles in the boolean domain $\booldomain$ for a variable $x$ are 
@@ -457,7 +468,7 @@ operator. Hence, abstract domain libraries, such as APRON~\cite{apron}
 do not provide it.  However, it can be implemented with the help of a
 meet decomposition as explained above.
 
-\pscmt{check}
+\Omit {
 \begin{definition}{(Abstract Valuation)} An {\em abstract valuation} is a
 mapping of variables to an element of abstract domain. For example, 
 \Omit {
@@ -471,6 +482,7 @@ value or to $\bot$.  An abstract valuation $(v)$ abstractly satisfies a formula
 $\formula$ if for every variable $x$ in $\formula$, there is a concrete solution 
 $(c)$ such that $c(x) \subseteq \gamma \circ v(x)$ holds. 
 \end{definition}
+}
 
 %
 %Another feature that abstract domain libraries do not provide is to
