@@ -38,6 +38,6 @@
 }}}}
 \put(136,-2671){\makebox(0,0)[lb]{\smash{{\SetFigFont{12}{14.4}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}x:=-v}%
 }}}}
-\put(271,-1321){\makebox(0,0)[lb]{\smash{{\SetFigFont{12}{14.4}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$v \leq N)$}%
+\put(361,-1321){\makebox(0,0)[lb]{\smash{{\SetFigFont{12}{14.4}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$v \leq N)$}%
 }}}}
 \end{picture}%
