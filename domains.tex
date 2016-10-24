@@ -74,14 +74,14 @@ $\begin{array}{rcl}
 \label{ssa}
 \end{figure}
 %
-In this paper, we consider \emph{bounded programs} with safety
+We consider \emph{bounded programs} with safety
 properties given as assertions $\assertions$ in the program.
 %
 A bounded program is obtained by a program transformation that unfolds
 loops and recursions a finite number of times. The result of this
-transformation is represented as set
+transformation is represented by a set
 $\constraints=\program\cup\{\neg \bigwedge_{\assertion\in\assertions} \assertion\}$
-where $\program$ are the statements of the transformed program in the
+where $\program$ contains the statements of the transformed program in the
 form of constraints as typically obtained by translating the program
 into single static assignment (SSA) form via a data flow analysis.
 %
@@ -158,12 +158,13 @@ and $\reldomain$ is a \emph{relational} domain over the
 numerical (bitvector) variables $\numvars$ of their respective
 data types (currently, signed and unsigned integers are supported).
 %
-We instantiate $\reldomain$ with the template polyhedra domain.
+We instantiate $\reldomain$ with the template polyhedra domain~\cite{sriram}.
 
 For notational convenience we will denote elements of
-$\booldomain^{|\boolvars|}$ by their concretisations to propositional formulae,
+$\booldomain^{|\boolvars|}$ by their concretisations to propositional formulae.  
 For example, the program in Figure~\ref{ssa} has four Boolean variables
-written as the vector $(g_0,g_1,c,g_2)$; then we will denote an abstract value $(\top, \false, \true, \top) \in \booldomain^4$ as $\neg g_1 \wedge c$.
+written as the vector $(g_0,g_1,c,g_2)$. Thus, we will denote an abstract 
+value $(\top, \false, \true, \top) \in \booldomain^4$ as $\neg g_1 \wedge c$.
 
 %-------------------------------------------------------------------------------
 \paragraph{\textbf{Template Polyhedra Abstract Domain}}
@@ -182,8 +183,9 @@ The abstraction function is defined as $\alpha(\numconcval) = \min \{\vec{\numab
 \mat{C}\vec{\numvar}\leq\vec{\numabsval}, \vec{\numvar}\in \numconcval\}$ where $\min$ is applied
 component-wise. There are several optimisation-based
 techniques~\cite{sriram,GS07b,BJKS15} for computing the domain
-operations, such as meet ($\meet$), join ($\sqcup$), etc. In our implementation we
-use the strategy iteration approach available in 2LS~\cite{BJKS15}.
+operations, such as meet ($\meet$), join ($\sqcup$), etc in the template
+polyhedra domain. In our implementation, we use the strategy 
+iteration approach available in 2LS~\cite{BJKS15}.
 %
 The concretisation $\gamma(\vec{\numabsval})$ is the set $\{\vec{\numvar}\mid
 \mat{C}\vec{\numvar}\leq\vec{\numabsval}\}$; $\gamma(\bot)=\emptyset$, i.e.\ the empty polyhedron.
@@ -346,8 +348,9 @@ $\abstransset=\{\abstrans{\domain}{\constraint}\mid
 %
 An important property of a clause learning SAT solver is that each
 non-singleton element of the partial assignment domain can be 
-decomposed into a set of precisely complementable singleton elements.  
-This property of the partial assignment domain is required to learn 
+decomposed into a set of precisely complementable singleton
+elements~\cite{dhk2013-popl}.  This property of the partial 
+assignment domain is required to learn 
 elements that help to guide the model search away from the
 conflicting region of the search space.  The complementation operator 
 in abstract domains is different from the notion of precise complements. 
