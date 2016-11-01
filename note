@@ -5,4 +5,11 @@ https://arxiv.org/pdf/1610.02952v1.pdf
 
 2> Fast Polyhedra Abstract Domain -- POPL'17
 Gagandeep Singh, Markus Püschel, Martin Vechev
+
+3> Few points for camera-ready: 
+a> In contribution section: talk explicitly about propagation heuristic 
+instantiation with subdomain. Also, propagation heuristic helps to make 
+guided decisions. 
+b> Our implementation does not restrict the learnt clause with the initial 
+control-flow node unlike the previous work. 
  
