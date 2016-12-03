@@ -13,3 +13,8 @@ guided decisions.
 b> Our implementation does not restrict the learnt clause with the initial 
 control-flow node unlike the previous work. 
  
+4> The previous ACDL instantiation with interval domain was restricted to CFG. 
+However, the input to our algorithm is set of SSA. We characterize the BCP phase 
+into two phases -- propagation in learnt clauses, and propagation in SSA using 
+forward, backward or multi-way strategy. Our ACDL instantiation support product 
+domains. 
